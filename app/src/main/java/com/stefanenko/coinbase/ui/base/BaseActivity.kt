@@ -13,6 +13,7 @@ abstract class BaseActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setBarStyle()
         setContentView(getLayoutId())
+        overridePendingTransition(R.anim.fragment_fade_enter, R.anim.fragment_fade_exit)
 
         Log.e("onCreate", this.javaClass.name)
     }

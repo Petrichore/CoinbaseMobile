@@ -1,53 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
     android:orientation="vertical">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2" />
+        android:layout_weight="0.4" />
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/ic_chart_logo"
-        tools:ignore="ContentDescription" />
+        android:src="@drawable/ic_cryptocurrencies" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="0.8" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:fontFamily="@font/noto_sans_jp_regular"
-        android:text="@string/text_title_splashscreen"
-        android:textColor="#009688"
-        android:textSize="32sp" />
+        android:gravity="center"
+        android:text="@string/text_stub_sign_up_start"
+        android:textColor="@color/black"
+        android:textSize="22sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <ProgressBar
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+    <Button
+        android:id="@+id/sigUpStartNextBtn"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:indeterminateTint="@color/progress_bar_grey" />
+        android:text="@string/btn_text_next"
+        android:textAllCaps="false" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="0.3" />
 
 </LinearLayout>

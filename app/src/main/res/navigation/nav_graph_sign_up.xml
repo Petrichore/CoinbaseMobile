@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_sign_up"
+    app:startDestination="@id/signUpStartFragment">
+
+    <fragment
+        android:id="@+id/signUpStartFragment"
+        android:name="com.stefanenko.coinbase.ui.fragment.signUp.SignUpStartFragment"
+        android:label="SignUpStartFragment"
+        tools:layout="@layout/fragment_sign_up_start">
+        <action
+            android:id="@+id/action_signUpStartFragment_to_signUpPersonalInfoFragment"
+            app:destination="@id/signUpPersonalInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpPersonalInfoFragment"
+        android:name="com.stefanenko.coinbase.ui.fragment.signUp.SignUpPersonalInfoFragment"
+        android:label="SignUpPersonalInfoFragment"
+        tools:layout="@layout/fragment_sign_up_step_1">
+        <action
+            android:id="@+id/action_signUpPersonalInfoFragment_to_signUpAddressFragment"
+            app:destination="@id/signUpAddressFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpAddressFragment"
+        android:name="com.stefanenko.coinbase.ui.fragment.signUp.SignUpAddressFragment"
+        android:label="SignUpAddressFragment"
+        tools:layout="@layout/fragment_sign_up_step_2">
+        <action
+            android:id="@+id/action_signUpAddressFragment_to_signUpAuthenticationInfoFragment"
+            app:destination="@id/signUpAuthenticationInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpAuthenticationInfoFragment"
+        android:name="com.stefanenko.coinbase.ui.fragment.signUp.SignUpAuthenticationInfoFragment"
+        android:label="SignUpAuthenticationInfoFragment"
+        tools:layout="@layout/fragment_sign_up_step_3" >
+        <action
+            android:id="@+id/action_signUpAuthenticationInfoFragment_to_signUpFinishFragment"
+            app:destination="@id/signUpFinishFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpFinishFragment"
+        tools:layout="@layout/fragment_sign_up_finish"
+        android:name="com.stefanenko.coinbase.ui.fragment.signUp.SignUpFinishFragment"
+        android:label="SignUpFinishFragment" />
+</navigation>

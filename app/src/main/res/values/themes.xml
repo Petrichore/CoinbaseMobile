@@ -16,8 +16,10 @@
         <!-- Customize your theme here. -->
     </style>
 
-<!--    <style name="TextAppearanceNotoRegularFont" parent="TextAppearance.MaterialComponents.Body1">-->
-<!--        <item name="android:fontFamily">@font/noto_sans_jp_regular</item>-->
-<!--        <item name="android:textColor"></item>-->
-<!--    </style>-->
+
+
+    <!--    <style name="TextAppearanceNotoRegularFont" parent="TextAppearance.MaterialComponents.Body1">-->
+    <!--        <item name="android:fontFamily">@font/noto_sans_jp_regular</item>-->
+    <!--        <item name="android:textColor"></item>-->
+    <!--    </style>-->
 </resources>

@@ -13,7 +13,7 @@ class StartActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        navController = findNavController(R.id.navHostFragment)
+        navController = findNavController(R.id.navHostFragmentStart)
     }
 
     override fun onSupportNavigateUp(): Boolean {
