@@ -1,0 +1,23 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.CoinbaseMobile" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/main_green</item>
+        <item name="colorPrimaryVariant">#7A009688</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">#FFC107</item>
+        <item name="colorSecondaryVariant">#FF9800</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+    </style>
+
+<!--    <style name="TextAppearanceNotoRegularFont" parent="TextAppearance.MaterialComponents.Body1">-->
+<!--        <item name="android:fontFamily">@font/noto_sans_jp_regular</item>-->
+<!--        <item name="android:textColor"></item>-->
+<!--    </style>-->
+</resources>
