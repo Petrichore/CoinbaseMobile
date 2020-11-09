@@ -1,6 +1,7 @@
 package com.stefanenko.coinbase.ui.base
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import dagger.android.support.AndroidSupportInjection
 
 abstract class BaseFragment : Fragment() {
 
@@ -23,6 +25,7 @@ abstract class BaseFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState)
         showDebugLog("OnViewCreated")
     }

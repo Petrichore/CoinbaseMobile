@@ -7,6 +7,7 @@
         <item name="colorPrimaryVariant">#7A009688</item>
         <item name="colorOnPrimary">@color/white</item>
 
+
         <!-- Secondary brand color. -->
         <item name="colorSecondary">#FFC107</item>
         <item name="colorSecondaryVariant">#FF9800</item>

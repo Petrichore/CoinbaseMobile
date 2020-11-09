@@ -1,6 +1,8 @@
 package com.stefanenko.coinbase.ui.activity.signup
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -8,7 +10,7 @@ import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.ui.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_sign_up.*
 
-class SignUpActivity: BaseActivity() {
+class SignUpActivity : BaseActivity() {
     override fun getLayoutId(): Int = R.layout.activity_sign_up
 
     private lateinit var navController: NavController
@@ -23,6 +25,13 @@ class SignUpActivity: BaseActivity() {
 
         toolbar.setNavigationOnClickListener {
             onBackPressed()
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (intent != null && intent.action != null && intent.action == "android.intent.action.VIEW") {
+            Log.d("Intent", "$intent")
         }
     }
 }

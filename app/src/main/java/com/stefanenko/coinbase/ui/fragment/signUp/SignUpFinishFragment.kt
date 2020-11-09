@@ -25,7 +25,7 @@ class SignUpFinishFragment : BaseFragment() {
     }
 
     /**
-     * Do nothing couse we shouldn't navigate to previous signUp screen
+     * Do nothing cause we shouldn't navigate to previous signUp screen
      *
      **/
     private fun defineOnBackPressedCallBack() {

@@ -9,5 +9,9 @@
     <color name="white">#FFFFFFFF</color>
     <color name="main_green">#009688</color>
 
+
     <color name="progress_bar_grey">#B1B1B1</color>
+    <color name="color_secondary">#FFC107</color>
+    <color name="color_secondary_variant">#FF9800</color>
+
 </resources>

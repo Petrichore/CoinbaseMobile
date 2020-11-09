@@ -25,13 +25,13 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-ext{
-    daggerVersion = '2.28.3'
-    okhttpInterceptorVersion ='4.8.1'
+ext {
+    daggerVersion = '2.29.1'
+    okhttpInterceptorVersion = '4.9.0'
     lifecycle_version = '2.2.0'
     navigation_version = '2.3.1'
     retrofit_version = '2.9.0'
-    retrofit_gson_converter_version = '2.7.1'
+    retrofit_gson_converter_version = '2.9.0'
     glide_version = '4.11.0'
     room_version = '2.2.5'
 }

@@ -3,19 +3,33 @@
     package="com.stefanenko.coinbase">
 
     <application
+        android:name=".App"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CoinbaseMobile" >
+        android:theme="@style/Theme.CoinbaseMobile">
 
         <activity android:name=".ui.activity.StartActivity">
             <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.signup.SignUpActivity" />
+        <activity android:name=".ui.activity.signup.SignUpActivity">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.VIEW" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+<!--                <data-->
+<!--                    android:host="com.stefanenko.coinbase"-->
+<!--                    android:pathPrefix="/coinbase-oauth"-->
+<!--                    android:scheme="https" />-->
+<!--            </intent-filter>-->
+        </activity>
+
+
+        <activity android:name=".ui.activity.app.MainActivity" />
     </application>
 </manifest>
