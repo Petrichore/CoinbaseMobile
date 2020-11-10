@@ -22,6 +22,6 @@ abstract class BaseObserveFragment : BaseFragment() {
         initObservers()
     }
 
-    abstract fun initViewModel()
-    abstract fun initObservers()
+    protected abstract fun initViewModel()
+    protected abstract fun initObservers()
 }

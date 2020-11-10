@@ -1,4 +1,4 @@
-package com.stefanenko.coinbase.ui.activity.app
+package com.stefanenko.coinbase.ui.activity.appMain
 
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar

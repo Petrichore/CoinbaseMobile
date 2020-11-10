@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.stefanenko.coinbase">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:name=".App"
         android:icon="@mipmap/ic_launcher"
@@ -10,26 +15,29 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CoinbaseMobile">
 
-        <activity android:name=".ui.activity.StartActivity">
+        <activity android:name=".ui.activity.SplashActivity">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.signup.SignUpActivity">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.VIEW" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
-<!--                <data-->
-<!--                    android:host="com.stefanenko.coinbase"-->
-<!--                    android:pathPrefix="/coinbase-oauth"-->
-<!--                    android:scheme="https" />-->
-<!--            </intent-filter>-->
+        <activity android:name=".ui.activity.login.LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="www.coinbase.com"
+                    android:pathPrefix="/oauth/authorize/"
+                    android:scheme="https" />
+            </intent-filter>
+
         </activity>
 
+        <activity android:name=".ui.activity.signup.SignUpActivity" />
+        <activity android:name=".ui.activity.appMain.MainActivity" />
 
-        <activity android:name=".ui.activity.app.MainActivity" />
     </application>
 </manifest>

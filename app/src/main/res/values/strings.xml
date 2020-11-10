@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">CoinbaseMobile</string>
 
+    <string name="redirect_uri">urn:ietf:wg:oauth:2.0:oob</string>
+    <string name="base_auth_url">https://www.coinbase.com/oauth/authorize/</string>
+
+
     <!--    ToolBar titles-->
     <string name="toolbar_title_sign_up">Sign up</string>
     <string name="toolbar_title_sign_up_step_1">Personal information</string>
@@ -32,6 +36,7 @@
     <string name="btn_text_create_account">Create account</string>
     <string name="btn_text_next">Next</string>
     <string name="btn_text_complete_registration">Complete registration</string>
+    <string name="btn_text_info">Information</string>
 
 
     <!--    Bottom menu titles-->

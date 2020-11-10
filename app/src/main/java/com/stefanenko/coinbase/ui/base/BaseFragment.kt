@@ -13,7 +13,7 @@ import dagger.android.support.AndroidSupportInjection
 
 abstract class BaseFragment : Fragment() {
 
-    abstract fun getLayoutId(): Int
+    protected abstract fun getLayoutId(): Int
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,7 +55,7 @@ abstract class BaseFragment : Fragment() {
         showDebugLog("OnDestroy")
     }
 
-    fun showDebugLog(message: String) {
+    protected fun showDebugLog(message: String) {
         Log.d(":::${this.javaClass.name}", message)
     }
 

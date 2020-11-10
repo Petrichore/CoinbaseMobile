@@ -27,11 +27,4 @@ class SignUpActivity : BaseActivity() {
             onBackPressed()
         }
     }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        if (intent != null && intent.action != null && intent.action == "android.intent.action.VIEW") {
-            Log.d("Intent", "$intent")
-        }
-    }
 }
