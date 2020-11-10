@@ -30,13 +30,16 @@ class SplashActivity : BaseActivity() {
 
     private fun navigateToNextScreen() {
         Handler().postDelayed({
-            if(authPref.isUserAuth()){
-                startActivityInNewTask(MainActivity::class.java)
-            }else{
-                startActivity(LoginActivity::class.java)
-            }
+            startActivity(LoginActivity::class.java)
+
+//            if (authPref.isUserAuth()) {
+//                startActivityInNewTask(MainActivity::class.java)
+//            } else {
+//                startActivity(LoginActivity::class.java)
+//            }
+            Log.d("Token:::", authPref.getAuthToken())
             finish()
-        }, 3000)
+        }, 500) // TODO change to 3000 millis
 
     }
 }
