@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.lifecycle.Observer
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
@@ -40,20 +40,40 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun observeViewModel() {
-        viewModel.authCompleted.observe(this, Observer {
-            if (it) {
-                startActivityInNewTask(MainActivity::class.java)
+
+        viewModel.state.observe(this, {
+            when (it) {
+                is State.AuthCompleted -> {
+                    startActivityInNewTask(MainActivity::class.java)
+                }
+                is State.ShowErrorMessage -> {
+                    showInfoDialog("Error", it.error)
+                }
+                is State.OpenCoinbaseAuthPage -> {
+                    val intent = Intent(Intent.ACTION_VIEW, it.uri)
+                    startActivity(intent)
+                }
             }
         })
 
-        viewModel.authError.observe(this, Observer {
-            showInfoDialog("Error", it)
+        viewModel.interruptibleState.observe(this, {
+            when (it) {
+                is InterruptibleState.StartLoading -> {
+                    progressBar.visibility = View.VISIBLE
+                    shadowView.visibility = View.VISIBLE
+                }
+
+                is InterruptibleState.StopLoading -> {
+                    progressBar.visibility = View.GONE
+                    shadowView.visibility = View.GONE
+                }
+            }
         })
     }
 
     private fun setListeners() {
         signInBtn.setOnClickListener {
-            viewModel.performAuth(this, resources.getString(R.string.redirect_uri))
+            viewModel.performAuth()
         }
 
         quickStartBtn.setOnClickListener {
@@ -63,7 +83,7 @@ class LoginActivity : BaseActivity() {
 
     private fun onIntent(intent: Intent) {
         if (intent.action != null && intent.action == "android.intent.action.VIEW" && intent.data != null) {
-            viewModel.completeAuth(intent.data!!, resources.getString(R.string.base_auth_url))
+            viewModel.completeAuth(intent.data!!)
         }
     }
 

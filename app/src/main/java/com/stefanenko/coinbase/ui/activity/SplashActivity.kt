@@ -1,6 +1,5 @@
 package com.stefanenko.coinbase.ui.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -30,16 +29,13 @@ class SplashActivity : BaseActivity() {
 
     private fun navigateToNextScreen() {
         Handler().postDelayed({
-            startActivity(LoginActivity::class.java)
-
-//            if (authPref.isUserAuth()) {
-//                startActivityInNewTask(MainActivity::class.java)
-//            } else {
-//                startActivity(LoginActivity::class.java)
-//            }
-            Log.d("Token:::", authPref.getAuthToken())
+            if (authPref.isUserAuth()) {
+                startActivityInNewTask(MainActivity::class.java)
+            } else {
+                startActivity(LoginActivity::class.java)
+            }
+            Log.d("Token:::", authPref.getAccessToken())
             finish()
-        }, 500) // TODO change to 3000 millis
-
+        }, 3000)
     }
 }
