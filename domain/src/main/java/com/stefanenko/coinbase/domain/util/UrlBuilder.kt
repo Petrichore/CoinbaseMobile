@@ -1,4 +1,4 @@
-package com.stefanenko.coinbase.util
+package com.stefanenko.coinbase.domain.util
 
 import java.lang.StringBuilder
 
@@ -8,7 +8,7 @@ object UrlBuilder {
     private const val PARAMS_DELIMITER = "&"
 
     /**
-     * Return configured URL
+     * Returns configured URL
      * @param baseUrl represents host name
      * @param path represents additional info about endPoint
      * @param params list of key-value pairs, where first - param key, second - param value

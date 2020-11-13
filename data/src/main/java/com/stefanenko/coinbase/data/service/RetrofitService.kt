@@ -1,4 +1,4 @@
-package com.stefanenko.coinbase.data.network
+package com.stefanenko.coinbase.data.service
 
 import com.stefanenko.coinbase.data.network.api.AuthApi
 import okhttp3.OkHttpClient
@@ -10,7 +10,7 @@ import javax.inject.Inject
 class RetrofitService @Inject constructor() {
 
     private val baseUrlAuth = "https://api.coinbase.com"
-    private val baseUrl = "https://api.coinbase.com/v2"
+    private val baseUrl = "https://api.coinbase.com/v2/"
 
     private val okHttpBuilder = OkHttpClient.Builder()
     private val logger = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -30,7 +30,7 @@ class RetrofitService @Inject constructor() {
 
         retrofitBase =
             Retrofit.Builder()
-                .baseUrl(baseUrlAuth)
+                .baseUrl(baseUrl)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()

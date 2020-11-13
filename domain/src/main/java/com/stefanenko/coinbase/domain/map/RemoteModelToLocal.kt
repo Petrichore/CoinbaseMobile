@@ -1,8 +1,12 @@
 package com.stefanenko.coinbase.domain.map
 
-import com.stefanenko.coinbase.data.network.dto.auth.RequestAccessToken
-import com.stefanenko.coinbase.data.network.dto.auth.ResponseAccessToken
+import com.stefanenko.coinbase.data.network.dto.token.RequestAccessToken
+import com.stefanenko.coinbase.data.network.dto.token.ResponseAccessToken
+import com.stefanenko.coinbase.data.network.dto.exchange.ResponseExchangerRates
+import com.stefanenko.coinbase.data.network.dto.profile.ResponseProfile
 import com.stefanenko.coinbase.domain.entity.AccessToken
+import com.stefanenko.coinbase.domain.entity.ExchangeRate
+import com.stefanenko.coinbase.domain.entity.Profile
 
 fun ResponseAccessToken.mapToAccessToken(requestToken: RequestAccessToken): AccessToken {
     return AccessToken(
@@ -17,4 +21,16 @@ fun ResponseAccessToken.mapToAccessToken(requestToken: RequestAccessToken): Acce
         expiresIn,
         createdAt
     )
+}
+
+fun ResponseExchangerRates.mapToExchangeRates(): List<ExchangeRate> {
+    val exchangeRates = mutableListOf<ExchangeRate>()
+    ratesList.forEach { key, value ->
+        exchangeRates.add(ExchangeRate(key, value.toDouble()))
+    }
+    return exchangeRates
+}
+
+fun ResponseProfile.mapToProfile(): Profile {
+    return Profile(name, email, imageUrl, country.name)
 }

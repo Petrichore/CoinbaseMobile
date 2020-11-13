@@ -12,7 +12,7 @@
         android:layout_height="100dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/ic_bitcoin_menu"
+        tools:src="@drawable/ic_bitcoin_menu"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -78,8 +78,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="4dp"
-                android:textSize="12sp"
-                tools:text="Settings" />
+                android:text="@string/card_type_settings"
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/cardTitle"
@@ -90,9 +90,9 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="12dp"
                 android:layout_marginBottom="8dp"
+                android:text="@string/card_title_open_settings"
                 android:textColor="@color/black"
-                android:textSize="18sp"
-                tools:text="Open base settings" />
+                android:textSize="18sp" />
         </LinearLayout>
 
 

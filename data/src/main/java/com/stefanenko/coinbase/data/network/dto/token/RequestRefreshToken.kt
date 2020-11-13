@@ -1,4 +1,4 @@
-package com.stefanenko.coinbase.data.network.dto.auth
+package com.stefanenko.coinbase.data.network.dto.token
 
 import com.google.gson.annotations.SerializedName
 
@@ -12,9 +12,6 @@ data class RequestRefreshToken(
     @SerializedName("grant_type")
     val grantType: String,
 
-    @SerializedName("redirect_uri")
-    val redirectUri: String,
-
-    @SerializedName("code")
-    val authCode: String
+    @SerializedName("refresh_token")
+    val refreshToken: String
 )

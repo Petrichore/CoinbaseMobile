@@ -34,7 +34,8 @@ class SplashActivity : BaseActivity() {
             } else {
                 startActivity(LoginActivity::class.java)
             }
-            Log.d("Token:::", authPref.getAccessToken())
+            Log.d("Access token:::", authPref.getAccessToken())
+            Log.d("Refresh token:::", authPref.getRefreshToken())
             finish()
         }, 3000)
     }

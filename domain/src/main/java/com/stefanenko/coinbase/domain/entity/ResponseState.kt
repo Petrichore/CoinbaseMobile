@@ -1,4 +1,4 @@
-package com.stefanenko.coinbase.domain
+package com.stefanenko.coinbase.domain.entity
 
 sealed class ResponseState<T> {
     data class Data<T>(val data: T) : ResponseState<T>()

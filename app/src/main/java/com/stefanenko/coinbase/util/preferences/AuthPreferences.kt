@@ -5,6 +5,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Suppress("PrivatePropertyName")
+
 @Singleton
 class AuthPreferences @Inject constructor(private val appContext: Context) {
 

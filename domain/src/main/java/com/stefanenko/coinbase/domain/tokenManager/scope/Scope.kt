@@ -1,4 +1,4 @@
-package com.stefanenko.coinbase.util.coinbase
+package com.stefanenko.coinbase.domain.tokenManager.scope
 
 object Scope {
     interface Wallet {

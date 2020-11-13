@@ -5,77 +5,60 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.stefanenko.coinbase.domain.DataRepository
-import com.stefanenko.coinbase.domain.ResponseState
-import com.stefanenko.coinbase.util.UrlBuilder
-import com.stefanenko.coinbase.util.coinbase.*
-import com.stefanenko.coinbase.util.exception.ExceptionMessage
+import com.stefanenko.coinbase.domain.entity.ResponseState
+import com.stefanenko.coinbase.domain.tokenManager.AuthTokenManager
+import com.stefanenko.coinbase.domain.tokenManager.BASE_AUTH_URL
+import com.stefanenko.coinbase.domain.tokenManager.REDIRECT_URI_VALUE
+import com.stefanenko.coinbase.domain.tokenManager.scope.Scope
+import com.stefanenko.coinbase.util.exception.ERROR_AUTH_DEFAULT
+import com.stefanenko.coinbase.util.exception.ERROR_INTERNET_CONNECTION
 import com.stefanenko.coinbase.util.networkConnectivity.NetworkConnectivityManager
 import com.stefanenko.coinbase.util.preferences.AuthPreferences
-import com.stefanenko.coinbase.util.preferences.ClientPreferences
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 class LoginViewModel @Inject constructor(
-    private val dataRepository: DataRepository,
-    private val connectivityManager: NetworkConnectivityManager,
     private val authPreferences: AuthPreferences,
-    private val clientPreferences: ClientPreferences
+    private val authTokenManager: AuthTokenManager,
+    private val connectivityManager: NetworkConnectivityManager
 ) : ViewModel() {
 
     val state = MutableLiveData<State>()
     val interruptibleState = MutableLiveData<InterruptibleState>()
 
     fun performAuth() {
-        if (connectivityManager.isConnected()) {
-            val scopeSting = ScopeBuilder.build(
+        if(connectivityManager.isConnected()){
+            val uri = authTokenManager.startAuth(
+                REDIRECT_URI_VALUE,
                 Scope.Wallet.User.READ,
                 Scope.Wallet.User.EMAIL,
                 Scope.Wallet.Accounts.READ,
                 Scope.Wallet.Accounts.UPDATE
             )
 
-            val url = UrlBuilder.buildUrl(
-                BASE_AUTH_URL,
-                Pair(CLIENT_ID_KEY, clientPreferences.getClientId()),
-                Pair(REDIRECT_URI_KEY, REDIRECT_URI_VALUE),
-                Pair(RESPONSE_TYPE_KEY, RESPONSE_TYPE_VALUE),
-                Pair(SCOPE_KEY, scopeSting)
-            )
-
-            state.value = State.OpenCoinbaseAuthPage(Uri.parse(url))
-        } else {
-            state.value =
-                State.ShowErrorMessage(ExceptionMessage.ERROR_INTERNET_CONNECTION)
+            state.value = State.OpenCoinbaseAuthPage(uri)
+        }else{
+            state.value = State.ShowErrorMessage(ERROR_INTERNET_CONNECTION)
         }
     }
 
     fun completeAuth(uri: Uri) {
-        interruptibleState.value = InterruptibleState.StartLoading
-
-
-        val authUrl = uri.toString()
-        Log.d("URI", authUrl)
-
-
         try {
+            interruptibleState.value = InterruptibleState.StartLoading
+
+            val authUrl = uri.toString()
+            Log.d("URI", authUrl)
+
             val authCode = retrieveAuthCode(authUrl, BASE_AUTH_URL)
             Log.d("AUTH CODE:::", authCode)
 
             viewModelScope.launch {
-                val responseState = dataRepository.getAccessToken(
-                    clientPreferences.getClientId(),
-                    clientPreferences.getClientSecret(),
-                    REDIRECT_URI_VALUE,
-                    authCode
-                )
-
-                when (responseState) {
+                when (val responseState = authTokenManager.completeAuth(authCode)) {
                     is ResponseState.Data -> {
                         authPreferences.setUserAuthState(true)
-                        authPreferences.saveAccessToken(responseState.data.accessToken)
-                        authPreferences.saveRefreshToken(responseState.data.refreshToken)
+                        authPreferences.saveAccessToken(responseState.data.first)
+                        authPreferences.saveRefreshToken(responseState.data.second)
 
                         state.value = State.AuthCompleted
                         interruptibleState.value = InterruptibleState.StopLoading
@@ -84,14 +67,10 @@ class LoginViewModel @Inject constructor(
                     is ResponseState.Error -> {
                         state.value = State.ShowErrorMessage(responseState.error)
                     }
-
-                    is ResponseState.InProgress -> {
-
-                    }
                 }
             }
         } catch (e: IllegalArgumentException) {
-            state.value = State.ShowErrorMessage(ExceptionMessage.ERROR_AUTH)
+            state.value = State.ShowErrorMessage(ERROR_AUTH_DEFAULT)
             e.printStackTrace()
         }
     }

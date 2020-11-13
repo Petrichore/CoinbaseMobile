@@ -1,7 +1,6 @@
 package com.stefanenko.coinbase.ui.base
 
 import android.app.AlertDialog
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import dagger.android.support.AndroidSupportInjection
 
 abstract class BaseFragment : Fragment() {
 
@@ -72,6 +70,21 @@ abstract class BaseFragment : Fragment() {
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 negativeAction.invoke(dialog)
+            }
+            .create()
+            .show()
+    }
+
+
+    protected fun showInfoDialog(
+        title: String,
+        message: String,
+    ) {
+        AlertDialog.Builder(context)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("Ok") { dialog, _ ->
+                dialog.dismiss()
             }
             .create()
             .show()
