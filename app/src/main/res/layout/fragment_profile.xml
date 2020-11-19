@@ -48,6 +48,7 @@
         tools:text="text@email.com" />
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/settingsCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"

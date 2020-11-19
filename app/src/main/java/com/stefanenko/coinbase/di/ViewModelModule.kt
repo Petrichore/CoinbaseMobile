@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.stefanenko.coinbase.ui.activity.login.LoginViewModel
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
+import com.stefanenko.coinbase.ui.fragment.chart.ChartViewModel
 import com.stefanenko.coinbase.ui.fragment.exchangeRate.ExchangeRatesViewModel
 import com.stefanenko.coinbase.ui.fragment.profile.ProfileViewModel
 import dagger.Binds
@@ -30,4 +31,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ExchangeRatesViewModel::class)
     abstract fun bindExchangeRateViewModel(exchangeRatesViewModel: ExchangeRatesViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ChartViewModel::class)
+    abstract fun bindChartViewModel(chartViewModel: ChartViewModel): ViewModel
 }

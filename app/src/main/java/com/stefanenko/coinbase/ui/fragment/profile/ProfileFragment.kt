@@ -2,12 +2,12 @@ package com.stefanenko.coinbase.ui.fragment.profile
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.domain.entity.Profile
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
+import com.stefanenko.coinbase.ui.activity.login.LoginActivity
 import com.stefanenko.coinbase.ui.base.BaseObserveFragment
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -23,6 +23,7 @@ class ProfileFragment : BaseObserveFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setListeners()
         (activity as MainActivity).toolbar.title =
             resources.getString(R.string.toolbar_title_profile)
         viewModel.getProfile()
@@ -50,15 +51,30 @@ class ProfileFragment : BaseObserveFragment() {
                             dialog.dismiss()
                         },
                         { dialog ->
-                            //TODO show error, that profile data should be loaded
+                            //TODO show error screen, that profile data should be loaded
                             dialog.dismiss()
                         })
+                }
+
+                is StateProfile.LogOut -> {
+                    (activity as MainActivity).startActivityInNewTask(LoginActivity::class.java)
                 }
             }
         })
         viewModel.interruptibleState.observe(viewLifecycleOwner, {
             //TODO implements skeleton loading
         })
+    }
+
+    private fun setListeners() {
+        logOutBtn.setOnClickListener {
+            showAlertDialog("Log out", "Do you want to log out?", { dialog ->
+                viewModel.performLogout()
+                dialog.dismiss()
+            }, { dialog ->
+                dialog.dismiss()
+            })
+        }
     }
 
     private fun initProfileData(profile: Profile) {

@@ -38,4 +38,6 @@ class DataRepository @Inject constructor(private val remoteDataService: RemoteDa
             return ResponseState.Error(ExceptionMapper.mapToAppError(e.message ?: ""))
         }
     }
+
+
 }

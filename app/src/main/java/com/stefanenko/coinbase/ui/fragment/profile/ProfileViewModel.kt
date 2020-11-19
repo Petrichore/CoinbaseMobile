@@ -1,6 +1,5 @@
 package com.stefanenko.coinbase.ui.fragment.profile
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.stefanenko.coinbase.domain.entity.ResponseState
@@ -55,5 +54,10 @@ class ProfileViewModel @Inject constructor(
         } else {
             state.value = StateProfile.ShowErrorMessage(ERROR_INTERNET_CONNECTION)
         }
+    }
+
+    fun performLogout(){
+        authPreferences.clearLoginSate()
+        state.value = StateProfile.LogOut
     }
 }

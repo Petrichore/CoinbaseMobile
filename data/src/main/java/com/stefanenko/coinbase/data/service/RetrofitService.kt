@@ -17,9 +17,11 @@ class RetrofitService @Inject constructor() {
 
     private val retrofitAuth: Retrofit
     private val retrofitBase: Retrofit
+    private val client: OkHttpClient
 
     init {
-        val client = okHttpBuilder.addInterceptor(logger).build()
+
+        client = okHttpBuilder.addInterceptor(logger).build()
 
         retrofitAuth =
             Retrofit.Builder()
@@ -42,5 +44,9 @@ class RetrofitService @Inject constructor() {
 
     fun <T> createBaseService(baseServiceClass: Class<T>): T {
         return retrofitBase.create(baseServiceClass)
+    }
+
+    fun getHttpClient(): OkHttpClient{
+        return client
     }
 }

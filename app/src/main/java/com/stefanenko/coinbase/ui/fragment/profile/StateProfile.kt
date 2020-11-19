@@ -6,6 +6,7 @@ sealed class StateProfile {
     data class ShowErrorMessage(val error: String) : StateProfile()
     data class ShowProfileData(val profile: Profile) : StateProfile()
     object ReAuthPerformed : StateProfile()
+    object LogOut : StateProfile()
 }
 
 sealed class InterruptibleState {

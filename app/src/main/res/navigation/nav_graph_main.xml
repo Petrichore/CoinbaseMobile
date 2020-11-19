@@ -11,7 +11,7 @@
         android:label="CoinsFragment"
         tools:layout="@layout/fragment_exchange_rate">
         <action
-            android:id="@+id/action_products_to_profile"
+            android:id="@+id/action_products_to_profil"
             app:destination="@id/profile" />
     </fragment>
     <fragment
@@ -19,4 +19,8 @@
         android:name="com.stefanenko.coinbase.ui.fragment.profile.ProfileFragment"
         android:label="ProfileFragment"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/chart"
+        android:name="com.stefanenko.coinbase.ui.fragment.chart.ChartFragment"
+        android:label="ChartFragment" />
 </navigation>

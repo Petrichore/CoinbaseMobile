@@ -44,4 +44,10 @@ class AuthPreferences @Inject constructor(private val appContext: Context) {
         val sPref = appContext.getSharedPreferences(AUTH_PREF_TAG, Context.MODE_PRIVATE)
         return sPref.getBoolean(IS_AUTH_KEY, false)
     }
+
+    fun clearLoginSate(){
+        saveRefreshToken("")
+        saveAccessToken("")
+        setUserAuthState(false)
+    }
 }

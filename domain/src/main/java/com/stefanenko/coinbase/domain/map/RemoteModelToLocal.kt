@@ -4,7 +4,9 @@ import com.stefanenko.coinbase.data.network.dto.token.RequestAccessToken
 import com.stefanenko.coinbase.data.network.dto.token.ResponseAccessToken
 import com.stefanenko.coinbase.data.network.dto.exchange.ResponseExchangerRates
 import com.stefanenko.coinbase.data.network.dto.profile.ResponseProfile
+import com.stefanenko.coinbase.data.network.dto.socket.CurrencyRateRT
 import com.stefanenko.coinbase.domain.entity.AccessToken
+import com.stefanenko.coinbase.domain.entity.CurrencyMarketInfo
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.domain.entity.Profile
 
@@ -33,4 +35,8 @@ fun ResponseExchangerRates.mapToExchangeRates(): List<ExchangeRate> {
 
 fun ResponseProfile.mapToProfile(): Profile {
     return Profile(name, email, imageUrl, country.name)
+}
+
+fun CurrencyRateRT.mapToCurrencyMarketInfo(): CurrencyMarketInfo{
+    return CurrencyMarketInfo(symbol, action, price)
 }
