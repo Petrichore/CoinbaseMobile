@@ -14,16 +14,19 @@ import javax.inject.Singleton
         AppModule::class,
         ViewModelModule::class,
         FragmentModule::class,
-        ActivityModule::class
+        ActivityModule::class,
+        DatabaseModule::class
     ]
 )
 interface AppComponent {
 
-    fun performInjection(app: App)
+    fun inject(app: App)
 
     @Component.Builder
     interface Builder {
         fun build(): AppComponent
+
+        fun databaseModule(databaseModule: DatabaseModule): Builder
 
         @BindsInstance
         fun application(app: Application): Builder

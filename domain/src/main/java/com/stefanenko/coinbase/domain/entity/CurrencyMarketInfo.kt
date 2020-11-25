@@ -10,5 +10,5 @@ data class CurrencyMarketInfo(
     val action: String,
 
     @SerializedName("price")
-    val price: Double
+    val price: Float
 )

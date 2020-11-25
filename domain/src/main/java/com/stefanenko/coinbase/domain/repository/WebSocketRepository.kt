@@ -9,18 +9,18 @@ import javax.inject.Singleton
 @Singleton
 class WebSocketRepository @Inject constructor(private val webSocketService: WebSocketService) {
 
-    fun getCurrencyRate(onCurrencyInfo: (List<CurrencyMarketInfo>) -> Unit) {
+    fun subscribeOnCurrencyData(onStateChanged: (List<CurrencyMarketInfo>) -> Unit) {
         webSocketService.startDataStream { response ->
             val currencyInfoList = mutableListOf<CurrencyMarketInfo>()
             currencyInfoList.addAll(response.data.map {
                 CurrencyMarketInfo(
                     it.symbol,
                     it.action,
-                    it.price
+                    it.price.toFloat()
                 )
             })
             Log.d("Response: ", "$currencyInfoList")
-            onCurrencyInfo.invoke(currencyInfoList)
+            onStateChanged.invoke(currencyInfoList)
         }
     }
 

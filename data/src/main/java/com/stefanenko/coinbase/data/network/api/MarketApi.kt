@@ -9,5 +9,7 @@ import retrofit2.http.Query
 interface MarketApi {
 
     @GET("exchange-rates")
-    suspend fun getExchangeRates(@Query("currency") currency: String): Response<DefaultResponse<ResponseExchangerRates>>
+    suspend fun getExchangeRates(
+        @Query("currency") currency: String
+    ): Response<DefaultResponse<ResponseExchangerRates>>
 }

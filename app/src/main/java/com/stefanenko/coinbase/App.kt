@@ -2,6 +2,7 @@ package com.stefanenko.coinbase
 
 import android.app.Application
 import com.stefanenko.coinbase.di.DaggerAppComponent
+import com.stefanenko.coinbase.di.DatabaseModule
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
@@ -24,7 +25,12 @@ class App : Application(), HasAndroidInjector {
     }
 
     private fun initDagger() {
-        DaggerAppComponent.builder().application(this).build().performInjection(this)
+        val appComponent = DaggerAppComponent.builder()
+            .application(this)
+            .databaseModule(DatabaseModule(this))
+            .build()
+
+        appComponent.inject(this)
     }
 
     override fun androidInjector(): AndroidInjector<Any> = dispatchingAndroidInjector

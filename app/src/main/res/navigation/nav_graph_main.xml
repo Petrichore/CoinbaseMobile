@@ -9,11 +9,7 @@
         android:id="@+id/products"
         android:name="com.stefanenko.coinbase.ui.fragment.exchangeRate.ExchangeRatesFragment"
         android:label="CoinsFragment"
-        tools:layout="@layout/fragment_exchange_rate">
-        <action
-            android:id="@+id/action_products_to_profil"
-            app:destination="@id/profile" />
-    </fragment>
+        tools:layout="@layout/fragment_exchange_rate"/>
     <fragment
         android:id="@+id/profile"
         android:name="com.stefanenko.coinbase.ui.fragment.profile.ProfileFragment"
@@ -23,4 +19,9 @@
         android:id="@+id/chart"
         android:name="com.stefanenko.coinbase.ui.fragment.chart.ChartFragment"
         android:label="ChartFragment" />
+    <fragment
+        android:id="@+id/favorites"
+        tools:layout="@layout/fragment_favorites"
+        android:name="com.stefanenko.coinbase.ui.fragment.favorites.FavoritesFragment"
+        android:label="FavoritesFragment" />
 </navigation>

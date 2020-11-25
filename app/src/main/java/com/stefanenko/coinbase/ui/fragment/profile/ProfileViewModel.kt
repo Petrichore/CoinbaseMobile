@@ -48,7 +48,6 @@ class ProfileViewModel @Inject constructor(
                         }
                     }
                 }
-
                 interruptibleState.value = InterruptibleState.StopLoading
             }
         } else {

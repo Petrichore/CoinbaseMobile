@@ -1,42 +1,27 @@
 package com.stefanenko.coinbase.domain.map
 
-import com.stefanenko.coinbase.data.network.dto.token.RequestAccessToken
-import com.stefanenko.coinbase.data.network.dto.token.ResponseAccessToken
 import com.stefanenko.coinbase.data.network.dto.exchange.ResponseExchangerRates
 import com.stefanenko.coinbase.data.network.dto.profile.ResponseProfile
-import com.stefanenko.coinbase.data.network.dto.socket.CurrencyRateRT
-import com.stefanenko.coinbase.domain.entity.AccessToken
-import com.stefanenko.coinbase.domain.entity.CurrencyMarketInfo
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.domain.entity.Profile
+import com.stefanenko.coinbase.domain.util.DateManager
 
-fun ResponseAccessToken.mapToAccessToken(requestToken: RequestAccessToken): AccessToken {
-    return AccessToken(
-        requestToken.clientId,
-        requestToken.clientSecret,
-        requestToken.redirectUri,
-        requestToken.authCode,
-        accessToken,
-        refreshToken,
-        tokenType,
-        scope,
-        expiresIn,
-        createdAt
-    )
-}
-
-fun ResponseExchangerRates.mapToExchangeRates(): List<ExchangeRate> {
+fun ResponseExchangerRates.mapToExchangeRates(baseCurrency: String): List<ExchangeRate> {
     val exchangeRates = mutableListOf<ExchangeRate>()
-    ratesList.forEach { key, value ->
-        exchangeRates.add(ExchangeRate(key, value.toDouble()))
+    ratesList.forEach { (key, value) ->
+        exchangeRates.add(
+            ExchangeRate(
+                baseCurrency,
+                key,
+                value.toDouble(),
+                DateManager.getCurrentDateAsString(),
+                DateManager.getCurrentTimeAsString()
+            )
+        )
     }
     return exchangeRates
 }
 
 fun ResponseProfile.mapToProfile(): Profile {
     return Profile(name, email, imageUrl, country.name)
-}
-
-fun CurrencyRateRT.mapToCurrencyMarketInfo(): CurrencyMarketInfo{
-    return CurrencyMarketInfo(symbol, action, price)
 }

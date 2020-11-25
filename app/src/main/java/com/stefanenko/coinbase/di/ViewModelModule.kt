@@ -6,6 +6,7 @@ import com.stefanenko.coinbase.ui.activity.login.LoginViewModel
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import com.stefanenko.coinbase.ui.fragment.chart.ChartViewModel
 import com.stefanenko.coinbase.ui.fragment.exchangeRate.ExchangeRatesViewModel
+import com.stefanenko.coinbase.ui.fragment.favorites.FavoritesViewModel
 import com.stefanenko.coinbase.ui.fragment.profile.ProfileViewModel
 import dagger.Binds
 import dagger.Module
@@ -36,4 +37,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ChartViewModel::class)
     abstract fun bindChartViewModel(chartViewModel: ChartViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FavoritesViewModel::class)
+    abstract fun bindFavoritesViewModel(chartViewModel: FavoritesViewModel): ViewModel
 }

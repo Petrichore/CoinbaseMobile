@@ -18,10 +18,10 @@ class RxWebSocketManager @Inject constructor(private val retrofitService: Retrof
 
     private lateinit var webSocket: WebSocket
 
-    private lateinit var emitter: ObservableEmitter<RxWebSocketEvent>
-    private lateinit var webSocketObservable: Observable<RxWebSocketEvent>
+    private lateinit var emitter: ObservableEmitter<RxWebSocketState>
+    private lateinit var webSocketObservable: Observable<RxWebSocketState>
 
-    fun start(): Observable<RxWebSocketEvent> {
+    fun start(): Observable<RxWebSocketState> {
         if (!::webSocket.isInitialized) {
             webSocketObservable = Observable.create {
                 emitter = it
@@ -47,7 +47,7 @@ class RxWebSocketManager @Inject constructor(private val retrofitService: Retrof
         return object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 super.onOpen(webSocket, response)
-                emitEvent(RxWebSocketEvent.OnOpen(webSocket))
+                emitEvent(RxWebSocketState.OnOpen(webSocket))
             }
 
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
@@ -58,7 +58,7 @@ class RxWebSocketManager @Inject constructor(private val retrofitService: Retrof
 
             override fun onMessage(webSocket: WebSocket, text: String) {
                 super.onMessage(webSocket, text)
-                emitEvent(RxWebSocketEvent.OnMessage(text))
+                emitEvent(RxWebSocketState.OnMessage(text))
             }
 
             override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
@@ -68,18 +68,20 @@ class RxWebSocketManager @Inject constructor(private val retrofitService: Retrof
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                 super.onClosed(webSocket, code, reason)
-                emitEvent(RxWebSocketEvent.OnClose)
+                emitEvent(RxWebSocketState.OnClose)
             }
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 super.onFailure(webSocket, t, response)
-                t.printStackTrace()
                 Log.d("SOCKET STATE:::", "onFailure")
+
+                emitEvent(RxWebSocketState.OnError(t.message ?: ""))
+                t.printStackTrace()
             }
         }
     }
 
-    private fun emitEvent(event: RxWebSocketEvent) {
-        emitter.onNext(event)
+    private fun emitEvent(state: RxWebSocketState) {
+        emitter.onNext(state)
     }
 }

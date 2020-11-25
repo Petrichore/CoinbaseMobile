@@ -1,6 +1,5 @@
 package com.stefanenko.coinbase.data.service
 
-import android.util.Log
 import com.stefanenko.coinbase.data.network.api.MarketApi
 import com.stefanenko.coinbase.data.network.api.ProfileApi
 import com.stefanenko.coinbase.data.network.dto.DefaultMarketRequest
@@ -18,10 +17,10 @@ class RemoteDataService @Inject constructor(retrofitService: RetrofitService) {
     private val marketApi = retrofitService.createBaseService(MarketApi::class.java)
     private val profileApi = retrofitService.createBaseService(ProfileApi::class.java)
 
-    suspend fun getExchangeRates(defaultRequest: DefaultMarketRequest<String>): ResponseExchangerRates {
+    suspend fun getExchangeRates(baseCurrency: String): ResponseExchangerRates {
         return withContext(Dispatchers.IO) {
             try {
-                val response = marketApi.getExchangeRates(defaultRequest.params)
+                val response = marketApi.getExchangeRates(baseCurrency)
                 val defaultResponse = NetworkResponseHandler.handleResponse(response)
                 defaultResponse.data
             } catch (e: Exception) {

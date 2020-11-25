@@ -24,8 +24,7 @@ class ProfileFragment : BaseObserveFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setListeners()
-        (activity as MainActivity).toolbar.title =
-            resources.getString(R.string.toolbar_title_profile)
+        (activity as MainActivity).toolbar.title = resources.getString(R.string.toolbar_title_profile)
         viewModel.getProfile()
     }
 

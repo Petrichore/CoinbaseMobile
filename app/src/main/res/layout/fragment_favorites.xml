@@ -4,12 +4,13 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/favoritesRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
-        android:visibility="gone" />
+        tools:itemCount="10"
+        tools:listitem="@layout/item_currency_exchange_rate"/>
 
     <ProgressBar
         android:id="@+id/progressBar"

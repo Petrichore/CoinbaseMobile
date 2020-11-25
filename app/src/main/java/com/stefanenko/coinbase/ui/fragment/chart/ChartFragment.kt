@@ -5,9 +5,11 @@ import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.stefanenko.coinbase.R
+import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
 import com.stefanenko.coinbase.ui.base.BaseObserveFragment
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_chart.*
@@ -23,6 +25,7 @@ class ChartFragment : BaseObserveFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as MainActivity).toolbar.title = resources.getString(R.string.title_chart)
         configChart()
         viewModel.getCurrencyData()
     }
@@ -31,8 +34,8 @@ class ChartFragment : BaseObserveFragment() {
         val chartConfig = LineDataSet(mutableListOf(), "XBTUSD").apply {
             lineWidth = 3f
             setDrawValues(false)
-            setDrawFilled(true)
             setDrawCircles(false)
+            color = resources.getColor(R.color.main_green)
         }
 
         chart.data = LineData(chartConfig)
@@ -41,7 +44,6 @@ class ChartFragment : BaseObserveFragment() {
             xAxis.position = XAxis.XAxisPosition.BOTTOM
             xAxis.isGranularityEnabled = false
             axisRight.isEnabled = false
-            xAxis.enableGridDashedLine(10f, 10f, 0f)
         }
     }
 
@@ -56,18 +58,7 @@ class ChartFragment : BaseObserveFragment() {
                     showInfoDialog("Websocket Error", state.error)
                 }
                 is StateChart.OnNewMessage -> {
-                    val data = chart.data
-                    state.currencyEntryList.forEach {
-                        data.getDataSetByIndex(0).addEntry(it)
-                    }
-                    data.notifyDataChanged()
-                    chart.notifyDataSetChanged()
-
-                    chart.moveViewTo(
-                        (data.entryCount).toFloat(),
-                        50f,
-                        YAxis.AxisDependency.LEFT
-                    );
+                    updateChart(state.currencyEntryList)
                 }
                 StateChart.OnConnectToWebSocket -> {
                 }
@@ -75,6 +66,36 @@ class ChartFragment : BaseObserveFragment() {
                 }
             }
         })
+
+        viewModel.interruptibleStateChart.observe(viewLifecycleOwner, { interruptibleState ->
+            when (interruptibleState) {
+                InterruptibleStateChart.StartLoading -> {
+                    chart.visibility = View.GONE
+                    progressBar.visibility = View.VISIBLE
+                }
+                InterruptibleStateChart.StopLoading -> {
+                    chart.visibility = View.VISIBLE
+                    progressBar.visibility = View.GONE
+                }
+            }
+        })
+    }
+
+    private fun updateChart(itemList: List<Entry>) {
+        val data = chart.data
+
+        for (i in itemList.indices) {
+            data.getDataSetByIndex(0).addEntry(itemList[i])
+        }
+
+        data.notifyDataChanged()
+        chart.notifyDataSetChanged()
+
+        chart.moveViewTo(
+            (data.entryCount).toFloat(),
+            50f,
+            YAxis.AxisDependency.LEFT
+        )
     }
 
     override fun onDestroyView() {

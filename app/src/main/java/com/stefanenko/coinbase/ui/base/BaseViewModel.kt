@@ -15,8 +15,7 @@ abstract class BaseViewModel : ViewModel() {
         onTokenRefreshed: (Pair<String, String>) -> Unit,
         onTokenError: (error: String) -> Unit
     ) {
-        val responseState = tokenManager.refreshToken(refreshToken)
-        when (responseState) {
+        when (val responseState = tokenManager.refreshToken(refreshToken)) {
             is ResponseState.Data -> {
                 onTokenRefreshed.invoke(responseState.data)
             }

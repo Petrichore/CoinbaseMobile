@@ -1,6 +1,5 @@
 package com.stefanenko.coinbase.ui.fragment.chart
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.mikephil.charting.data.Entry
@@ -13,12 +12,14 @@ class ChartViewModel @Inject constructor(
 ) : ViewModel() {
 
     val state = MutableLiveData<StateChart>()
+    val interruptibleStateChart = MutableLiveData<InterruptibleStateChart>()
 
     private var itemCounter = 0
 
     fun getCurrencyData() {
-        webSocketRepository.getCurrencyRate {
-            Log.d("currency data here", "YESSSSSS")
+        interruptibleStateChart.value = InterruptibleStateChart.StartLoading
+        webSocketRepository.subscribeOnCurrencyData {
+            interruptibleStateChart.value = InterruptibleStateChart.StopLoading
             if (it.isNotEmpty()) {
                 state.value = StateChart.OnNewMessage(mapToEntryList(it))
             }
@@ -26,10 +27,13 @@ class ChartViewModel @Inject constructor(
     }
 
     private fun mapToEntryList(itemList: List<CurrencyMarketInfo>): List<Entry> {
-        return itemList.map {
-            itemCounter += 1
-            Entry(itemCounter.toFloat(), it.price.toFloat())
+        val entryList = mutableListOf<Entry>()
+
+        for (i in itemList.indices) {
+            entryList.add(Entry(itemCounter++.toFloat(), itemList[i].price))
         }
+
+        return entryList
     }
 
     fun stopWebSocket() {

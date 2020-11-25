@@ -3,7 +3,8 @@ package com.stefanenko.coinbase.ui.fragment.exchangeRate
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 
 sealed class StateExchangeRates {
-    data class ShowErrorMessage(val error: String) : StateExchangeRates()
+    object StartLoading : StateExchangeRates()
+    object StopLoading : StateExchangeRates()
     data class ShowExchangeRateRecycler(val itemList: List<ExchangeRate>) : StateExchangeRates()
     data class UpdateExchangeRateRecycler(
         val nItemList: List<ExchangeRate>,
@@ -11,7 +12,10 @@ sealed class StateExchangeRates {
     ) : StateExchangeRates()
 }
 
-sealed class InterruptibleState {
-    object StartLoading : InterruptibleState()
-    object StopLoading : InterruptibleState()
+sealed class StateScattering {
+    object ShowSnackBar : StateScattering()
+    object ScatterLastState : StateScattering()
+    object ShowDialogUserAuthMissing : StateScattering()
+    data class ShowErrorMessage(val error: String) : StateScattering()
+    data class ShowDialogSaveToFav(val exchangeRate: ExchangeRate) : StateScattering()
 }
