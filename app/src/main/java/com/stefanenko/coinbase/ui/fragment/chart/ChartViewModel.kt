@@ -5,24 +5,31 @@ import androidx.lifecycle.ViewModel
 import com.github.mikephil.charting.data.Entry
 import com.stefanenko.coinbase.domain.entity.CurrencyMarketInfo
 import com.stefanenko.coinbase.domain.repository.WebSocketRepository
+import com.stefanenko.coinbase.util.exception.ERROR_INTERNET_CONNECTION
+import com.stefanenko.coinbase.util.networkConnectivity.NetworkConnectivityManager
 import javax.inject.Inject
 
 class ChartViewModel @Inject constructor(
-    private val webSocketRepository: WebSocketRepository
+    private val webSocketRepository: WebSocketRepository,
+    private val connectivityManager: NetworkConnectivityManager
 ) : ViewModel() {
 
     val state = MutableLiveData<StateChart>()
-    val interruptibleStateChart = MutableLiveData<InterruptibleStateChart>()
+    val stateScattering = MutableLiveData<StateScattering>()
 
     private var itemCounter = 0
 
     fun getCurrencyData() {
-        interruptibleStateChart.value = InterruptibleStateChart.StartLoading
-        webSocketRepository.subscribeOnCurrencyData {
-            interruptibleStateChart.value = InterruptibleStateChart.StopLoading
-            if (it.isNotEmpty()) {
-                state.value = StateChart.OnNewMessage(mapToEntryList(it))
+        if(connectivityManager.isConnected()){
+            state.value = StateChart.StartLoading
+            webSocketRepository.subscribeOnCurrencyData {
+                state.value = StateChart.StopLoading
+                if (it.isNotEmpty()) {
+                    state.value = StateChart.OnNewMessage(mapToEntryList(it))
+                }
             }
+        }else{
+            stateScattering.value = StateScattering.ShowErrorMessage(ERROR_INTERNET_CONNECTION)
         }
     }
 
@@ -38,5 +45,9 @@ class ChartViewModel @Inject constructor(
 
     fun stopWebSocket() {
         webSocketRepository.stopDataStream()
+    }
+
+    fun scatterStates(){
+        stateScattering.value = StateScattering.ScatterLastState
     }
 }

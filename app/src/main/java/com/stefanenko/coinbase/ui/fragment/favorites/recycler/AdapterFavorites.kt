@@ -7,7 +7,7 @@ import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 
 class AdapterFavorites(
-    private val itemList: List<ExchangeRate>,
+    private var itemList: List<ExchangeRate>,
     private val onItemCLickListener: (ExchangeRate) -> Unit
 ) : RecyclerView.Adapter<FavoritesViewHolder>() {
 
@@ -25,4 +25,22 @@ class AdapterFavorites(
     }
 
     override fun getItemCount(): Int = itemList.size
+
+    fun onDeleteItem(position: Int){
+        val itemMutableList = mutableListOf<ExchangeRate>().apply { addAll(itemList) }
+        itemMutableList.removeAt(position)
+        itemList = itemMutableList.toList()
+        notifyItemRemoved(position)
+    }
+
+    fun onInsertItem(position: Int, item: ExchangeRate){
+        val itemMutableList = mutableListOf<ExchangeRate>().apply { addAll(itemList) }
+        itemMutableList.add(position, item)
+        itemList = itemMutableList.toList()
+        notifyItemInserted(position)
+    }
+
+    fun getItemByPosition(position: Int): ExchangeRate{
+        return itemList[position]
+    }
 }

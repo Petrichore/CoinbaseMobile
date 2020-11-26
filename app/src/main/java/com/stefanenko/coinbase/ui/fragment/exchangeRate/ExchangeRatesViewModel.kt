@@ -19,18 +19,18 @@ class ExchangeRatesViewModel @Inject constructor(
 ) : ViewModel() {
 
     val state = MutableLiveData<StateExchangeRates>()
-    val scatteringState = MutableLiveData<StateScattering>()
+    val stateScattering = MutableLiveData<StateScattering>()
 
     fun getExchangeRates(baseCurrency: String) {
         if (connectivityManager.isConnected()) {
             state.value = StateExchangeRates.StartLoading
 
             viewModelScope.launch {
-                when (val responseState = dataRepository.getCurrenciesRates(baseCurrency)) {
+                when (val responseState = dataRepository.getCurrenciesExchangeRates(baseCurrency)) {
                     is ResponseState.Data -> state.value =
                         StateExchangeRates.ShowExchangeRateRecycler(responseState.data)
                     is ResponseState.Error -> {
-                        scatteringState.value =
+                        stateScattering.value =
                             StateScattering.ShowErrorMessage(responseState.error)
                     }
                 }
@@ -39,17 +39,17 @@ class ExchangeRatesViewModel @Inject constructor(
             }
 
         } else {
-            scatteringState.value = StateScattering.ShowErrorMessage(ERROR_INTERNET_CONNECTION)
+            stateScattering.value = StateScattering.ShowErrorMessage(ERROR_INTERNET_CONNECTION)
         }
     }
 
     fun addCurrencyToFavorite(exchangeRate: ExchangeRate) {
         viewModelScope.launch {
-            val response = dataRepository.addCurrencyToFavorite(exchangeRate)
+            val response = dataRepository.addExchangeRateToFavorite(exchangeRate)
             when (response) {
                 is ResponseState.Data -> {
-                    scatteringState.value = StateScattering.ShowSnackBar
-                    scatteringState.value = StateScattering.ScatterLastState
+                    stateScattering.value = StateScattering.ShowSnackBar
+                    stateScattering.value = StateScattering.ScatterLastState
                 }
                 is ResponseState.Error -> {
 
@@ -60,9 +60,13 @@ class ExchangeRatesViewModel @Inject constructor(
 
     fun checkAbilityToSaveCurrency(exchangeRate: ExchangeRate) {
         if (authPreferences.isUserAuth()) {
-            scatteringState.value = StateScattering.ShowDialogSaveToFav(exchangeRate)
+            stateScattering.value = StateScattering.ShowDialogSaveToFav(exchangeRate)
         } else {
-            scatteringState.value = StateScattering.ShowDialogUserAuthMissing
+            stateScattering.value = StateScattering.ShowDialogUserAuthMissing
         }
+    }
+
+    fun scatterStates(){
+        stateScattering.value = StateScattering.ScatterLastState
     }
 }

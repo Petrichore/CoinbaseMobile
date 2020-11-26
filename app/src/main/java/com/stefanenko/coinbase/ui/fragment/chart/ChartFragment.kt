@@ -54,28 +54,24 @@ class ChartFragment : BaseObserveFragment() {
     override fun initObservers() {
         viewModel.state.observe(viewLifecycleOwner, { state ->
             when (state) {
-                is StateChart.ShowErrorMessage -> {
-                    showInfoDialog("Websocket Error", state.error)
-                }
                 is StateChart.OnNewMessage -> {
                     updateChart(state.currencyEntryList)
                 }
-                StateChart.OnConnectToWebSocket -> {
+                StateChart.StartLoading -> {
+                    chart.visibility = View.GONE
+                    progressBar.visibility = View.VISIBLE
                 }
-                StateChart.OnDisconnectFromWebSocket -> {
+                StateChart.StopLoading -> {
+                    chart.visibility = View.VISIBLE
+                    progressBar.visibility = View.GONE
                 }
             }
         })
 
-        viewModel.interruptibleStateChart.observe(viewLifecycleOwner, { interruptibleState ->
-            when (interruptibleState) {
-                InterruptibleStateChart.StartLoading -> {
-                    chart.visibility = View.GONE
-                    progressBar.visibility = View.VISIBLE
-                }
-                InterruptibleStateChart.StopLoading -> {
-                    chart.visibility = View.VISIBLE
-                    progressBar.visibility = View.GONE
+        viewModel.stateScattering.observe(viewLifecycleOwner, { scatteringState ->
+            when (scatteringState) {
+                is StateScattering.ShowErrorMessage -> {
+                    showInfoDialog("Websocket Error", scatteringState.error)
                 }
             }
         })
@@ -101,5 +97,6 @@ class ChartFragment : BaseObserveFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         viewModel.stopWebSocket()
+        viewModel.scatterStates()
     }
 }

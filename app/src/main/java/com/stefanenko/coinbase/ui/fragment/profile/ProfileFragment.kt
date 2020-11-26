@@ -10,6 +10,8 @@ import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
 import com.stefanenko.coinbase.ui.activity.login.LoginActivity
 import com.stefanenko.coinbase.ui.base.BaseObserveFragment
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
+import com.stefanenko.coinbase.ui.fragment.guestMode.FavoritesGuestModeFragment
+import com.stefanenko.coinbase.ui.fragment.guestMode.ProfileGuestModeFragment
 import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
 
@@ -24,7 +26,8 @@ class ProfileFragment : BaseObserveFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setListeners()
-        (activity as MainActivity).toolbar.title = resources.getString(R.string.toolbar_title_profile)
+        (activity as MainActivity).toolbar.title =
+            resources.getString(R.string.toolbar_title_profile)
         viewModel.getProfile()
     }
 
@@ -35,12 +38,26 @@ class ProfileFragment : BaseObserveFragment() {
     override fun initObservers() {
         viewModel.state.observe(viewLifecycleOwner, {
             when (it) {
-                is StateProfile.ShowErrorMessage -> {
-                    showInfoDialog("Error", it.error)
-                }
                 is StateProfile.ShowProfileData -> {
                     initProfileData(it.profile)
                 }
+                is StateProfile.LogOut -> {
+                    (activity as MainActivity).startActivityInNewTask(LoginActivity::class.java)
+                }
+
+                StateProfile.GuestMode -> {
+                    childFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, ProfileGuestModeFragment()).commit()
+                }
+
+                StateProfile.StopLoading -> {
+                    //TODO dismiss skeleton loading
+                }
+
+                StateProfile.StartLoading -> {
+                    //TODO implement skeleton loading
+                }
+
                 StateProfile.ReAuthPerformed -> {
                     showAlertDialog(
                         "Authorized",
@@ -54,14 +71,14 @@ class ProfileFragment : BaseObserveFragment() {
                             dialog.dismiss()
                         })
                 }
-
-                is StateProfile.LogOut -> {
-                    (activity as MainActivity).startActivityInNewTask(LoginActivity::class.java)
-                }
             }
         })
-        viewModel.interruptibleState.observe(viewLifecycleOwner, {
-            //TODO implements skeleton loading
+        viewModel.stateScattering.observe(viewLifecycleOwner, { stateScattering ->
+            when (stateScattering) {
+                is StateScattering.ShowErrorMessage -> {
+                    showInfoDialog("Error", stateScattering.error)
+                }
+            }
         })
     }
 
@@ -81,5 +98,10 @@ class ProfileFragment : BaseObserveFragment() {
         userEmailText.text = profile.email
 
         Glide.with(requireContext()).load(profile.imageUrl).circleCrop().into(userImage)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.scatterStates()
     }
 }

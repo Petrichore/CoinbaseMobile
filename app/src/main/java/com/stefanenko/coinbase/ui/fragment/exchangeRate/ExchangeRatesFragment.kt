@@ -90,7 +90,7 @@ class ExchangeRatesFragment : BaseObserveFragment() {
             }
         })
 
-        viewModel.scatteringState.observe(viewLifecycleOwner, {
+        viewModel.stateScattering.observe(viewLifecycleOwner, {
             when (it) {
                 is StateScattering.ShowErrorMessage -> showInfoDialog("Error", it.error)
 
@@ -117,5 +117,10 @@ class ExchangeRatesFragment : BaseObserveFragment() {
                 }
             }
         })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.scatterStates()
     }
 }

@@ -29,6 +29,8 @@
     <!--    TextView labels-->
     <string name="text_title_splashscreen">coinbase</string>
     <string name="text_title_coinbase">coinbase</string>
+    <string name="text_stub_favorites_guest_mode">You must be logged in to be able to save and view data locally</string>
+    <string name="text_stub_profile_guest_mode">You must be logged in to access your profile info</string>
     <string name="text_stub_sign_up_start">Create account to access all the features of our application</string>
     <string name="text_stub_sign_up_finish"><b>Congratulations!</b>\nYou have successfully joined our community</string>
 
@@ -36,6 +38,7 @@
     <string name="btn_text_sign_in">SignIn</string>
     <string name="btn_text_sign_up">SignUp</string>
     <string name="btn_text_log_out">Log out</string>
+    <string name="btn_text_to_sign_in">Go to authorization</string>
     <string name="btn_text_quick_start">Quick start</string>
     <string name="btn_text_create_account">Create account</string>
     <string name="btn_text_next">Next</string>

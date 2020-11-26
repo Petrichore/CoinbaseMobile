@@ -6,6 +6,7 @@ import com.stefanenko.coinbase.domain.entity.ResponseState
 import com.stefanenko.coinbase.domain.exception.ERROR_UNAUTHORIZED
 import com.stefanenko.coinbase.domain.repository.DataRepository
 import com.stefanenko.coinbase.ui.base.BaseViewModel
+import com.stefanenko.coinbase.ui.fragment.favorites.StateFavorites
 import com.stefanenko.coinbase.util.exception.ERROR_INTERNET_CONNECTION
 import com.stefanenko.coinbase.util.networkConnectivity.NetworkConnectivityManager
 import com.stefanenko.coinbase.util.preferences.AuthPreferences
@@ -20,43 +21,49 @@ class ProfileViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     val state = MutableLiveData<StateProfile>()
-    val interruptibleState = MutableLiveData<InterruptibleState>()
+    val stateScattering = MutableLiveData<StateScattering>()
 
     fun getProfile() {
-        if (connectivityManager.isConnected()) {
-            interruptibleState.value = InterruptibleState.StartLoading
-
-            viewModelScope.launch {
-                val responseState = dataRepository.getProfile(authPreferences.getAccessToken())
-
-                when (responseState) {
-                    is ResponseState.Data -> state.value =
-                        StateProfile.ShowProfileData(responseState.data)
-                    is ResponseState.Error -> {
-                        when (responseState.error) {
-                            ERROR_UNAUTHORIZED -> {
-                                handleTokenRefresh(authPreferences.getRefreshToken(), {
-                                    authPreferences.saveAccessToken(it.first)
-                                    authPreferences.saveRefreshToken(it.second)
-                                    state.value = StateProfile.ReAuthPerformed
-                                }, {
-                                    state.value = StateProfile.ShowErrorMessage(it)
-                                })
+        if(authPreferences.isUserAuth()){
+            if (connectivityManager.isConnected()) {
+                state.value = StateProfile.StartLoading
+                viewModelScope.launch {
+                    val responseState = dataRepository.getProfile(authPreferences.getAccessToken())
+                    when (responseState) {
+                        is ResponseState.Data -> state.value =
+                            StateProfile.ShowProfileData(responseState.data)
+                        is ResponseState.Error -> {
+                            when (responseState.error) {
+                                ERROR_UNAUTHORIZED -> {
+                                    handleTokenRefresh(authPreferences.getRefreshToken(), {
+                                        authPreferences.saveAccessToken(it.first)
+                                        authPreferences.saveRefreshToken(it.second)
+                                        state.value = StateProfile.ReAuthPerformed
+                                    }, {
+                                        stateScattering.value = StateScattering.ShowErrorMessage(it)
+                                    })
+                                }
+                                else -> stateScattering.value =
+                                    StateScattering.ShowErrorMessage(responseState.error)
                             }
-                            else -> state.value =
-                                StateProfile.ShowErrorMessage(responseState.error)
                         }
                     }
+                    state.value = StateProfile.StopLoading
                 }
-                interruptibleState.value = InterruptibleState.StopLoading
+            } else {
+                stateScattering.value = StateScattering.ShowErrorMessage(ERROR_INTERNET_CONNECTION)
             }
-        } else {
-            state.value = StateProfile.ShowErrorMessage(ERROR_INTERNET_CONNECTION)
+        }else{
+            state.value = StateProfile.GuestMode
         }
     }
 
-    fun performLogout(){
+    fun performLogout() {
         authPreferences.clearLoginSate()
         state.value = StateProfile.LogOut
+    }
+
+    fun scatterStates(){
+        stateScattering.value = StateScattering.ScatterLastState
     }
 }

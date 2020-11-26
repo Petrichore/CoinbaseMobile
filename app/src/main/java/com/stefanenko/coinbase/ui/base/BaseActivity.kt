@@ -65,7 +65,7 @@ abstract class BaseActivity : AppCompatActivity() {
             flags.and(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         }
         startActivity(intent)
-        finish()
+        finishAffinity()
     }
 
     fun startActivity(activityClass: Class<out Activity>) {

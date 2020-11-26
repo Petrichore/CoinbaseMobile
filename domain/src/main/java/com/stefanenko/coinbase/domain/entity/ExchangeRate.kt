@@ -5,5 +5,6 @@ data class ExchangeRate(
     val currencyName: String,
     val exchangeRate: Double,
     val date: String,
-    val time: String
+    val time: String,
+    val id: Long = 0
 )

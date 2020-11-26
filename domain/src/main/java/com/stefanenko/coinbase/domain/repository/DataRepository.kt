@@ -1,7 +1,6 @@
 package com.stefanenko.coinbase.domain.repository
 
 import com.stefanenko.coinbase.domain.exception.ExceptionMapper
-import com.stefanenko.coinbase.data.network.dto.DefaultMarketRequest
 import com.stefanenko.coinbase.data.service.DatabaseService
 import com.stefanenko.coinbase.data.service.RemoteDataService
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
@@ -18,7 +17,7 @@ class DataRepository @Inject constructor(
     private val remoteDataService: RemoteDataService,
     private val databaseService: DatabaseService
 ) {
-    suspend fun getCurrenciesRates(baseCurrency: String): ResponseState<List<ExchangeRate>> {
+    suspend fun getCurrenciesExchangeRates(baseCurrency: String): ResponseState<List<ExchangeRate>> {
         try {
             val responseExchangeRate = remoteDataService.getExchangeRates(baseCurrency)
             return ResponseState.Data(responseExchangeRate.mapToExchangeRates(baseCurrency))
@@ -38,10 +37,21 @@ class DataRepository @Inject constructor(
         }
     }
 
-    suspend fun addCurrencyToFavorite(exchangeRate: ExchangeRate): ResponseState<Boolean> {
+    suspend fun addExchangeRateToFavorite(exchangeRate: ExchangeRate): ResponseState<Boolean> {
         try {
-            databaseService.addCurrencyToFavorite(exchangeRate.mapToExchangeRateEntity())
+            databaseService.addExchangeRate(exchangeRate.mapToExchangeRateEntity())
             return ResponseState.Data(true)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            //TODO add exception message
+            return ResponseState.Error("")
+        }
+    }
+
+    suspend fun deleteExchangeRateFromFavorites(exchangeRate: ExchangeRate): ResponseState<Boolean> {
+        return try {
+            databaseService.deleteExchangeRate(exchangeRate.mapToExchangeRateEntity())
+            ResponseState.Data(true)
         } catch (e: Exception) {
             e.printStackTrace()
             //TODO add exception message
@@ -58,7 +68,8 @@ class DataRepository @Inject constructor(
                         it.currencyName,
                         it.exchangeRate,
                         it.addDate,
-                        it.addTime
+                        it.addTime,
+                        it.currencyId
                     )
                 }
             return ResponseState.Data(exchangeRateList)
