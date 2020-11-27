@@ -45,15 +45,26 @@
     <string name="btn_text_complete_registration">Complete registration</string>
     <string name="btn_text_info">Information</string>
 
-    <!--    Bottom menu titles-->
+    <!--    Menu titles-->
     <string name="title_coins">Products</string>
     <string name="title_chart">Chart</string>
     <string name="title_favorites">Favorites</string>
     <string name="title_profile">Profile</string>
+    <string name="title_filter">Filter</string>
 
     <!--    Card type-->
     <string name="card_type_settings">Settings</string>
 
     <!--    Card title-->
     <string name="card_title_open_settings">Open base settings</string>
+
+    <!--    Bitmex currencies-->
+    <string-array name="bitmexCurrencies">
+        <item>XBTUSD</item>
+        <item>ADAZ20</item>
+        <item>BCHUSD</item>
+        <item>BNBUSDTZ20</item>
+        <item>EOSZ20</item>
+        <item>ETHUSD</item>
+    </string-array>
 </resources>

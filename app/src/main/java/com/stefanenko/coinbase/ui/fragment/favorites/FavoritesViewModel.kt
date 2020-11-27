@@ -7,12 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.domain.entity.ResponseState
 import com.stefanenko.coinbase.domain.repository.DataRepository
+import com.stefanenko.coinbase.domain.useCase.FavoritesUseCases
 import com.stefanenko.coinbase.util.preferences.AuthPreferences
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FavoritesViewModel @Inject constructor(
-    private val dataRepository: DataRepository,
+    private val favoritesUseCases: FavoritesUseCases,
     private val authPreferences: AuthPreferences
 ) : ViewModel() {
 
@@ -26,7 +27,7 @@ class FavoritesViewModel @Inject constructor(
         if(authPreferences.isUserAuth()){
             state.value = StateFavorites.StartLoading
             viewModelScope.launch {
-                val response = dataRepository.getFavorites()
+                val response = favoritesUseCases.getFavorites()
                 when (response) {
                     is ResponseState.Data -> state.value =
                         StateFavorites.ShowFavoritesRecycler(response.data)
@@ -63,7 +64,7 @@ class FavoritesViewModel @Inject constructor(
 
     private fun deleteItem(exchangeRate: ExchangeRate) {
         viewModelScope.launch {
-            val response = dataRepository.deleteExchangeRateFromFavorites(exchangeRate)
+            val response = favoritesUseCases.deleteFavorite(exchangeRate)
             when (response) {
                 is ResponseState.Error -> stateScattering.value =
                     StateScattering.ShowErrorMessage(response.error)

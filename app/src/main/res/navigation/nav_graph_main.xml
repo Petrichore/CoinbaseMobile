@@ -18,10 +18,18 @@
     <fragment
         android:id="@+id/chart"
         android:name="com.stefanenko.coinbase.ui.fragment.chart.ChartFragment"
-        android:label="ChartFragment" />
+        android:label="ChartFragment" >
+        <action
+            android:id="@+id/action_chart_to_filterFragment"
+            app:destination="@id/filterFragment" />
+    </fragment>
     <fragment
         android:id="@+id/favorites"
         tools:layout="@layout/fragment_favorites"
         android:name="com.stefanenko.coinbase.ui.fragment.favorites.FavoritesFragment"
         android:label="FavoritesFragment" />
+    <fragment
+        android:id="@+id/filterFragment"
+        android:name="com.stefanenko.coinbase.ui.fragment.chart.chartFilter.FilterFragment"
+        android:label="FilterFragment" />
 </navigation>

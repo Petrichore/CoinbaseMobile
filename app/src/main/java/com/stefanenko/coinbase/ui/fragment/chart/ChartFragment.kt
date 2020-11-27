@@ -26,8 +26,9 @@ class ChartFragment : BaseObserveFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as MainActivity).toolbar.title = resources.getString(R.string.title_chart)
+        (activity as MainActivity).toolbar.menu.findItem(R.id.filter).isVisible = true
         configChart()
-        viewModel.getCurrencyData()
+        viewModel.subscribeOnCurrencyDataFlow("XBTUSD")
     }
 
     private fun configChart() {
@@ -96,7 +97,8 @@ class ChartFragment : BaseObserveFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.stopWebSocket()
+        viewModel.unsubscribeFromCurrencyDataFlow()
         viewModel.scatterStates()
+        (activity as MainActivity).toolbar.menu.findItem(R.id.filter).isVisible = false
     }
 }

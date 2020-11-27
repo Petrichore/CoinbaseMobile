@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.domain.entity.ResponseState
 import com.stefanenko.coinbase.domain.repository.DataRepository
+import com.stefanenko.coinbase.domain.useCase.ExchangeRateUseCases
+import com.stefanenko.coinbase.domain.useCase.FavoritesUseCases
 import com.stefanenko.coinbase.util.exception.ERROR_INTERNET_CONNECTION
 import com.stefanenko.coinbase.util.networkConnectivity.NetworkConnectivityManager
 import com.stefanenko.coinbase.util.preferences.AuthPreferences
@@ -13,7 +15,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ExchangeRatesViewModel @Inject constructor(
-    private val dataRepository: DataRepository,
+    private val exchangeUseCases: ExchangeRateUseCases,
+    private val favoritesUseCases: FavoritesUseCases,
     private val authPreferences: AuthPreferences,
     private val connectivityManager: NetworkConnectivityManager
 ) : ViewModel() {
@@ -26,7 +29,7 @@ class ExchangeRatesViewModel @Inject constructor(
             state.value = StateExchangeRates.StartLoading
 
             viewModelScope.launch {
-                when (val responseState = dataRepository.getCurrenciesExchangeRates(baseCurrency)) {
+                when (val responseState = exchangeUseCases.getCurrencyExchangeRates(baseCurrency)) {
                     is ResponseState.Data -> state.value =
                         StateExchangeRates.ShowExchangeRateRecycler(responseState.data)
                     is ResponseState.Error -> {
@@ -45,7 +48,7 @@ class ExchangeRatesViewModel @Inject constructor(
 
     fun addCurrencyToFavorite(exchangeRate: ExchangeRate) {
         viewModelScope.launch {
-            val response = dataRepository.addExchangeRateToFavorite(exchangeRate)
+            val response = favoritesUseCases.addFavorite(exchangeRate)
             when (response) {
                 is ResponseState.Data -> {
                     stateScattering.value = StateScattering.ShowSnackBar

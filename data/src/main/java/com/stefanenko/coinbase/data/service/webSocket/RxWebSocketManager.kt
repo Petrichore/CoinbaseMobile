@@ -12,24 +12,29 @@ import javax.inject.Singleton
 @Singleton
 class RxWebSocketManager @Inject constructor(private val retrofitService: RetrofitService) {
 
+    sealed class RxWebSocketState {
+        data class OnMessage(val data: String) : RxWebSocketState()
+        data class OnOpen(val socket: WebSocket) : RxWebSocketState()
+        data class OnError(val error: String): RxWebSocketState()
+        object OnClose : RxWebSocketState()
+    }
+
     private val closeCode = 1000
     private val closeMessage = "Planned close"
-    private val wsUrl = "wss://www.bitmex.com/realtime?subscribe=trade:XBTUSD"
 
     private lateinit var webSocket: WebSocket
 
     private lateinit var emitter: ObservableEmitter<RxWebSocketState>
     private lateinit var webSocketObservable: Observable<RxWebSocketState>
 
-    fun start(): Observable<RxWebSocketState> {
+    fun start(url: String): Observable<RxWebSocketState> {
         if (!::webSocket.isInitialized) {
             webSocketObservable = Observable.create {
                 emitter = it
             }
-            performConnectToWebSocket()
+            performConnectToWebSocket(url)
         } else {
-            webSocket = retrofitService.getHttpClient()
-                .newWebSocket(webSocket.request(), getWebSocketListener())
+            createNewWebSocket(webSocket.request())
         }
         return webSocketObservable
     }
@@ -38,8 +43,12 @@ class RxWebSocketManager @Inject constructor(private val retrofitService: Retrof
         webSocket.close(closeCode, closeMessage)
     }
 
-    private fun performConnectToWebSocket() {
-        val request = Request.Builder().url(wsUrl).build()
+    private fun performConnectToWebSocket(url: String) {
+        val request = Request.Builder().url(url).build()
+        createNewWebSocket(request)
+    }
+
+    private fun createNewWebSocket(request: Request){
         webSocket = retrofitService.getHttpClient().newWebSocket(request, getWebSocketListener())
     }
 

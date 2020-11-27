@@ -4,13 +4,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.mikephil.charting.data.Entry
 import com.stefanenko.coinbase.domain.entity.CurrencyMarketInfo
-import com.stefanenko.coinbase.domain.repository.WebSocketRepository
+import com.stefanenko.coinbase.domain.useCase.RealTimeChartUseCases
 import com.stefanenko.coinbase.util.exception.ERROR_INTERNET_CONNECTION
 import com.stefanenko.coinbase.util.networkConnectivity.NetworkConnectivityManager
 import javax.inject.Inject
 
 class ChartViewModel @Inject constructor(
-    private val webSocketRepository: WebSocketRepository,
+    private val chartUseCases: RealTimeChartUseCases,
     private val connectivityManager: NetworkConnectivityManager
 ) : ViewModel() {
 
@@ -19,10 +19,10 @@ class ChartViewModel @Inject constructor(
 
     private var itemCounter = 0
 
-    fun getCurrencyData() {
+    fun subscribeOnCurrencyDataFlow(currency: String) {
         if(connectivityManager.isConnected()){
             state.value = StateChart.StartLoading
-            webSocketRepository.subscribeOnCurrencyData {
+            chartUseCases.subscribeOnCurrencyDataFlow(currency) {
                 state.value = StateChart.StopLoading
                 if (it.isNotEmpty()) {
                     state.value = StateChart.OnNewMessage(mapToEntryList(it))
@@ -43,8 +43,8 @@ class ChartViewModel @Inject constructor(
         return entryList
     }
 
-    fun stopWebSocket() {
-        webSocketRepository.stopDataStream()
+    fun unsubscribeFromCurrencyDataFlow() {
+        chartUseCases.unsubscribeFromCurrencyDataFlow()
     }
 
     fun scatterStates(){

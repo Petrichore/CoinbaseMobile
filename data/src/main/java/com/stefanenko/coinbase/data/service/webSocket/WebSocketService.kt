@@ -16,9 +16,9 @@ class WebSocketService @Inject constructor(private val rxWebSocketManager: RxWeb
 
     private val disposables = CompositeDisposable()
 
-    fun startDataStream(onResponse: (SocketResponse) -> Unit) {
+    fun startDataStream(url: String, onResponse: (SocketResponse) -> Unit) {
         disposables.add(
-            rxWebSocketManager.start()
+            rxWebSocketManager.start(url)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { socketState ->
@@ -31,29 +31,26 @@ class WebSocketService @Inject constructor(private val rxWebSocketManager: RxWeb
     }
 
     private inline fun <reified T> handleWebSocketState(
-        state: RxWebSocketState,
+        state: RxWebSocketManager.RxWebSocketState,
         onResponse: (T) -> Unit
     ) {
         when (state) {
-            is RxWebSocketState.OnMessage -> {
+            is RxWebSocketManager.RxWebSocketState.OnMessage -> {
                 Log.d("Message", state.data)
                 val responseTree = responseParser(state.data)
                 if (responseTree.containsKey(ACTION) && responseTree[ACTION] != ACTION_PARTIAL) {
-                    val socketResponse = Gson().fromJson(
-                        state.data,
-                        T::class.java
-                    )
+                    val socketResponse = Gson().fromJson(state.data, T::class.java)
                     onResponse.invoke(socketResponse)
                 }
             }
-            is RxWebSocketState.OnClose -> {
+            is RxWebSocketManager.RxWebSocketState.OnClose -> {
                 Log.d("Socket closed", "CLOSED")
                 disposables.clear()
             }
-            is RxWebSocketState.OnOpen -> {
+            is RxWebSocketManager.RxWebSocketState.OnOpen -> {
                 Log.d("Socket open", "OPEN")
             }
-            is RxWebSocketState.OnError -> {
+            is RxWebSocketManager.RxWebSocketState.OnError -> {
                 throw Exception(state.error)
             }
         }

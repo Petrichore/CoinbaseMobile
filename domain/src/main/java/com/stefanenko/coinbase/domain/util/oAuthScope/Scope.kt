@@ -1,4 +1,4 @@
-package com.stefanenko.coinbase.domain.tokenManager.scope
+package com.stefanenko.coinbase.domain.util.oAuthScope
 
 object Scope {
     interface Wallet {

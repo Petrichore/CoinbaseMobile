@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.stefanenko.coinbase.domain.entity.ResponseState
 import com.stefanenko.coinbase.domain.exception.ERROR_UNAUTHORIZED
 import com.stefanenko.coinbase.domain.repository.DataRepository
+import com.stefanenko.coinbase.domain.useCase.ProfileUseCases
 import com.stefanenko.coinbase.ui.base.BaseViewModel
 import com.stefanenko.coinbase.ui.fragment.favorites.StateFavorites
 import com.stefanenko.coinbase.util.exception.ERROR_INTERNET_CONNECTION
@@ -15,7 +16,7 @@ import javax.inject.Inject
 
 @Suppress("MoveVariableDeclarationIntoWhen")
 class ProfileViewModel @Inject constructor(
-    private val dataRepository: DataRepository,
+    private val profileUseCases: ProfileUseCases,
     private val connectivityManager: NetworkConnectivityManager,
     private val authPreferences: AuthPreferences
 ) : BaseViewModel() {
@@ -28,7 +29,7 @@ class ProfileViewModel @Inject constructor(
             if (connectivityManager.isConnected()) {
                 state.value = StateProfile.StartLoading
                 viewModelScope.launch {
-                    val responseState = dataRepository.getProfile(authPreferences.getAccessToken())
+                    val responseState = profileUseCases.getProfile(authPreferences.getAccessToken())
                     when (responseState) {
                         is ResponseState.Data -> state.value =
                             StateProfile.ShowProfileData(responseState.data)

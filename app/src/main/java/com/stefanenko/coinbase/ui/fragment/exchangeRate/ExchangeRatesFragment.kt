@@ -35,7 +35,6 @@ class ExchangeRatesFragment : BaseObserveFragment() {
         configSnackBar()
         (activity as MainActivity).toolbar.title =
             resources.getString(R.string.toolbar_title_exchange_rate)
-
         viewModel.getExchangeRates("USD")
     }
 

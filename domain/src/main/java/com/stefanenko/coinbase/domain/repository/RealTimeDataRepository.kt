@@ -7,10 +7,14 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class WebSocketRepository @Inject constructor(private val webSocketService: WebSocketService) {
+class RealTimeDataRepository @Inject constructor(private val webSocketService: WebSocketService) {
 
-    fun subscribeOnCurrencyData(onStateChanged: (List<CurrencyMarketInfo>) -> Unit) {
-        webSocketService.startDataStream { response ->
+    private val baseWebSocketUrl = "wss://www.bitmex.com/realtime?subscribe=trade:"
+
+    internal fun subscribeOnCurrencyDataFlow(currency: String, onStateChanged: (List<CurrencyMarketInfo>) -> Unit) {
+        val wsCurrencyDataUrl = "$baseWebSocketUrl$currency"
+
+        webSocketService.startDataStream(wsCurrencyDataUrl) { response ->
             val currencyInfoList = mutableListOf<CurrencyMarketInfo>()
             currencyInfoList.addAll(response.data.map {
                 CurrencyMarketInfo(
@@ -24,7 +28,7 @@ class WebSocketRepository @Inject constructor(private val webSocketService: WebS
         }
     }
 
-    fun stopDataStream() {
+    internal fun stopDataStream() {
         webSocketService.stopDataStream()
     }
 }

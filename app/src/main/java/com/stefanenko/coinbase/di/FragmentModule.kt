@@ -1,6 +1,7 @@
 package com.stefanenko.coinbase.di
 
 import com.stefanenko.coinbase.ui.fragment.chart.ChartFragment
+import com.stefanenko.coinbase.ui.fragment.chart.chartFilter.FilterFragment
 import com.stefanenko.coinbase.ui.fragment.exchangeRate.ExchangeRatesFragment
 import com.stefanenko.coinbase.ui.fragment.favorites.FavoritesFragment
 import com.stefanenko.coinbase.ui.fragment.profile.ProfileFragment
@@ -21,4 +22,7 @@ abstract class FragmentModule {
 
     @ContributesAndroidInjector
     abstract fun provideFavoritesFragment(): FavoritesFragment
+
+    @ContributesAndroidInjector
+    abstract fun provideFilterFragment(): FilterFragment
 }

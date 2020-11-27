@@ -17,7 +17,7 @@ class DataRepository @Inject constructor(
     private val remoteDataService: RemoteDataService,
     private val databaseService: DatabaseService
 ) {
-    suspend fun getCurrenciesExchangeRates(baseCurrency: String): ResponseState<List<ExchangeRate>> {
+    internal suspend fun getCurrenciesExchangeRates(baseCurrency: String): ResponseState<List<ExchangeRate>> {
         try {
             val responseExchangeRate = remoteDataService.getExchangeRates(baseCurrency)
             return ResponseState.Data(responseExchangeRate.mapToExchangeRates(baseCurrency))
@@ -27,7 +27,7 @@ class DataRepository @Inject constructor(
         }
     }
 
-    suspend fun getProfile(accessToken: String): ResponseState<Profile> {
+    internal suspend fun getProfile(accessToken: String): ResponseState<Profile> {
         try {
             val responseProfile = remoteDataService.getProfile(accessToken)
             return ResponseState.Data(responseProfile.mapToProfile())
@@ -37,7 +37,7 @@ class DataRepository @Inject constructor(
         }
     }
 
-    suspend fun addExchangeRateToFavorite(exchangeRate: ExchangeRate): ResponseState<Boolean> {
+    internal suspend fun addExchangeRateToFavorite(exchangeRate: ExchangeRate): ResponseState<Boolean> {
         try {
             databaseService.addExchangeRate(exchangeRate.mapToExchangeRateEntity())
             return ResponseState.Data(true)
@@ -48,7 +48,7 @@ class DataRepository @Inject constructor(
         }
     }
 
-    suspend fun deleteExchangeRateFromFavorites(exchangeRate: ExchangeRate): ResponseState<Boolean> {
+    internal suspend fun deleteExchangeRateFromFavorites(exchangeRate: ExchangeRate): ResponseState<Boolean> {
         return try {
             databaseService.deleteExchangeRate(exchangeRate.mapToExchangeRateEntity())
             ResponseState.Data(true)
@@ -59,7 +59,7 @@ class DataRepository @Inject constructor(
         }
     }
 
-    suspend fun getFavorites(): ResponseState<List<ExchangeRate>> {
+    internal suspend fun getFavorites(): ResponseState<List<ExchangeRate>> {
         try {
             val exchangeRateList = databaseService.getFavorites()
                 .map {

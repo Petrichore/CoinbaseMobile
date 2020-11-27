@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.stefanenko.coinbase.ui.activity.login.LoginViewModel
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import com.stefanenko.coinbase.ui.fragment.chart.ChartViewModel
+import com.stefanenko.coinbase.ui.fragment.chart.chartFilter.FilterViewModel
 import com.stefanenko.coinbase.ui.fragment.exchangeRate.ExchangeRatesViewModel
 import com.stefanenko.coinbase.ui.fragment.favorites.FavoritesViewModel
 import com.stefanenko.coinbase.ui.fragment.profile.ProfileViewModel
@@ -42,4 +43,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(FavoritesViewModel::class)
     abstract fun bindFavoritesViewModel(chartViewModel: FavoritesViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FilterViewModel::class)
+    abstract fun bindFilterViewModel(chartViewModel: FilterViewModel): ViewModel
 }
