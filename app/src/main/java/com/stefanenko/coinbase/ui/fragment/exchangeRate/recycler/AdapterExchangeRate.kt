@@ -7,7 +7,7 @@ import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 
 class AdapterExchangeRate(
-    private val itemList: List<ExchangeRate>,
+    private var itemList: List<ExchangeRate>,
     private val onItemCLickListener: (ExchangeRate) -> Unit
 ) : RecyclerView.Adapter<CurrencyExchangeRateViewHolder>() {
     override fun onCreateViewHolder(
@@ -21,6 +21,11 @@ class AdapterExchangeRate(
 
     override fun onBindViewHolder(holder: CurrencyExchangeRateViewHolder, position: Int) {
         holder.bind(itemList[position])
+    }
+
+    fun onUpdateAllItems(nItemList: List<ExchangeRate>){
+        itemList = nItemList
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = itemList.size

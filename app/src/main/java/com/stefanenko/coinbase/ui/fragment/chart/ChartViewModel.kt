@@ -16,22 +16,18 @@ class ChartViewModel @Inject constructor(
 ) : ViewModel() {
 
     companion object {
-        const val MISSING_SELECTED_CURRENCY = "MISSING_SELECTED_CURRENCY"
+        const val DEFAULT_CURRENCY = "XBTUSD"
     }
 
     val state = MutableLiveData<StateChart>()
     val stateScattering = MutableLiveData<StateScattering>()
-
-    private val defaultCurrency = "XBTUSD"
 
     private var itemCounter = 0
 
     fun subscribeOnCurrencyDataFlow(currency: String) {
         if (connectivityManager.isConnected()) {
             state.value = StateChart.StartLoading
-            val selectedCurrency = mapSelectedCurrency(currency)
-            Log.d("SELECTED CURRENCY", selectedCurrency)
-            chartUseCases.subscribeOnCurrencyDataFlow(selectedCurrency) {
+            chartUseCases.subscribeOnCurrencyDataFlow(currency) {
                 state.value = StateChart.StopLoading
                 if (it.isNotEmpty()) {
                     state.value = StateChart.OnNewMessage(mapToEntryList(it))
@@ -50,14 +46,6 @@ class ChartViewModel @Inject constructor(
         }
 
         return entryList
-    }
-
-    private fun mapSelectedCurrency(selectedCurrency: String): String {
-        if (selectedCurrency == MISSING_SELECTED_CURRENCY) {
-            return defaultCurrency
-        } else {
-            return selectedCurrency
-        }
     }
 
     fun unsubscribeFromCurrencyDataFlow() {

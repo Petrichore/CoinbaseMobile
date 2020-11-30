@@ -7,8 +7,7 @@ sealed class StateExchangeRates {
     object StopLoading : StateExchangeRates()
     data class ShowExchangeRateRecycler(val itemList: List<ExchangeRate>) : StateExchangeRates()
     data class UpdateExchangeRateRecycler(
-        val nItemList: List<ExchangeRate>,
-        val oItemList: List<ExchangeRate>
+        val nItemList: List<ExchangeRate>
     ) : StateExchangeRates()
 }
 

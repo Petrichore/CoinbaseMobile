@@ -5,20 +5,26 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/exchangeRatesRecycler"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeToRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:itemCount="10"
-        tools:listitem="@layout/item_currency_exchange_rate"/>
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/exchangeRatesRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:itemCount="10"
+            tools:listitem="@layout/item_currency_exchange_rate" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_gravity="center"
-        android:visibility="gone"
-        tools:visibility="visible"
         android:indeterminateTint="@color/main_green"
-        android:layout_height="48dp"/>
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 </FrameLayout>

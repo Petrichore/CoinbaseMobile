@@ -46,6 +46,24 @@ class ExchangeRatesViewModel @Inject constructor(
         }
     }
 
+    fun updateExchangeRates(baseCurrency: String) {
+        if (connectivityManager.isConnected()) {
+            viewModelScope.launch {
+                when (val responseState = exchangeUseCases.getCurrencyExchangeRates(baseCurrency)) {
+                    is ResponseState.Data -> state.value =
+                        StateExchangeRates.UpdateExchangeRateRecycler(responseState.data)
+                    is ResponseState.Error -> {
+                        stateScattering.value =
+                            StateScattering.ShowErrorMessage(responseState.error)
+                    }
+                }
+                state.value = StateExchangeRates.StopLoading
+            }
+        } else {
+            stateScattering.value = StateScattering.ShowErrorMessage(ERROR_INTERNET_CONNECTION)
+        }
+    }
+
     fun addCurrencyToFavorite(exchangeRate: ExchangeRate) {
         viewModelScope.launch {
             val response = favoritesUseCases.addFavorite(exchangeRate)
@@ -69,7 +87,7 @@ class ExchangeRatesViewModel @Inject constructor(
         }
     }
 
-    fun scatterStates(){
+    fun scatterStates() {
         stateScattering.value = StateScattering.ScatterLastState
     }
 }

@@ -12,7 +12,7 @@ import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
 import com.stefanenko.coinbase.ui.base.BaseObserveFragment
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
-import com.stefanenko.coinbase.ui.fragment.chart.ChartViewModel.Companion.MISSING_SELECTED_CURRENCY
+import com.stefanenko.coinbase.ui.fragment.chart.ChartViewModel.Companion.DEFAULT_CURRENCY
 import com.stefanenko.coinbase.ui.fragment.chart.chartFilter.FilterFragment
 import com.stefanenko.coinbase.util.getNavigationResult
 import kotlinx.android.synthetic.main.fragment_chart.*
@@ -28,16 +28,18 @@ class ChartFragment : BaseObserveFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as MainActivity).toolbar.title = resources.getString(R.string.title_chart)
-        (activity as MainActivity).toolbar.menu.findItem(R.id.filter).isVisible = true
         val selectedCurrency =
-            getNavigationResult(FilterFragment.FILTER_NAV_RESULT_KEY)?.value ?: MISSING_SELECTED_CURRENCY
-        showDebugLog(selectedCurrency)
+            getNavigationResult(FilterFragment.FILTER_NAV_RESULT_KEY)?.value ?: DEFAULT_CURRENCY
+
+        (activity as MainActivity).toolbar.title = "${resources.getString(R.string.title_chart)} ($selectedCurrency)"
+        (activity as MainActivity).toolbar.menu.findItem(R.id.filter).isVisible = true
+
         configChart(selectedCurrency)
         viewModel.subscribeOnCurrencyDataFlow(selectedCurrency)
     }
 
     private fun configChart(selectedCurrency: String) {
+
         val chartConfig = LineDataSet(mutableListOf(), selectedCurrency).apply {
             lineWidth = 3f
             setDrawValues(false)

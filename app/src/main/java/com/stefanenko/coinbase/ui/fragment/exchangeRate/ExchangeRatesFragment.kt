@@ -1,6 +1,7 @@
 package com.stefanenko.coinbase.ui.fragment.exchangeRate
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -10,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
+import com.stefanenko.coinbase.ui.activity.login.LoginActivity
 import com.stefanenko.coinbase.ui.base.BaseObserveFragment
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import com.stefanenko.coinbase.ui.base.decorators.VerticalItemDecoration
@@ -33,9 +35,20 @@ class ExchangeRatesFragment : BaseObserveFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         configSnackBar()
+        configSwipeToRefresh()
         (activity as MainActivity).toolbar.title =
             resources.getString(R.string.toolbar_title_exchange_rate)
         viewModel.getExchangeRates("USD")
+    }
+
+    private fun configSwipeToRefresh() {
+        swipeToRefresh.setOnRefreshListener {
+            if(::recyclerAdapter.isInitialized){
+                viewModel.updateExchangeRates("USD")
+            }else{
+                viewModel.getExchangeRates("USD")
+            }
+        }
     }
 
     private fun configSnackBar() {
@@ -82,10 +95,11 @@ class ExchangeRatesFragment : BaseObserveFragment() {
                 is StateExchangeRates.ShowExchangeRateRecycler -> initRecycler(it.itemList)
 
                 is StateExchangeRates.UpdateExchangeRateRecycler -> {
+                    recyclerAdapter.onUpdateAllItems(it.nItemList)
                 }
 
-                is StateExchangeRates.StartLoading -> progressBar.visibility = View.VISIBLE
-                is StateExchangeRates.StopLoading -> progressBar.visibility = View.GONE
+                is StateExchangeRates.StartLoading -> swipeToRefresh.isRefreshing = true
+                is StateExchangeRates.StopLoading -> swipeToRefresh.isRefreshing = false
             }
         })
 
