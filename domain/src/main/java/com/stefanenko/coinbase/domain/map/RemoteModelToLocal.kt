@@ -1,7 +1,9 @@
 package com.stefanenko.coinbase.domain.map
 
+import com.stefanenko.coinbase.data.network.dto.activeCurrency.ActiveCurrencyResponse
 import com.stefanenko.coinbase.data.network.dto.exchange.ResponseExchangerRates
 import com.stefanenko.coinbase.data.network.dto.profile.ResponseProfile
+import com.stefanenko.coinbase.domain.entity.ActiveCurrency
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.domain.entity.Profile
 import com.stefanenko.coinbase.domain.util.DateManager

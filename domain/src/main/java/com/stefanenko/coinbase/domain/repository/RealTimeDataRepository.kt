@@ -13,7 +13,7 @@ class RealTimeDataRepository @Inject constructor(private val webSocketService: W
 
     internal fun subscribeOnCurrencyDataFlow(currency: String, onStateChanged: (List<CurrencyMarketInfo>) -> Unit) {
         val wsCurrencyDataUrl = "$baseWebSocketUrl$currency"
-
+        Log.d("WEB SOCKET URL::::", wsCurrencyDataUrl)
         webSocketService.startDataStream(wsCurrencyDataUrl) { response ->
             val currencyInfoList = mutableListOf<CurrencyMarketInfo>()
             currencyInfoList.addAll(response.data.map {

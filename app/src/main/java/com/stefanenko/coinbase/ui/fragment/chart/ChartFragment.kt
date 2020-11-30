@@ -12,6 +12,9 @@ import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
 import com.stefanenko.coinbase.ui.base.BaseObserveFragment
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
+import com.stefanenko.coinbase.ui.fragment.chart.ChartViewModel.Companion.MISSING_SELECTED_CURRENCY
+import com.stefanenko.coinbase.ui.fragment.chart.chartFilter.FilterFragment
+import com.stefanenko.coinbase.util.getNavigationResult
 import kotlinx.android.synthetic.main.fragment_chart.*
 import javax.inject.Inject
 
@@ -27,12 +30,15 @@ class ChartFragment : BaseObserveFragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as MainActivity).toolbar.title = resources.getString(R.string.title_chart)
         (activity as MainActivity).toolbar.menu.findItem(R.id.filter).isVisible = true
-        configChart()
-        viewModel.subscribeOnCurrencyDataFlow("XBTUSD")
+        val selectedCurrency =
+            getNavigationResult(FilterFragment.FILTER_NAV_RESULT_KEY)?.value ?: MISSING_SELECTED_CURRENCY
+        showDebugLog(selectedCurrency)
+        configChart(selectedCurrency)
+        viewModel.subscribeOnCurrencyDataFlow(selectedCurrency)
     }
 
-    private fun configChart() {
-        val chartConfig = LineDataSet(mutableListOf(), "XBTUSD").apply {
+    private fun configChart(selectedCurrency: String) {
+        val chartConfig = LineDataSet(mutableListOf(), selectedCurrency).apply {
             lineWidth = 3f
             setDrawValues(false)
             setDrawCircles(false)

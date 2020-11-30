@@ -28,14 +28,10 @@ class RxWebSocketManager @Inject constructor(private val retrofitService: Retrof
     private lateinit var webSocketObservable: Observable<RxWebSocketState>
 
     fun start(url: String): Observable<RxWebSocketState> {
-        if (!::webSocket.isInitialized) {
-            webSocketObservable = Observable.create {
-                emitter = it
-            }
-            performConnectToWebSocket(url)
-        } else {
-            createNewWebSocket(webSocket.request())
+        webSocketObservable = Observable.create {
+            emitter = it
         }
+        performConnectToWebSocket(url)
         return webSocketObservable
     }
 

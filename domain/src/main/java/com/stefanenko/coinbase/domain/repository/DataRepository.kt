@@ -3,6 +3,7 @@ package com.stefanenko.coinbase.domain.repository
 import com.stefanenko.coinbase.domain.exception.ExceptionMapper
 import com.stefanenko.coinbase.data.service.DatabaseService
 import com.stefanenko.coinbase.data.service.RemoteDataService
+import com.stefanenko.coinbase.domain.entity.ActiveCurrency
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.domain.entity.Profile
 import com.stefanenko.coinbase.domain.entity.ResponseState
@@ -31,6 +32,17 @@ class DataRepository @Inject constructor(
         try {
             val responseProfile = remoteDataService.getProfile(accessToken)
             return ResponseState.Data(responseProfile.mapToProfile())
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return ResponseState.Error(ExceptionMapper.mapToAppError(e.message ?: ""))
+        }
+    }
+
+    suspend fun getActiveCurrency(): ResponseState<List<ActiveCurrency>>{
+        try {
+            val responseActiveCurrencyList = remoteDataService.getActiveCurrency()
+            val activeCurrencyList = responseActiveCurrencyList.map { ActiveCurrency(it.name) }
+            return ResponseState.Data(activeCurrencyList)
         } catch (e: Exception) {
             e.printStackTrace()
             return ResponseState.Error(ExceptionMapper.mapToAppError(e.message ?: ""))

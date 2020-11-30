@@ -8,6 +8,7 @@
     <string name="toolbar_title_sign_up">Sign up</string>
     <string name="toolbar_title_profile">Profile</string>
     <string name="toolbar_title_chart">Chart</string>
+    <string name="toolbar_title_filter">Filter</string>
     <string name="toolbar_title_favorites">Favorites</string>
     <string name="toolbar_title_exchange_rate">Exchange rate</string>
     <string name="toolbar_title_sign_up_step_1">Personal information</string>

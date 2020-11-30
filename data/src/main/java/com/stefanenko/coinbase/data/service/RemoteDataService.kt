@@ -1,8 +1,9 @@
 package com.stefanenko.coinbase.data.service
 
-import com.stefanenko.coinbase.data.network.api.MarketApi
+import com.stefanenko.coinbase.data.network.api.BitmexMarketApi
+import com.stefanenko.coinbase.data.network.api.CoinbaseMarketApi
 import com.stefanenko.coinbase.data.network.api.ProfileApi
-import com.stefanenko.coinbase.data.network.dto.DefaultMarketRequest
+import com.stefanenko.coinbase.data.network.dto.activeCurrency.ActiveCurrencyResponse
 import com.stefanenko.coinbase.data.network.dto.exchange.ResponseExchangerRates
 import com.stefanenko.coinbase.data.network.dto.profile.ResponseProfile
 import com.stefanenko.coinbase.data.util.NetworkResponseHandler
@@ -14,8 +15,9 @@ import javax.inject.Singleton
 @Singleton
 class RemoteDataService @Inject constructor(retrofitService: RetrofitService) {
 
-    private val marketApi = retrofitService.createBaseService(MarketApi::class.java)
-    private val profileApi = retrofitService.createBaseService(ProfileApi::class.java)
+    private val marketApi = retrofitService.createCoinbaseService(CoinbaseMarketApi::class.java)
+    private val profileApi = retrofitService.createCoinbaseService(ProfileApi::class.java)
+    private val bitmexApi = retrofitService.createBitmexService(BitmexMarketApi::class.java)
 
     suspend fun getExchangeRates(baseCurrency: String): ResponseExchangerRates {
         return withContext(Dispatchers.IO) {
@@ -35,6 +37,18 @@ class RemoteDataService @Inject constructor(retrofitService: RetrofitService) {
                 val response = profileApi.getProfile(accessToken)
                 val defaultResponse = NetworkResponseHandler.handleResponse(response)
                 defaultResponse.data
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    suspend fun getActiveCurrency(): List<ActiveCurrencyResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = bitmexApi.getActiveCurrency()
+                val responseData = NetworkResponseHandler.handleResponse(response)
+                responseData
             } catch (e: Exception) {
                 throw e
             }

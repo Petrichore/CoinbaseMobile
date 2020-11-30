@@ -1,5 +1,6 @@
 package com.stefanenko.coinbase.ui.fragment.chart
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.mikephil.charting.data.Entry
@@ -14,21 +15,29 @@ class ChartViewModel @Inject constructor(
     private val connectivityManager: NetworkConnectivityManager
 ) : ViewModel() {
 
+    companion object {
+        const val MISSING_SELECTED_CURRENCY = "MISSING_SELECTED_CURRENCY"
+    }
+
     val state = MutableLiveData<StateChart>()
     val stateScattering = MutableLiveData<StateScattering>()
+
+    private val defaultCurrency = "XBTUSD"
 
     private var itemCounter = 0
 
     fun subscribeOnCurrencyDataFlow(currency: String) {
-        if(connectivityManager.isConnected()){
+        if (connectivityManager.isConnected()) {
             state.value = StateChart.StartLoading
-            chartUseCases.subscribeOnCurrencyDataFlow(currency) {
+            val selectedCurrency = mapSelectedCurrency(currency)
+            Log.d("SELECTED CURRENCY", selectedCurrency)
+            chartUseCases.subscribeOnCurrencyDataFlow(selectedCurrency) {
                 state.value = StateChart.StopLoading
                 if (it.isNotEmpty()) {
                     state.value = StateChart.OnNewMessage(mapToEntryList(it))
                 }
             }
-        }else{
+        } else {
             stateScattering.value = StateScattering.ShowErrorMessage(ERROR_INTERNET_CONNECTION)
         }
     }
@@ -43,11 +52,19 @@ class ChartViewModel @Inject constructor(
         return entryList
     }
 
+    private fun mapSelectedCurrency(selectedCurrency: String): String {
+        if (selectedCurrency == MISSING_SELECTED_CURRENCY) {
+            return defaultCurrency
+        } else {
+            return selectedCurrency
+        }
+    }
+
     fun unsubscribeFromCurrencyDataFlow() {
         chartUseCases.unsubscribeFromCurrencyDataFlow()
     }
 
-    fun scatterStates(){
+    fun scatterStates() {
         stateScattering.value = StateScattering.ScatterLastState
     }
 }
