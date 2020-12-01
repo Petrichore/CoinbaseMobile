@@ -21,6 +21,10 @@ class ExchangeRatesViewModel @Inject constructor(
     private val connectivityManager: NetworkConnectivityManager
 ) : ViewModel() {
 
+    companion object{
+        const val DEFAULT_BASE_CURRENCY = "USD"
+    }
+
     val state = MutableLiveData<StateExchangeRates>()
     val stateScattering = MutableLiveData<StateScattering>()
 

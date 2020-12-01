@@ -7,11 +7,12 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "exchange_rate")
 data class ExchangeRateEntity(
 
-    @ColumnInfo(name = "base_currency_name")
-    val baseCurrencyName: String,
-
+    @PrimaryKey
     @ColumnInfo(name = "name")
     val currencyName: String,
+
+    @ColumnInfo(name = "base_currency_name")
+    val baseCurrencyName: String,
 
     @ColumnInfo(name = "exchange_rate")
     val exchangeRate: Double,
@@ -20,9 +21,5 @@ data class ExchangeRateEntity(
     val addDate: String,
 
     @ColumnInfo(name = "add_time")
-    val addTime: String,
-
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id_currency")
-    val currencyId: Long = 0,
+    val addTime: String
 )

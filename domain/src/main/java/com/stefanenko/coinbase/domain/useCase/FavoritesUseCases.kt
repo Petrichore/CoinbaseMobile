@@ -14,7 +14,7 @@ class FavoritesUseCases @Inject constructor(private val dataRepository: DataRepo
     }
 
     suspend fun addFavorite(exchangeRate: ExchangeRate): ResponseState<Boolean> {
-        return dataRepository.addExchangeRateToFavorite(exchangeRate)
+        return dataRepository.addExchangeRateToFavorites(exchangeRate)
     }
 
     suspend fun deleteFavorite(exchangeRate: ExchangeRate): ResponseState<Boolean> {

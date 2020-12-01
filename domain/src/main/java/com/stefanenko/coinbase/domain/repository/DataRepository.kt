@@ -7,9 +7,7 @@ import com.stefanenko.coinbase.domain.entity.ActiveCurrency
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.domain.entity.Profile
 import com.stefanenko.coinbase.domain.entity.ResponseState
-import com.stefanenko.coinbase.domain.map.mapToExchangeRateEntity
-import com.stefanenko.coinbase.domain.map.mapToExchangeRates
-import com.stefanenko.coinbase.domain.map.mapToProfile
+import com.stefanenko.coinbase.domain.map.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,10 +16,23 @@ class DataRepository @Inject constructor(
     private val remoteDataService: RemoteDataService,
     private val databaseService: DatabaseService
 ) {
-    internal suspend fun getCurrenciesExchangeRates(baseCurrency: String): ResponseState<List<ExchangeRate>> {
+    internal suspend fun getExchangeRates(baseCurrency: String): ResponseState<List<ExchangeRate>> {
         try {
-            val responseExchangeRate = remoteDataService.getExchangeRates(baseCurrency)
-            return ResponseState.Data(responseExchangeRate.mapToExchangeRates(baseCurrency))
+            val exchangeRateEntityList = databaseService.getExchangeRateList()
+            if (exchangeRateEntityList.isNotEmpty()) {
+                return ResponseState.Data(exchangeRateEntityList.map { it.mapToExchangeRate() })
+            } else {
+               return getExchangeRatesRemote(baseCurrency)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return ResponseState.Error(ExceptionMapper.mapToAppError(e.message ?: ""))
+        }
+    }
+
+    private suspend fun updateExchangeRates(baseCurrency: String): ResponseState<List<ExchangeRate>> {
+        try {
+            return getExchangeRatesRemote(baseCurrency)
         } catch (e: Exception) {
             e.printStackTrace()
             return ResponseState.Error(ExceptionMapper.mapToAppError(e.message ?: ""))
@@ -38,7 +49,7 @@ class DataRepository @Inject constructor(
         }
     }
 
-    suspend fun getActiveCurrency(): ResponseState<List<ActiveCurrency>>{
+    suspend fun getActiveCurrency(): ResponseState<List<ActiveCurrency>> {
         try {
             val responseActiveCurrencyList = remoteDataService.getActiveCurrency()
             val activeCurrencyList = responseActiveCurrencyList.map { ActiveCurrency(it.name) }
@@ -49,9 +60,9 @@ class DataRepository @Inject constructor(
         }
     }
 
-    internal suspend fun addExchangeRateToFavorite(exchangeRate: ExchangeRate): ResponseState<Boolean> {
+    internal suspend fun addExchangeRateToFavorites(exchangeRate: ExchangeRate): ResponseState<Boolean> {
         try {
-            databaseService.addExchangeRate(exchangeRate.mapToExchangeRateEntity())
+            databaseService.addExchangeRateToFavorite(exchangeRate.mapToFavoriteExchangeRateEntity())
             return ResponseState.Data(true)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -62,7 +73,7 @@ class DataRepository @Inject constructor(
 
     internal suspend fun deleteExchangeRateFromFavorites(exchangeRate: ExchangeRate): ResponseState<Boolean> {
         return try {
-            databaseService.deleteExchangeRate(exchangeRate.mapToExchangeRateEntity())
+            databaseService.deleteExchangeRateFromFavorite(exchangeRate.mapToFavoriteExchangeRateEntity())
             ResponseState.Data(true)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -73,22 +84,36 @@ class DataRepository @Inject constructor(
 
     internal suspend fun getFavorites(): ResponseState<List<ExchangeRate>> {
         try {
-            val exchangeRateList = databaseService.getFavorites()
-                .map {
-                    ExchangeRate(
-                        it.baseCurrencyName,
-                        it.currencyName,
-                        it.exchangeRate,
-                        it.addDate,
-                        it.addTime,
-                        it.currencyId
-                    )
-                }
+            val exchangeRateList =
+                databaseService.getFavorites().map { it.mapToExchangeRate() }.reversed()
             return ResponseState.Data(exchangeRateList)
         } catch (e: Exception) {
             e.printStackTrace()
             //TODO add exception message
             return ResponseState.Error("")
+        }
+    }
+
+    private suspend fun getExchangeRatesRemote(baseCurrency: String): ResponseState<List<ExchangeRate>> {
+        try {
+            val responseExchangeRate = remoteDataService.getExchangeRates(baseCurrency)
+            val exchangeRateList = responseExchangeRate.mapToExchangeRates(baseCurrency)
+            databaseService.addExchangeRateList(exchangeRateList.map { it.mapToExchangeRateEntity() })
+
+            return ResponseState.Data(exchangeRateList)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return ResponseState.Error(ExceptionMapper.mapToAppError(e.message ?: ""))
+        }
+    }
+
+    internal suspend fun getExchangeRatesLocal(): ResponseState<List<ExchangeRate>> {
+        try {
+            val exchangeRateEntityList = databaseService.getExchangeRateList()
+            return ResponseState.Data(exchangeRateEntityList.map { it.mapToExchangeRate() })
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return ResponseState.Error(ExceptionMapper.mapToAppError(e.message ?: ""))
         }
     }
 }

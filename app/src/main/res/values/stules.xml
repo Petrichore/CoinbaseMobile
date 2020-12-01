@@ -4,4 +4,9 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">8dp</item>
     </style>
+    
+    <style name="SwitchCompat">
+        <item name="colorControlActivated">@color/color_secondary_variant</item>
+        <item name="colorControlNormal">@color/black</item>
+    </style>
 </resources>

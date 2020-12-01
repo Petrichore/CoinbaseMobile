@@ -3,6 +3,7 @@ package com.stefanenko.coinbase.ui.fragment.profile
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.domain.entity.Profile
@@ -26,8 +27,7 @@ class ProfileFragment : BaseObserveFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setListeners()
-        (activity as MainActivity).toolbar.title =
-            resources.getString(R.string.toolbar_title_profile)
+        (activity as MainActivity).toolbar.title = resources.getString(R.string.toolbar_title_profile)
         viewModel.getProfile()
     }
 
@@ -90,6 +90,10 @@ class ProfileFragment : BaseObserveFragment() {
             }, { dialog ->
                 dialog.dismiss()
             })
+        }
+
+        settingsCard.setOnClickListener {
+            findNavController().navigate(R.id.action_profile_to_settingsFragment)
         }
     }
 

@@ -15,6 +15,7 @@ import com.stefanenko.coinbase.ui.activity.login.LoginActivity
 import com.stefanenko.coinbase.ui.base.BaseObserveFragment
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import com.stefanenko.coinbase.ui.base.decorators.VerticalItemDecoration
+import com.stefanenko.coinbase.ui.fragment.exchangeRate.ExchangeRatesViewModel.Companion.DEFAULT_BASE_CURRENCY
 import com.stefanenko.coinbase.ui.fragment.exchangeRate.recycler.AdapterExchangeRate
 import com.stefanenko.coinbase.util.toDp
 import kotlinx.android.synthetic.main.fragment_exchange_rate.*
@@ -38,17 +39,7 @@ class ExchangeRatesFragment : BaseObserveFragment() {
         configSwipeToRefresh()
         (activity as MainActivity).toolbar.title =
             resources.getString(R.string.toolbar_title_exchange_rate)
-        viewModel.getExchangeRates("USD")
-    }
-
-    private fun configSwipeToRefresh() {
-        swipeToRefresh.setOnRefreshListener {
-            if(::recyclerAdapter.isInitialized){
-                viewModel.updateExchangeRates("USD")
-            }else{
-                viewModel.getExchangeRates("USD")
-            }
-        }
+        viewModel.getExchangeRates(DEFAULT_BASE_CURRENCY)
     }
 
     private fun configSnackBar() {
@@ -72,10 +63,6 @@ class ExchangeRatesFragment : BaseObserveFragment() {
                 }
     }
 
-    override fun initViewModel() {
-        viewModel = ViewModelProvider(this, viewModelFactory)[ExchangeRatesViewModel::class.java]
-    }
-
     private fun initRecycler(itemList: List<ExchangeRate>) {
         Log.d("ItemList", "$itemList")
         with(exchangeRatesRecycler) {
@@ -87,6 +74,20 @@ class ExchangeRatesFragment : BaseObserveFragment() {
             adapter = recyclerAdapter
             addItemDecoration(VerticalItemDecoration(14.toDp()))
         }
+    }
+
+    private fun configSwipeToRefresh() {
+        swipeToRefresh.setOnRefreshListener {
+            if(::recyclerAdapter.isInitialized){
+                viewModel.updateExchangeRates(DEFAULT_BASE_CURRENCY)
+            }else{
+                viewModel.getExchangeRates(DEFAULT_BASE_CURRENCY)
+            }
+        }
+    }
+
+    override fun initViewModel() {
+        viewModel = ViewModelProvider(this, viewModelFactory)[ExchangeRatesViewModel::class.java]
     }
 
     override fun initObservers() {
@@ -107,6 +108,8 @@ class ExchangeRatesFragment : BaseObserveFragment() {
             when (it) {
                 is StateScattering.ShowErrorMessage -> showInfoDialog("Error", it.error)
 
+                StateScattering.ShowSnackBar -> snackbar.show()
+
                 StateScattering.ShowDialogUserAuthMissing -> {
                     showInfoDialog(
                         "Auth missing",
@@ -124,9 +127,6 @@ class ExchangeRatesFragment : BaseObserveFragment() {
                         { dialog ->
                             dialog.dismiss()
                         })
-                }
-                StateScattering.ShowSnackBar -> {
-                    snackbar.show()
                 }
             }
         })

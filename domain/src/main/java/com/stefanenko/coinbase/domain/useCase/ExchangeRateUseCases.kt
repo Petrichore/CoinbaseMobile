@@ -10,6 +10,10 @@ import javax.inject.Singleton
 class ExchangeRateUseCases @Inject constructor(private val dataRepository: DataRepository) {
 
     suspend fun getCurrencyExchangeRates(baseCurrency: String): ResponseState<List<ExchangeRate>> {
-        return dataRepository.getCurrenciesExchangeRates(baseCurrency)
+        return dataRepository.getExchangeRates(baseCurrency)
+    }
+
+    suspend fun getCashedExchangeRates(): ResponseState<List<ExchangeRate>> {
+        return dataRepository.getExchangeRatesLocal()
     }
 }

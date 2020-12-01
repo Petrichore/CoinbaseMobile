@@ -27,6 +27,11 @@ abstract class BaseFragment : Fragment() {
         showDebugLog("OnViewCreated")
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        showDebugLog("onCreate")
+    }
+
     override fun onResume() {
         super.onResume()
         showDebugLog("onResume")
