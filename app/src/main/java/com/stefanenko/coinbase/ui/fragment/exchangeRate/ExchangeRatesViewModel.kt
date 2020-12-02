@@ -1,11 +1,11 @@
 package com.stefanenko.coinbase.ui.fragment.exchangeRate
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.domain.entity.ResponseState
-import com.stefanenko.coinbase.domain.repository.DataRepository
 import com.stefanenko.coinbase.domain.useCase.ExchangeRateUseCases
 import com.stefanenko.coinbase.domain.useCase.FavoritesUseCases
 import com.stefanenko.coinbase.util.exception.ERROR_INTERNET_CONNECTION
@@ -21,39 +21,72 @@ class ExchangeRatesViewModel @Inject constructor(
     private val connectivityManager: NetworkConnectivityManager
 ) : ViewModel() {
 
-    companion object{
+    companion object {
         const val DEFAULT_BASE_CURRENCY = "USD"
     }
 
-    val state = MutableLiveData<StateExchangeRates>()
-    val stateScattering = MutableLiveData<StateScattering>()
+    val state: MutableLiveData<StateExchangeRates> = MutableLiveData<StateExchangeRates>()
+    val stateScattering: MutableLiveData<StateScattering> = MutableLiveData<StateScattering>()
+
+    init {
+        if (!connectivityManager.isConnected()) {
+            state.value = StateExchangeRates.NetworkUnavailable
+        }
+    }
+
+    private var networkCallback = connectivityManager.regNetworkCallBack({
+        state.postValue(StateExchangeRates.NetworkAvailable)
+    }, {
+        stateScattering.postValue(StateScattering.ShowErrorMessage(ERROR_INTERNET_CONNECTION))
+    })
 
     fun getExchangeRates(baseCurrency: String) {
+        Log.d("GET EXCHANGE RATE CALLED", "Yeeees")
         if (connectivityManager.isConnected()) {
-            state.value = StateExchangeRates.StartLoading
-
-            viewModelScope.launch {
-                when (val responseState = exchangeUseCases.getCurrencyExchangeRates(baseCurrency)) {
-                    is ResponseState.Data -> state.value =
-                        StateExchangeRates.ShowExchangeRateRecycler(responseState.data)
-                    is ResponseState.Error -> {
-                        stateScattering.value =
-                            StateScattering.ShowErrorMessage(responseState.error)
-                    }
-                }
-
-                state.value = StateExchangeRates.StopLoading
-            }
-
+            getExchangeRatesRemote(baseCurrency)
         } else {
-            stateScattering.value = StateScattering.ShowErrorMessage(ERROR_INTERNET_CONNECTION)
+            getCashedExchangeRates()
+        }
+    }
+
+    fun getExchangeRatesRemote(baseCurrency: String) {
+        Log.d("PERFORM GET EXCHANGE RATE CALLED", "Yeeees")
+        state.value = StateExchangeRates.StartLoading
+        viewModelScope.launch {
+            when (val responseState = exchangeUseCases.getExchangeRates(baseCurrency)) {
+                is ResponseState.Data -> state.value =
+                    StateExchangeRates.ShowExchangeRateRecycler(responseState.data)
+
+                is ResponseState.Error -> {
+                    stateScattering.value = StateScattering.ShowErrorMessage(responseState.error)
+                }
+            }
+            state.value = StateExchangeRates.StopLoading
+        }
+    }
+
+    fun getCashedExchangeRates() {
+        Log.d("CASHED GET EXCHANGE RATE CALLED", "Yeeees")
+
+        viewModelScope.launch {
+            when (val responseState = exchangeUseCases.getCashedExchangeRates()) {
+                is ResponseState.Data -> state.value =
+                    StateExchangeRates.ShowExchangeRateRecycler(responseState.data)
+                is ResponseState.Error -> {
+                    stateScattering.value =
+                        StateScattering.ShowErrorMessage(responseState.error)
+                }
+            }
+            state.value = StateExchangeRates.StopLoading
         }
     }
 
     fun updateExchangeRates(baseCurrency: String) {
+        Log.d("UPDATE EXCHANGE RATE CALLED", "Yeeees")
+
         if (connectivityManager.isConnected()) {
             viewModelScope.launch {
-                when (val responseState = exchangeUseCases.getCurrencyExchangeRates(baseCurrency)) {
+                when (val responseState = exchangeUseCases.updateExchangeRates(baseCurrency)) {
                     is ResponseState.Data -> state.value =
                         StateExchangeRates.UpdateExchangeRateRecycler(responseState.data)
                     is ResponseState.Error -> {
@@ -91,7 +124,13 @@ class ExchangeRatesViewModel @Inject constructor(
         }
     }
 
+
     fun scatterStates() {
         stateScattering.value = StateScattering.ScatterLastState
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        connectivityManager.revokeNetworkCallBack(networkCallback)
     }
 }

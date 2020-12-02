@@ -1,7 +1,6 @@
 package com.stefanenko.coinbase.ui.fragment.exchangeRate
 
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -11,7 +10,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
-import com.stefanenko.coinbase.ui.activity.login.LoginActivity
 import com.stefanenko.coinbase.ui.base.BaseObserveFragment
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import com.stefanenko.coinbase.ui.base.decorators.VerticalItemDecoration
@@ -39,7 +37,6 @@ class ExchangeRatesFragment : BaseObserveFragment() {
         configSwipeToRefresh()
         (activity as MainActivity).toolbar.title =
             resources.getString(R.string.toolbar_title_exchange_rate)
-        viewModel.getExchangeRates(DEFAULT_BASE_CURRENCY)
     }
 
     private fun configSnackBar() {
@@ -78,9 +75,9 @@ class ExchangeRatesFragment : BaseObserveFragment() {
 
     private fun configSwipeToRefresh() {
         swipeToRefresh.setOnRefreshListener {
-            if(::recyclerAdapter.isInitialized){
+            if (::recyclerAdapter.isInitialized) {
                 viewModel.updateExchangeRates(DEFAULT_BASE_CURRENCY)
-            }else{
+            } else {
                 viewModel.getExchangeRates(DEFAULT_BASE_CURRENCY)
             }
         }
@@ -92,15 +89,31 @@ class ExchangeRatesFragment : BaseObserveFragment() {
 
     override fun initObservers() {
         viewModel.state.observe(viewLifecycleOwner, {
+            showDebugLog(it.toString())
             when (it) {
-                is StateExchangeRates.ShowExchangeRateRecycler -> initRecycler(it.itemList)
+                is StateExchangeRates.ShowExchangeRateRecycler -> {
+                    showDebugLog("SHOW RECYCLER")
+                    initRecycler(it.itemList)
+                }
 
                 is StateExchangeRates.UpdateExchangeRateRecycler -> {
+                    showDebugLog("UPDATE RECYCLER")
                     recyclerAdapter.onUpdateAllItems(it.nItemList)
                 }
 
                 is StateExchangeRates.StartLoading -> swipeToRefresh.isRefreshing = true
                 is StateExchangeRates.StopLoading -> swipeToRefresh.isRefreshing = false
+                StateExchangeRates.NetworkAvailable -> {
+                    if (::recyclerAdapter.isInitialized) {
+                        viewModel.updateExchangeRates(DEFAULT_BASE_CURRENCY)
+                    } else {
+                        viewModel.getExchangeRates(DEFAULT_BASE_CURRENCY)
+                    }
+                }
+                StateExchangeRates.NetworkUnavailable -> {
+                    showDebugLog("neatwork unavailable livedata")
+                    viewModel.getCashedExchangeRates()
+                }
             }
         })
 
@@ -130,6 +143,7 @@ class ExchangeRatesFragment : BaseObserveFragment() {
                 }
             }
         })
+
     }
 
     override fun onDestroyView() {

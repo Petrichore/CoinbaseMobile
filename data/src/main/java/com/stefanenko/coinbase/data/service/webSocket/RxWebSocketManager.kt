@@ -36,7 +36,9 @@ class RxWebSocketManager @Inject constructor(private val retrofitService: Retrof
     }
 
     fun stop() {
-        webSocket.close(closeCode, closeMessage)
+        if(::webSocket.isInitialized){
+            webSocket.close(closeCode, closeMessage)
+        }
     }
 
     private fun performConnectToWebSocket(url: String) {

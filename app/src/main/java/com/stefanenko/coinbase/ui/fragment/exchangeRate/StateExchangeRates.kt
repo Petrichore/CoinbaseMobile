@@ -5,6 +5,8 @@ import com.stefanenko.coinbase.domain.entity.ExchangeRate
 sealed class StateExchangeRates {
     object StartLoading : StateExchangeRates()
     object StopLoading : StateExchangeRates()
+    object NetworkAvailable : StateExchangeRates()
+    object NetworkUnavailable : StateExchangeRates()
     data class ShowExchangeRateRecycler(val itemList: List<ExchangeRate>) : StateExchangeRates()
     data class UpdateExchangeRateRecycler(
         val nItemList: List<ExchangeRate>

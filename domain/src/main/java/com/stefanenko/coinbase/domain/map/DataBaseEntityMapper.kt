@@ -9,7 +9,7 @@ fun ExchangeRateEntity.mapToExchangeRate(): ExchangeRate {
 }
 
 fun ExchangeRate.mapToExchangeRateEntity(): ExchangeRateEntity {
-    return ExchangeRateEntity(baseCurrency, currencyName, exchangeRate, date, time)
+    return ExchangeRateEntity(currencyName, baseCurrency, exchangeRate, date, time)
 }
 
 fun ExchangeRate.mapToFavoriteExchangeRateEntity(): FavoriteExchangeRatesEntity {

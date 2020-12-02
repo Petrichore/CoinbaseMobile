@@ -21,6 +21,9 @@ class WebSocketService @Inject constructor(private val rxWebSocketManager: RxWeb
             rxWebSocketManager.start(url)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnError {
+                    it.printStackTrace()
+                }
                 .subscribe { socketState ->
                     handleWebSocketState(socketState, onResponse)
                 })

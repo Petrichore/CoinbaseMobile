@@ -1,5 +1,6 @@
 package com.stefanenko.coinbase.domain.repository
 
+import android.util.Log
 import com.stefanenko.coinbase.domain.exception.ExceptionMapper
 import com.stefanenko.coinbase.data.service.DatabaseService
 import com.stefanenko.coinbase.data.service.RemoteDataService
@@ -7,6 +8,7 @@ import com.stefanenko.coinbase.domain.entity.ActiveCurrency
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.domain.entity.Profile
 import com.stefanenko.coinbase.domain.entity.ResponseState
+import com.stefanenko.coinbase.domain.exception.ERROR_EMPTY_LOCAL_STORAGE
 import com.stefanenko.coinbase.domain.map.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,7 +32,7 @@ class DataRepository @Inject constructor(
         }
     }
 
-    private suspend fun updateExchangeRates(baseCurrency: String): ResponseState<List<ExchangeRate>> {
+    internal suspend fun updateExchangeRates(baseCurrency: String): ResponseState<List<ExchangeRate>> {
         try {
             return getExchangeRatesRemote(baseCurrency)
         } catch (e: Exception) {
@@ -98,6 +100,7 @@ class DataRepository @Inject constructor(
         try {
             val responseExchangeRate = remoteDataService.getExchangeRates(baseCurrency)
             val exchangeRateList = responseExchangeRate.mapToExchangeRates(baseCurrency)
+            Log.d("Exchangerates:::", "${exchangeRateList.map { it.mapToExchangeRateEntity() }}")
             databaseService.addExchangeRateList(exchangeRateList.map { it.mapToExchangeRateEntity() })
 
             return ResponseState.Data(exchangeRateList)
@@ -107,7 +110,7 @@ class DataRepository @Inject constructor(
         }
     }
 
-    internal suspend fun getExchangeRatesLocal(): ResponseState<List<ExchangeRate>> {
+    internal suspend fun getCasedExchangeRates(): ResponseState<List<ExchangeRate>> {
         try {
             val exchangeRateEntityList = databaseService.getExchangeRateList()
             return ResponseState.Data(exchangeRateEntityList.map { it.mapToExchangeRate() })
