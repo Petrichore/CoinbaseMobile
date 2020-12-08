@@ -1,19 +1,15 @@
 package com.stefanenko.coinbase.ui.fragment.exchangeRate
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
-import com.stefanenko.coinbase.ui.activity.appMain.SharedViewModel
 import com.stefanenko.coinbase.ui.base.BaseObserveFragment
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import com.stefanenko.coinbase.ui.base.decorators.VerticalItemDecoration
@@ -29,20 +25,11 @@ class ExchangeRatesFragment : BaseObserveFragment() {
     lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: ExchangeRatesViewModel
 
-    private val sharedViewModel: SharedViewModel by activityViewModels()
-
     private lateinit var recyclerAdapter: AdapterExchangeRate
 
     private lateinit var snackbar: Snackbar
 
     override fun getLayoutId(): Int = R.layout.fragment_exchange_rate
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if(sharedViewModel.getCurrency().isNotEmpty()){
-            findNavController().navigate(R.id.action_products_to_chart)
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

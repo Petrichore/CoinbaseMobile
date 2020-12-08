@@ -8,11 +8,9 @@ import com.stefanenko.coinbase.util.preferences.AuthPreferences
 import javax.inject.Inject
 
 class SplashViewModel @Inject constructor(
-    private val authPref: AuthPreferences,
-    private val deepLinkParser: DeepLinkParser
+    private val authPref: AuthPreferences
 ) : ViewModel() {
 
-    val state = MutableLiveData<SplashState>()
     val scatteringState = MutableLiveData<ScatteringSplashState>()
 
     fun checkUserAuth(){
@@ -25,19 +23,9 @@ class SplashViewModel @Inject constructor(
         Log.d("Refresh token:::", authPref.getRefreshToken())
     }
 
-    fun handleDeepLink(url: String) {
-        val param = deepLinkParser.parse(url)
-        state.value = SplashState.DeepLinkHandleResult(param)
-    }
-
-    sealed class SplashState {
-        data class DeepLinkHandleResult(val urlParam: String) : SplashState()
-    }
-
     sealed class ScatteringSplashState {
         data class ShowErrorMessage(val error: String) : ScatteringSplashState()
         object UserIsAuth : ScatteringSplashState()
-        object NavigateToNextScreen: ScatteringSplashState()
         object OpenLoginActivity: ScatteringSplashState()
         object Scatter: ScatteringSplashState()
     }

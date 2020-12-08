@@ -3,6 +3,7 @@ package com.stefanenko.coinbase.ui.fragment.chart.chartFilter
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.domain.entity.ActiveCurrency
@@ -18,7 +19,7 @@ import javax.inject.Inject
 
 class FilterFragment : BaseObserveFragment() {
 
-    companion object{
+    companion object {
         const val FILTER_NAV_RESULT_KEY = "FILTER_NAV_RESULT_KEY"
     }
 
@@ -59,8 +60,7 @@ class FilterFragment : BaseObserveFragment() {
         with(activeCurrencyRecycler) {
             layoutManager = GridLayoutManager(context, 2)
             adapter = AdapterActiveCurrency(itemList) {
-                setNavigationResult(it.name, FILTER_NAV_RESULT_KEY)
-                requireActivity().onBackPressed()
+                findNavController().navigate(FilterFragmentDirections.actionFilterFragmentToChart(it.name))
             }
             addItemDecoration(GridItemDecorator(16.toDp()))
         }

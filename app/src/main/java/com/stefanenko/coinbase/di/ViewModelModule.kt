@@ -2,7 +2,6 @@ package com.stefanenko.coinbase.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.stefanenko.coinbase.ui.activity.appMain.SharedViewModel
 import com.stefanenko.coinbase.ui.activity.login.LoginViewModel
 import com.stefanenko.coinbase.ui.activity.splash.SplashViewModel
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
@@ -55,9 +54,4 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SplashViewModel::class)
     abstract fun bindSplashViewModel(splashViewModel: SplashViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(SharedViewModel::class)
-    abstract fun bindSharedViewModel(sharedViewModel: SharedViewModel): ViewModel
 }

@@ -1,6 +1,5 @@
 package com.stefanenko.coinbase.ui.fragment.chart
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.mikephil.charting.data.Entry
@@ -17,6 +16,7 @@ class ChartViewModel @Inject constructor(
 
     companion object {
         const val DEFAULT_CURRENCY = "XBTUSD"
+        const val NOT_SPECIFIED = "NOT_SPECIFIED"
     }
 
     val state = MutableLiveData<StateChart>()

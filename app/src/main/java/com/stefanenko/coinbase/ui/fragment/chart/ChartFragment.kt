@@ -2,7 +2,6 @@ package com.stefanenko.coinbase.ui.fragment.chart
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
@@ -11,10 +10,10 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
-import com.stefanenko.coinbase.ui.activity.appMain.SharedViewModel
 import com.stefanenko.coinbase.ui.base.BaseObserveFragment
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import com.stefanenko.coinbase.ui.fragment.chart.ChartViewModel.Companion.DEFAULT_CURRENCY
+import com.stefanenko.coinbase.ui.fragment.chart.ChartViewModel.Companion.NOT_SPECIFIED
 import com.stefanenko.coinbase.ui.fragment.chart.chartFilter.FilterFragment
 import com.stefanenko.coinbase.util.getNavigationResult
 import kotlinx.android.synthetic.main.fragment_chart.*
@@ -25,24 +24,22 @@ class ChartFragment : BaseObserveFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: ChartViewModel
-    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     override fun getLayoutId(): Int = R.layout.fragment_chart
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val currencyParam = ChartFragmentArgs.fromBundle(requireArguments()).currency
         val selectedCurrency: String
-        if (sharedViewModel.getCurrency().isNotEmpty()) {
-            selectedCurrency = sharedViewModel.getCurrency()
-            showDebugLog(":::::DEEP LINK PARAM ${sharedViewModel.getCurrency()}")
+
+        if (currencyParam != NOT_SPECIFIED) {
+            selectedCurrency = currencyParam
+            showDebugLog("DEEP LINK PARAM:::: $currencyParam")
         } else {
-            selectedCurrency =
-                getNavigationResult(FilterFragment.FILTER_NAV_RESULT_KEY)?.value ?: DEFAULT_CURRENCY
+            selectedCurrency = DEFAULT_CURRENCY
         }
 
-        (activity as MainActivity).toolbar.title =
-            "${resources.getString(R.string.title_chart)} ($selectedCurrency)"
-        (activity as MainActivity).toolbar.menu.findItem(R.id.filter).isVisible = true
+        (activity as MainActivity).toolbar.title = "${resources.getString(R.string.title_chart)} ($selectedCurrency)"
 
         configChart(selectedCurrency)
         viewModel.subscribeOnCurrencyDataFlow(selectedCurrency)
@@ -117,6 +114,5 @@ class ChartFragment : BaseObserveFragment() {
         super.onDestroyView()
         viewModel.unsubscribeFromCurrencyDataFlow()
         viewModel.scatterStates()
-        (activity as MainActivity).toolbar.menu.findItem(R.id.filter).isVisible = false
     }
 }
