@@ -48,7 +48,7 @@
     <string name="btn_text_info">Information</string>
 
     <!--    Menu titles-->
-    <string name="title_coins">Products</string>
+    <string name="title_exchange_rates">Rates</string>
     <string name="title_chart">Chart</string>
     <string name="title_favorites">Favorites</string>
     <string name="title_profile">Profile</string>

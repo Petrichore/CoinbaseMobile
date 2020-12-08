@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/products"
+        android:id="@+id/exchangeRates"
         android:icon="@drawable/ic_bitcoin_menu"
-        android:title="@string/title_coins" />
+        android:title="@string/title_exchange_rates" />
 
     <item
         android:id="@+id/chart"

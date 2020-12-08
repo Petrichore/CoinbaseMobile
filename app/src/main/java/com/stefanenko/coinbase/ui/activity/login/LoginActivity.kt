@@ -77,12 +77,12 @@ class LoginActivity : BaseActivity() {
         }
 
         quickStartBtn.setOnClickListener {
-            startActivity(MainActivity::class.java)
+            startActivity(MainActivity::class.java, false)
         }
     }
 
     private fun onIntent(intent: Intent) {
-        if (intent.action != null && intent.action == "android.intent.action.VIEW" && intent.data != null) {
+        if (intent.action != null && intent.action == Intent.ACTION_VIEW && intent.data != null) {
             viewModel.completeAuth(intent.data!!)
         }
     }

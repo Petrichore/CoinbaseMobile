@@ -60,6 +60,15 @@ abstract class BaseActivity : AppCompatActivity() {
         Log.d(":::${this.javaClass.name}", message)
     }
 
+    fun startActivityInNewTask(activityClass: Class<out Activity>, paramKeyValue: Pair<String, String>) {
+        val intent = Intent(this, activityClass).apply {
+            flags.and(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            putExtra(paramKeyValue.first, paramKeyValue.second)
+        }
+        startActivity(intent)
+        finishAffinity()
+    }
+
     fun startActivityInNewTask(activityClass: Class<out Activity>) {
         val intent = Intent(this, activityClass).apply {
             flags.and(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -68,9 +77,11 @@ abstract class BaseActivity : AppCompatActivity() {
         finishAffinity()
     }
 
-    fun startActivity(activityClass: Class<out Activity>) {
+    fun startActivity(activityClass: Class<out Activity>, finishCurrent: Boolean) {
         val intent = Intent(this, activityClass)
         startActivity(intent)
+
+        if (finishCurrent) finish()
     }
 
     protected fun showAlertDialog(

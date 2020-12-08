@@ -3,8 +3,6 @@ package com.stefanenko.coinbase.ui.fragment.exchangeRate
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 
 sealed class StateExchangeRates {
-    object StartLoading : StateExchangeRates()
-    object StopLoading : StateExchangeRates()
     object NetworkAvailable : StateExchangeRates()
     object NetworkUnavailable : StateExchangeRates()
     data class ShowExchangeRateRecycler(val itemList: List<ExchangeRate>) : StateExchangeRates()
@@ -14,6 +12,8 @@ sealed class StateExchangeRates {
 }
 
 sealed class StateScattering {
+    object StartLoading : StateScattering()
+    object StopLoading : StateScattering()
     object ShowSnackBar : StateScattering()
     object ScatterLastState : StateScattering()
     object ShowDialogUserAuthMissing : StateScattering()

@@ -3,13 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph_main"
-    app:startDestination="@id/products">
+    app:startDestination="@id/exchangeRates">
 
     <fragment
-        android:id="@+id/products"
+        android:id="@+id/exchangeRates"
         android:name="com.stefanenko.coinbase.ui.fragment.exchangeRate.ExchangeRatesFragment"
         android:label="CoinsFragment"
-        tools:layout="@layout/fragment_exchange_rate"/>
+        tools:layout="@layout/fragment_exchange_rate">
+        <action
+            android:id="@+id/action_products_to_chart"
+            app:destination="@id/chart" />
+    </fragment>
     <fragment
         android:id="@+id/profile"
         android:name="com.stefanenko.coinbase.ui.fragment.profile.ProfileFragment"

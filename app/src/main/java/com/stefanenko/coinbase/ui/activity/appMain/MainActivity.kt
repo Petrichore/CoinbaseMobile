@@ -1,17 +1,25 @@
 package com.stefanenko.coinbase.ui.activity.appMain
 
 import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.stefanenko.coinbase.R
+import com.stefanenko.coinbase.ui.activity.splash.SplashActivity.Companion.CURRENCY_PARAM
 import com.stefanenko.coinbase.ui.base.BaseActivity
+import com.stefanenko.coinbase.ui.base.ViewModelFactory
+import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 class MainActivity : BaseActivity() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    private lateinit var viewModel: SharedViewModel
 
     lateinit var toolbar: MaterialToolbar
     lateinit var menuBottomView: BottomNavigationView
@@ -20,22 +28,37 @@ class MainActivity : BaseActivity() {
     override fun getLayoutId(): Int = R.layout.activity_main
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+        initViewModel()
         menuBottomView = menuBottom
         navController = findNavController(R.id.navHostFragmentMain)
         NavigationUI.setupWithNavController(menuBottomView, navController)
         setUpTopAppBar()
+        getParams()
+    }
+
+    private fun initViewModel() {
+        viewModel = ViewModelProvider(this, viewModelFactory)[SharedViewModel::class.java]
+    }
+
+    private fun getParams() {
+        val extras = intent.extras
+        if(extras != null){
+            val param = extras.getString(CURRENCY_PARAM) ?: ""
+            viewModel.setCurrency(param)
+        }
     }
 
     private fun setUpTopAppBar() {
         toolbar = topAppBarMain.apply { menu.findItem(R.id.filter).isVisible = false }
-        toolbar.setOnMenuItemClickListener { menuItem->
-            when(menuItem.itemId){
-                R.id.filter->{
+        toolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.filter -> {
                     navController.navigate(R.id.action_chart_to_filterFragment)
                     true
                 }
-                else-> false
+                else -> false
             }
         }
         toolbar.setNavigationOnClickListener {
@@ -46,4 +69,5 @@ class MainActivity : BaseActivity() {
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp()
     }
+
 }

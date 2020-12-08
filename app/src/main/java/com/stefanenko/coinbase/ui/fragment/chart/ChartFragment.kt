@@ -2,6 +2,7 @@ package com.stefanenko.coinbase.ui.fragment.chart
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
@@ -10,6 +11,7 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
+import com.stefanenko.coinbase.ui.activity.appMain.SharedViewModel
 import com.stefanenko.coinbase.ui.base.BaseObserveFragment
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import com.stefanenko.coinbase.ui.fragment.chart.ChartViewModel.Companion.DEFAULT_CURRENCY
@@ -23,15 +25,23 @@ class ChartFragment : BaseObserveFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: ChartViewModel
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     override fun getLayoutId(): Int = R.layout.fragment_chart
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val selectedCurrency =
-            getNavigationResult(FilterFragment.FILTER_NAV_RESULT_KEY)?.value ?: DEFAULT_CURRENCY
+        val selectedCurrency: String
+        if (sharedViewModel.getCurrency().isNotEmpty()) {
+            selectedCurrency = sharedViewModel.getCurrency()
+            showDebugLog(":::::DEEP LINK PARAM ${sharedViewModel.getCurrency()}")
+        } else {
+            selectedCurrency =
+                getNavigationResult(FilterFragment.FILTER_NAV_RESULT_KEY)?.value ?: DEFAULT_CURRENCY
+        }
 
-        (activity as MainActivity).toolbar.title = "${resources.getString(R.string.title_chart)} ($selectedCurrency)"
+        (activity as MainActivity).toolbar.title =
+            "${resources.getString(R.string.title_chart)} ($selectedCurrency)"
         (activity as MainActivity).toolbar.menu.findItem(R.id.filter).isVisible = true
 
         configChart(selectedCurrency)

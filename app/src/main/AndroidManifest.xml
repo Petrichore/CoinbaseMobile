@@ -15,10 +15,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CoinbaseMobile">
 
-        <activity android:name=".ui.activity.SplashActivity">
+        <activity android:name=".ui.activity.splash.SplashActivity">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
                 <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="www.bitmex.com"
+                    android:pathPrefix="/app/trade/"
+                    android:pathPattern=".*\\"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
 
@@ -31,13 +42,14 @@
                 <data
                     android:host="www.coinbase.com"
                     android:pathPrefix="/oauth/authorize/"
+                    android:pathPattern=".*\\"
                     android:scheme="https" />
             </intent-filter>
 
         </activity>
 
         <activity android:name=".ui.activity.signup.SignUpActivity" />
-        <activity android:name=".ui.activity.appMain.MainActivity" />
+        <activity android:name=".ui.activity.appMain.MainActivity"/>
 
     </application>
 </manifest>

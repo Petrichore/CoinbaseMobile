@@ -51,7 +51,7 @@ class ExchangeRatesViewModel @Inject constructor(
 
     fun getExchangeRatesRemote(baseCurrency: String) {
         Log.d("PERFORM GET EXCHANGE RATE CALLED", "Yeeees")
-        state.value = StateExchangeRates.StartLoading
+        stateScattering.value = StateScattering.StartLoading
         viewModelScope.launch {
             when (val responseState = exchangeUseCases.getExchangeRates(baseCurrency)) {
                 is ResponseState.Data -> state.value =
@@ -61,7 +61,7 @@ class ExchangeRatesViewModel @Inject constructor(
                     stateScattering.value = StateScattering.ShowErrorMessage(responseState.error)
                 }
             }
-            state.value = StateExchangeRates.StopLoading
+            stateScattering.value = StateScattering.StopLoading
         }
     }
 
@@ -77,7 +77,7 @@ class ExchangeRatesViewModel @Inject constructor(
                         StateScattering.ShowErrorMessage(responseState.error)
                 }
             }
-            state.value = StateExchangeRates.StopLoading
+            stateScattering.value = StateScattering.StopLoading
         }
     }
 
@@ -94,7 +94,7 @@ class ExchangeRatesViewModel @Inject constructor(
                             StateScattering.ShowErrorMessage(responseState.error)
                     }
                 }
-                state.value = StateExchangeRates.StopLoading
+                stateScattering.value = StateScattering.StopLoading
             }
         } else {
             stateScattering.value = StateScattering.ShowErrorMessage(ERROR_INTERNET_CONNECTION)

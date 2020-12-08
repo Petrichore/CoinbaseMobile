@@ -22,7 +22,7 @@
                 android:background="@color/white"
                 app:menu="@menu/menu_top_bar"
                 app:navigationIcon="@drawable/ic_navigation_arrow_24dp"
-                app:title="@string/title_coins"
+                app:title="@string/title_exchange_rates"
                 app:titleTextColor="@color/black" />
 
         </com.google.android.material.appbar.AppBarLayout>

@@ -1,6 +1,7 @@
 package com.stefanenko.coinbase.di
 
-import com.stefanenko.coinbase.ui.activity.SplashActivity
+import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
+import com.stefanenko.coinbase.ui.activity.splash.SplashActivity
 import com.stefanenko.coinbase.ui.activity.login.LoginActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -12,4 +13,7 @@ abstract class ActivityModule {
 
     @ContributesAndroidInjector
     abstract fun provideLoginActivity(): LoginActivity
+
+    @ContributesAndroidInjector
+    abstract fun provideMainActivity(): MainActivity
 }
