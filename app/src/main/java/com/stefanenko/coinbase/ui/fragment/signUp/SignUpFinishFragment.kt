@@ -1,24 +1,38 @@
 package com.stefanenko.coinbase.ui.fragment.signUp
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.navigation.fragment.findNavController
 import com.stefanenko.coinbase.R
+import com.stefanenko.coinbase.databinding.FragmentSignUpFinishBinding
+import com.stefanenko.coinbase.databinding.FragmentSignUpStep2Binding
+import com.stefanenko.coinbase.databinding.FragmentSignUpStep3Binding
 import com.stefanenko.coinbase.ui.activity.signup.SignUpActivity
 import com.stefanenko.coinbase.ui.base.BaseFragment
-import kotlinx.android.synthetic.main.fragment_sign_up_finish.*
-import kotlinx.android.synthetic.main.fragment_sign_up_start.*
 
 class SignUpFinishFragment : BaseFragment() {
-    override fun getLayoutId(): Int = R.layout.fragment_sign_up_finish
+
+    private var _binding: FragmentSignUpFinishBinding? = null
+    private val binding: FragmentSignUpFinishBinding
+        get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSignUpFinishBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         defineOnBackPressedCallBack()
         with(activity as SignUpActivity) {
             toolbar.visibility = View.GONE
-            sigUpFinishBtn.setOnClickListener {
+            binding.sigUpFinishBtn.setOnClickListener {
                 (activity as SignUpActivity).finish()
             }
         }

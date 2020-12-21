@@ -1,19 +1,21 @@
 package com.stefanenko.coinbase.ui.fragment.profile
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.stefanenko.coinbase.R
+import com.stefanenko.coinbase.databinding.FragmentFavoritesForGuestsBinding
+import com.stefanenko.coinbase.databinding.FragmentProfileBinding
 import com.stefanenko.coinbase.domain.entity.Profile
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
 import com.stefanenko.coinbase.ui.activity.login.LoginActivity
 import com.stefanenko.coinbase.ui.base.BaseObserveFragment
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
-import com.stefanenko.coinbase.ui.fragment.guestMode.FavoritesGuestModeFragment
 import com.stefanenko.coinbase.ui.fragment.guestMode.ProfileGuestModeFragment
-import kotlinx.android.synthetic.main.fragment_profile.*
 import javax.inject.Inject
 
 class ProfileFragment : BaseObserveFragment() {
@@ -22,7 +24,18 @@ class ProfileFragment : BaseObserveFragment() {
     lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: ProfileViewModel
 
-    override fun getLayoutId(): Int = R.layout.fragment_profile
+    private var _binding: FragmentProfileBinding? = null
+    private val binding: FragmentProfileBinding
+        get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View{
+        _binding = FragmentProfileBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -83,7 +96,7 @@ class ProfileFragment : BaseObserveFragment() {
     }
 
     private fun setListeners() {
-        logOutBtn.setOnClickListener {
+        binding.logOutBtn.setOnClickListener {
             showAlertDialog("Log out", "Do you want to log out?", { dialog ->
                 viewModel.performLogout()
                 dialog.dismiss()
@@ -92,16 +105,16 @@ class ProfileFragment : BaseObserveFragment() {
             })
         }
 
-        settingsCard.setOnClickListener {
+        binding.settingsCard.setOnClickListener {
             findNavController().navigate(R.id.action_profile_to_settingsFragment)
         }
     }
 
     private fun initProfileData(profile: Profile) {
-        userNameText.text = profile.name
-        userEmailText.text = profile.email
+        binding.userNameText.text = profile.name
+        binding.userEmailText.text = profile.email
 
-        Glide.with(requireContext()).load(profile.imageUrl).circleCrop().into(userImage)
+        Glide.with(requireContext()).load(profile.imageUrl).circleCrop().into(binding.userImage)
     }
 
     override fun onDestroyView() {

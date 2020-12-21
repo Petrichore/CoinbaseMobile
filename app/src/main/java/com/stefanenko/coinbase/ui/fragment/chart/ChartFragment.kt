@@ -1,7 +1,9 @@
 package com.stefanenko.coinbase.ui.fragment.chart
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.github.mikephil.charting.components.XAxis
@@ -10,6 +12,7 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.stefanenko.coinbase.R
+import com.stefanenko.coinbase.databinding.FragmentChartBinding
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
 import com.stefanenko.coinbase.ui.activity.appMain.SharedViewModel
 import com.stefanenko.coinbase.ui.base.BaseObserveFragment
@@ -17,7 +20,6 @@ import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import com.stefanenko.coinbase.ui.fragment.chart.ChartViewModel.Companion.DEFAULT_CURRENCY
 import com.stefanenko.coinbase.ui.fragment.chart.chartFilter.FilterFragment
 import com.stefanenko.coinbase.util.getNavigationResult
-import kotlinx.android.synthetic.main.fragment_chart.*
 import javax.inject.Inject
 
 class ChartFragment : BaseObserveFragment() {
@@ -27,7 +29,18 @@ class ChartFragment : BaseObserveFragment() {
     private lateinit var viewModel: ChartViewModel
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
-    override fun getLayoutId(): Int = R.layout.fragment_chart
+    private var _binding: FragmentChartBinding? = null
+    private val binding: FragmentChartBinding
+        get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentChartBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -57,9 +70,9 @@ class ChartFragment : BaseObserveFragment() {
             color = resources.getColor(R.color.main_green)
         }
 
-        chart.data = LineData(chartConfig)
+        binding.chart.data = LineData(chartConfig)
 
-        with(chart) {
+        with(binding.chart) {
             xAxis.position = XAxis.XAxisPosition.BOTTOM
             xAxis.isGranularityEnabled = false
             axisRight.isEnabled = false
@@ -77,12 +90,12 @@ class ChartFragment : BaseObserveFragment() {
                     updateChart(state.currencyEntryList)
                 }
                 StateChart.StartLoading -> {
-                    chart.visibility = View.GONE
-                    progressBar.visibility = View.VISIBLE
+                    binding.chart.visibility = View.GONE
+                    binding.progressBar.visibility = View.VISIBLE
                 }
                 StateChart.StopLoading -> {
-                    chart.visibility = View.VISIBLE
-                    progressBar.visibility = View.GONE
+                    binding.chart.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.GONE
                 }
             }
         })
@@ -97,16 +110,16 @@ class ChartFragment : BaseObserveFragment() {
     }
 
     private fun updateChart(itemList: List<Entry>) {
-        val data = chart.data
+        val data = binding.chart.data
 
         for (i in itemList.indices) {
             data.getDataSetByIndex(0).addEntry(itemList[i])
         }
 
         data.notifyDataChanged()
-        chart.notifyDataSetChanged()
+        binding.chart.notifyDataSetChanged()
 
-        chart.moveViewTo(
+        binding. chart.moveViewTo(
             (data.entryCount).toFloat(),
             50f,
             YAxis.AxisDependency.LEFT

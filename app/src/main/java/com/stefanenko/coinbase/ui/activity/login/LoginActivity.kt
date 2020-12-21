@@ -7,11 +7,12 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.stefanenko.coinbase.R
+import com.stefanenko.coinbase.databinding.ActivityLoginBinding
+import com.stefanenko.coinbase.databinding.ActivityMainBinding
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
 import com.stefanenko.coinbase.ui.base.BaseActivity
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import dagger.android.AndroidInjection
-import kotlinx.android.synthetic.main.activity_login.*
 import javax.inject.Inject
 
 class LoginActivity : BaseActivity() {
@@ -20,12 +21,16 @@ class LoginActivity : BaseActivity() {
     lateinit var viewModelFactory: ViewModelFactory
     lateinit var viewModel: LoginViewModel
 
-    override fun getLayoutId(): Int = R.layout.activity_login
+    lateinit var binding: ActivityLoginBinding
 
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         setListeners()
         initViewModel()
         observeViewModel()
@@ -59,24 +64,24 @@ class LoginActivity : BaseActivity() {
         viewModel.interruptibleState.observe(this, {
             when (it) {
                 is InterruptibleState.StartLoading -> {
-                    progressBar.visibility = View.VISIBLE
-                    shadowView.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.shadowView.visibility = View.VISIBLE
                 }
 
                 is InterruptibleState.StopLoading -> {
-                    progressBar.visibility = View.GONE
-                    shadowView.visibility = View.GONE
+                    binding.progressBar.visibility = View.GONE
+                    binding.shadowView.visibility = View.GONE
                 }
             }
         })
     }
 
     private fun setListeners() {
-        signInBtn.setOnClickListener {
+        binding.signInBtn.setOnClickListener {
             viewModel.performAuth()
         }
 
-        quickStartBtn.setOnClickListener {
+        binding.quickStartBtn.setOnClickListener {
             startActivity(MainActivity::class.java, false)
         }
     }

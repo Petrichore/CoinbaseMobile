@@ -3,7 +3,9 @@ package com.stefanenko.coinbase.ui.fragment.exchangeRate
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -11,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.stefanenko.coinbase.R
+import com.stefanenko.coinbase.databinding.FragmentExchangeRateBinding
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
 import com.stefanenko.coinbase.ui.activity.appMain.SharedViewModel
@@ -20,7 +23,6 @@ import com.stefanenko.coinbase.ui.base.decorators.VerticalItemDecoration
 import com.stefanenko.coinbase.ui.fragment.exchangeRate.ExchangeRatesViewModel.Companion.DEFAULT_BASE_CURRENCY
 import com.stefanenko.coinbase.ui.fragment.exchangeRate.recycler.AdapterExchangeRate
 import com.stefanenko.coinbase.util.toDp
-import kotlinx.android.synthetic.main.fragment_exchange_rate.*
 import javax.inject.Inject
 
 class ExchangeRatesFragment : BaseObserveFragment() {
@@ -31,17 +33,28 @@ class ExchangeRatesFragment : BaseObserveFragment() {
 
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
+    private var _binding: FragmentExchangeRateBinding? = null
+    private val binding: FragmentExchangeRateBinding
+        get() = _binding!!
+
     private lateinit var recyclerAdapter: AdapterExchangeRate
 
     private lateinit var snackbar: Snackbar
 
-    override fun getLayoutId(): Int = R.layout.fragment_exchange_rate
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if(sharedViewModel.getCurrency().isNotEmpty()){
+        if (sharedViewModel.getCurrency().isNotEmpty()) {
             findNavController().navigate(R.id.action_products_to_chart)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentExchangeRateBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,7 +88,7 @@ class ExchangeRatesFragment : BaseObserveFragment() {
 
     private fun initRecycler(itemList: List<ExchangeRate>) {
         Log.d("ItemList", "$itemList")
-        with(exchangeRatesRecycler) {
+        with(binding.exchangeRatesRecycler) {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             recyclerAdapter = AdapterExchangeRate(itemList) {
                 viewModel.checkAbilityToSaveCurrency(it)
@@ -87,7 +100,7 @@ class ExchangeRatesFragment : BaseObserveFragment() {
     }
 
     private fun configSwipeToRefresh() {
-        swipeToRefresh.setOnRefreshListener {
+        binding.swipeToRefresh.setOnRefreshListener {
             if (::recyclerAdapter.isInitialized) {
                 viewModel.updateExchangeRates(DEFAULT_BASE_CURRENCY)
             } else {
@@ -153,8 +166,8 @@ class ExchangeRatesFragment : BaseObserveFragment() {
                         })
                 }
 
-                is StateScattering.StartLoading -> swipeToRefresh.isRefreshing = true
-                is StateScattering.StopLoading -> swipeToRefresh.isRefreshing = false
+                is StateScattering.StartLoading -> binding.swipeToRefresh.isRefreshing = true
+                is StateScattering.StopLoading -> binding.swipeToRefresh.isRefreshing = false
             }
         })
 

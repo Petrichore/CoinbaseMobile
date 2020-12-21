@@ -1,6 +1,7 @@
 package com.stefanenko.coinbase.ui.activity.appMain
 
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -8,11 +9,11 @@ import androidx.navigation.ui.NavigationUI
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.stefanenko.coinbase.R
+import com.stefanenko.coinbase.databinding.ActivityMainBinding
 import com.stefanenko.coinbase.ui.activity.splash.SplashActivity.Companion.CURRENCY_PARAM
 import com.stefanenko.coinbase.ui.base.BaseActivity
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import dagger.android.AndroidInjection
-import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 class MainActivity : BaseActivity() {
@@ -21,17 +22,21 @@ class MainActivity : BaseActivity() {
     lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: SharedViewModel
 
+    private lateinit var binding: ActivityMainBinding
+
     lateinit var toolbar: MaterialToolbar
     lateinit var menuBottomView: BottomNavigationView
     private lateinit var navController: NavController
 
-    override fun getLayoutId(): Int = R.layout.activity_main
-
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         initViewModel()
-        menuBottomView = menuBottom
+        menuBottomView = binding.menuBottom
         navController = findNavController(R.id.navHostFragmentMain)
         NavigationUI.setupWithNavController(menuBottomView, navController)
         setUpTopAppBar()
@@ -51,7 +56,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun setUpTopAppBar() {
-        toolbar = topAppBarMain.apply { menu.findItem(R.id.filter).isVisible = false }
+        toolbar = binding.topAppBarMain.apply { menu.findItem(R.id.filter).isVisible = false }
         toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.filter -> {

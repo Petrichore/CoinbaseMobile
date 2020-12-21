@@ -3,8 +3,9 @@ package com.stefanenko.coinbase.ui.activity.splash
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import com.stefanenko.coinbase.R
+import com.stefanenko.coinbase.databinding.ActivitySplashscreenBinding
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
 import com.stefanenko.coinbase.ui.activity.login.LoginActivity
 import com.stefanenko.coinbase.ui.base.BaseActivity
@@ -14,7 +15,6 @@ import javax.inject.Inject
 
 class SplashActivity : BaseActivity() {
 
-
     companion object{
         const val CURRENCY_PARAM = "CURRENCY_PARAM"
     }
@@ -23,11 +23,15 @@ class SplashActivity : BaseActivity() {
     lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: SplashViewModel
 
-    override fun getLayoutId(): Int = R.layout.fragment_splashscreen
+    private lateinit var binding: ActivitySplashscreenBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+
+        binding = ActivitySplashscreenBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         initViewModel()
         setObservers()
     }

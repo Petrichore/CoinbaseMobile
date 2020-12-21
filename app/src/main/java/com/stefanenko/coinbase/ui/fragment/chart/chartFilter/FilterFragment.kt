@@ -1,10 +1,14 @@
 package com.stefanenko.coinbase.ui.fragment.chart.chartFilter
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.stefanenko.coinbase.R
+import com.stefanenko.coinbase.databinding.FragmentChartBinding
+import com.stefanenko.coinbase.databinding.FragmentChartFilterBinding
 import com.stefanenko.coinbase.domain.entity.ActiveCurrency
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
 import com.stefanenko.coinbase.ui.base.BaseObserveFragment
@@ -13,7 +17,6 @@ import com.stefanenko.coinbase.ui.base.decorators.GridItemDecorator
 import com.stefanenko.coinbase.ui.fragment.chart.chartFilter.recycler.AdapterActiveCurrency
 import com.stefanenko.coinbase.util.setNavigationResult
 import com.stefanenko.coinbase.util.toDp
-import kotlinx.android.synthetic.main.fragment_chart_filter.*
 import javax.inject.Inject
 
 class FilterFragment : BaseObserveFragment() {
@@ -26,7 +29,18 @@ class FilterFragment : BaseObserveFragment() {
     lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: FilterViewModel
 
-    override fun getLayoutId(): Int = R.layout.fragment_chart_filter
+    private var _binding: FragmentChartFilterBinding? = null
+    private val binding: FragmentChartFilterBinding
+        get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentChartFilterBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -43,8 +57,8 @@ class FilterFragment : BaseObserveFragment() {
         viewModel.state.observe(viewLifecycleOwner, {
             when (it) {
                 is StateFilter.ShowCurrencyRecycler -> initRecycler(it.itemList)
-                StateFilter.StartLoading -> progressBar.visibility = View.VISIBLE
-                StateFilter.StopLoading -> progressBar.visibility = View.GONE
+                StateFilter.StartLoading -> binding.progressBar.visibility = View.VISIBLE
+                StateFilter.StopLoading -> binding.progressBar.visibility = View.GONE
             }
         })
 
@@ -56,7 +70,7 @@ class FilterFragment : BaseObserveFragment() {
     }
 
     private fun initRecycler(itemList: List<ActiveCurrency>) {
-        with(activeCurrencyRecycler) {
+        with(binding.activeCurrencyRecycler) {
             layoutManager = GridLayoutManager(context, 2)
             adapter = AdapterActiveCurrency(itemList) {
                 setNavigationResult(it.name, FILTER_NAV_RESULT_KEY)

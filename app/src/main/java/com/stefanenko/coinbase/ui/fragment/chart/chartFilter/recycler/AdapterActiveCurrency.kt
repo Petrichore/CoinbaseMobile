@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.stefanenko.coinbase.R
+import com.stefanenko.coinbase.databinding.ItemActiveCurrencyBinding
 import com.stefanenko.coinbase.domain.entity.ActiveCurrency
 
 class AdapterActiveCurrency(
@@ -12,8 +13,8 @@ class AdapterActiveCurrency(
 ): RecyclerView.Adapter<ActiveCurrencyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActiveCurrencyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_active_currency, parent, false)
-        return ActiveCurrencyViewHolder(view, onItemClick)
+        val binding = ItemActiveCurrencyBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ActiveCurrencyViewHolder(binding, onItemClick)
     }
 
     override fun onBindViewHolder(holder: ActiveCurrencyViewHolder, position: Int) {

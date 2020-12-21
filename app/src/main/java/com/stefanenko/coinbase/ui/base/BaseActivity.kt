@@ -8,19 +8,16 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.stefanenko.coinbase.R
 
 abstract class BaseActivity : AppCompatActivity() {
 
-    abstract fun getLayoutId(): Int
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setBarStyle()
-        setContentView(getLayoutId())
         overridePendingTransition(R.anim.fragment_fade_enter, R.anim.fragment_fade_exit)
-
         Log.e("onCreate", this.javaClass.name)
     }
 

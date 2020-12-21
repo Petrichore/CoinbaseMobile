@@ -1,20 +1,19 @@
 package com.stefanenko.coinbase.ui.fragment.exchangeRate.recycler
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.stefanenko.coinbase.databinding.ItemCurrencyExchangeRateBinding
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
-import kotlinx.android.synthetic.main.item_currency_exchange_rate.view.*
 
 class CurrencyExchangeRateViewHolder(
-    private val view: View,
+    private val binding: ItemCurrencyExchangeRateBinding,
     private val onItemCLickListener: (ExchangeRate) -> Unit
 ) :
-    RecyclerView.ViewHolder(view) {
+    RecyclerView.ViewHolder(binding.root) {
 
-    private val currency = view.currencyName
-    private val exchangeRate = view.currencyExchangeRate
-    private val date = view.exchangeRateDateValue
-    private val time = view.exchangeRateTimeValue
+    private val currency = binding.currencyName
+    private val exchangeRate = binding.currencyExchangeRate
+    private val date = binding.exchangeRateDateValue
+    private val time = binding.exchangeRateTimeValue
 
     fun bind(item: ExchangeRate) {
         currency.text = "1 ${item.currencyName} = "
@@ -22,7 +21,7 @@ class CurrencyExchangeRateViewHolder(
         date.text = item.date
         time.text = item.time
 
-        view.setOnLongClickListener {
+        binding.root.setOnLongClickListener {
             onItemCLickListener.invoke(item)
             return@setOnLongClickListener true
         }

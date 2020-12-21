@@ -2,13 +2,15 @@ package com.stefanenko.coinbase.ui.fragment.profile.settings
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.stefanenko.coinbase.R
+import com.stefanenko.coinbase.databinding.FragmentSettingsBinding
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
 import com.stefanenko.coinbase.ui.base.BaseFragment
 import com.stefanenko.coinbase.util.preferences.SettingSwitchersPreferences
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_settings.*
 import javax.inject.Inject
 
 class SettingsFragment : BaseFragment() {
@@ -16,7 +18,18 @@ class SettingsFragment : BaseFragment() {
     @Inject
     lateinit var switcherPref: SettingSwitchersPreferences
 
-    override fun getLayoutId(): Int = R.layout.fragment_settings
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding: FragmentSettingsBinding
+        get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View{
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -31,16 +44,16 @@ class SettingsFragment : BaseFragment() {
     }
 
     private fun setCurrentSwitchersState() {
-        notificationSwitcher.isChecked = switcherPref.getNotificationSwitcherState()
-        soundSwitcher.isChecked = switcherPref.getSoundSwitcherState()
+        binding.notificationSwitcher.isChecked = switcherPref.getNotificationSwitcherState()
+        binding.soundSwitcher.isChecked = switcherPref.getSoundSwitcherState()
     }
 
     private fun setListeners() {
-        notificationSwitcher.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.notificationSwitcher.setOnCheckedChangeListener { buttonView, isChecked ->
             switcherPref.saveNotificationSwitcherState(isChecked)
         }
 
-        soundSwitcher.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.soundSwitcher.setOnCheckedChangeListener { buttonView, isChecked ->
             switcherPref.saveSoundSwitcherState(isChecked)
         }
     }

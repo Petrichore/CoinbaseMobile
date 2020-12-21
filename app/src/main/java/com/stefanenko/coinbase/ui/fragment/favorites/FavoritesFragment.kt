@@ -1,7 +1,9 @@
 package com.stefanenko.coinbase.ui.fragment.favorites
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -10,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.stefanenko.coinbase.R
+import com.stefanenko.coinbase.databinding.FragmentExchangeRateBinding
+import com.stefanenko.coinbase.databinding.FragmentFavoritesBinding
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
 import com.stefanenko.coinbase.ui.base.BaseObserveFragment
@@ -18,8 +22,6 @@ import com.stefanenko.coinbase.ui.base.decorators.VerticalItemDecoration
 import com.stefanenko.coinbase.ui.fragment.favorites.recycler.AdapterFavorites
 import com.stefanenko.coinbase.ui.fragment.guestMode.FavoritesGuestModeFragment
 import com.stefanenko.coinbase.util.toDp
-import kotlinx.android.synthetic.main.fragment_favorites.*
-import kotlinx.android.synthetic.main.fragment_favorites.progressBar
 import javax.inject.Inject
 
 class FavoritesFragment : BaseObserveFragment() {
@@ -28,11 +30,22 @@ class FavoritesFragment : BaseObserveFragment() {
     lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: FavoritesViewModel
 
+    private var _binding: FragmentFavoritesBinding? = null
+    private val binding: FragmentFavoritesBinding
+        get() = _binding!!
+
     private lateinit var recyclerAdapter: AdapterFavorites
 
     private lateinit var snackbar: Snackbar
 
-    override fun getLayoutId(): Int = R.layout.fragment_favorites
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentFavoritesBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -65,8 +78,8 @@ class FavoritesFragment : BaseObserveFragment() {
                         .replace(R.id.fragmentContainer, FavoritesGuestModeFragment()).commit()
                 }
 
-                StateFavorites.StartLoading -> progressBar.visibility = View.VISIBLE
-                StateFavorites.StopLoading -> progressBar.visibility = View.GONE
+                StateFavorites.StartLoading -> binding.progressBar.visibility = View.VISIBLE
+                StateFavorites.StopLoading -> binding.progressBar.visibility = View.GONE
             }
         })
 
@@ -101,13 +114,13 @@ class FavoritesFragment : BaseObserveFragment() {
     }
 
     private fun initFavoritesRecycler(itemList: List<ExchangeRate>) {
-        with(favoritesRecycler) {
+        with(binding.favoritesRecycler) {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             recyclerAdapter = AdapterFavorites(itemList) {}
             adapter = recyclerAdapter
             addItemDecoration(VerticalItemDecoration(14.toDp()))
         }
-        ItemTouchHelper(setItemTouchHelper()).attachToRecyclerView(favoritesRecycler)
+        ItemTouchHelper(setItemTouchHelper()).attachToRecyclerView(binding.favoritesRecycler)
     }
 
     private fun setItemTouchHelper(): ItemTouchHelper.SimpleCallback {

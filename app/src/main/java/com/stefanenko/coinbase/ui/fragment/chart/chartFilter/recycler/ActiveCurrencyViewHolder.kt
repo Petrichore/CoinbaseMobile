@@ -1,22 +1,21 @@
 package com.stefanenko.coinbase.ui.fragment.chart.chartFilter.recycler
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.stefanenko.coinbase.databinding.ItemActiveCurrencyBinding
 import com.stefanenko.coinbase.domain.entity.ActiveCurrency
-import kotlinx.android.synthetic.main.item_active_currency.view.*
 
 class ActiveCurrencyViewHolder(
-    private val view: View,
+    private val binding: ItemActiveCurrencyBinding,
     private val onItemClick: (ActiveCurrency) -> Unit
-) : RecyclerView.ViewHolder(view) {
+) : RecyclerView.ViewHolder(binding.root) {
 
-    private val currencyName = view.currencyName
+    private val currencyName = binding.currencyName
 
     fun bind(item: ActiveCurrency) {
 
         currencyName.text = item.name
 
-        view.setOnClickListener {
+        binding.root.setOnClickListener {
             onItemClick(item)
         }
     }

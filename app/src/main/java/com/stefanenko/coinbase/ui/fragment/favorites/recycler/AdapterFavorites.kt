@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.stefanenko.coinbase.R
+import com.stefanenko.coinbase.databinding.ItemCurrencyExchangeRateBinding
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 
 class AdapterFavorites(
@@ -15,9 +16,8 @@ class AdapterFavorites(
         parent: ViewGroup,
         viewType: Int
     ): FavoritesViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_currency_exchange_rate, parent, false)
-        return FavoritesViewHolder(view, onItemCLickListener)
+        val binding = ItemCurrencyExchangeRateBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return FavoritesViewHolder(binding, onItemCLickListener)
     }
 
     override fun onBindViewHolder(holder: FavoritesViewHolder, position: Int) {

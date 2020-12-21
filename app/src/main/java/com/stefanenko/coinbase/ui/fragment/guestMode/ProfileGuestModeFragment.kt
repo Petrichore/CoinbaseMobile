@@ -1,20 +1,32 @@
 package com.stefanenko.coinbase.ui.fragment.guestMode
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import com.stefanenko.coinbase.R
+import android.view.ViewGroup
+import com.stefanenko.coinbase.databinding.FragmentProfileForGuestsBinding
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
 import com.stefanenko.coinbase.ui.activity.login.LoginActivity
 import com.stefanenko.coinbase.ui.base.BaseFragment
-import kotlinx.android.synthetic.main.fragment_favorites_for_guests.toAuthBtn
 
 class ProfileGuestModeFragment : BaseFragment() {
 
-    override fun getLayoutId(): Int = R.layout.fragment_profile_for_guests
+    private var _binding: FragmentProfileForGuestsBinding? = null
+    private val binding: FragmentProfileForGuestsBinding
+        get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentProfileForGuestsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        toAuthBtn.setOnClickListener {
+        binding.toAuthBtn.setOnClickListener {
             (activity as MainActivity).startActivityInNewTask(LoginActivity::class.java)
         }
     }
