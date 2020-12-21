@@ -9,11 +9,7 @@
         android:id="@+id/exchangeRates"
         android:name="com.stefanenko.coinbase.ui.fragment.exchangeRate.ExchangeRatesFragment"
         android:label="CoinsFragment"
-        tools:layout="@layout/fragment_exchange_rate">
-        <action
-            android:id="@+id/action_products_to_chart"
-            app:destination="@id/chart" />
-    </fragment>
+        tools:layout="@layout/fragment_exchange_rate"/>
     <fragment
         android:id="@+id/profile"
         android:name="com.stefanenko.coinbase.ui.fragment.profile.ProfileFragment"
@@ -26,10 +22,18 @@
     <fragment
         android:id="@+id/chart"
         android:name="com.stefanenko.coinbase.ui.fragment.chart.ChartFragment"
-        android:label="ChartFragment" >
+        android:label="ChartFragment">
         <action
             android:id="@+id/action_chart_to_filterFragment"
             app:destination="@id/filterFragment" />
+        <deepLink
+            android:id="@+id/deepLink"
+            app:action="ACTION_VIEW"
+            app:uri="www.bitmex.com/app/trade/{currency}" />
+        <argument
+            android:name="currency"
+            app:argType="string"
+            android:defaultValue="NOT_SPECIFIED" />
     </fragment>
     <fragment
         android:id="@+id/favorites"
@@ -39,7 +43,12 @@
     <fragment
         android:id="@+id/filterFragment"
         android:name="com.stefanenko.coinbase.ui.fragment.chart.chartFilter.FilterFragment"
-        android:label="FilterFragment" />
+        android:label="FilterFragment" >
+        <action
+            android:id="@+id/action_filterFragment_to_chart"
+            app:destination="@id/chart"
+            app:popUpTo="@id/chart" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         tools:layout="@layout/fragment_settings"

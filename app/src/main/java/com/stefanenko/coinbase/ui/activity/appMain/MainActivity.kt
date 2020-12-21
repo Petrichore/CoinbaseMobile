@@ -1,7 +1,6 @@
 package com.stefanenko.coinbase.ui.activity.appMain
 
 import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -35,24 +34,11 @@ class MainActivity : BaseActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initViewModel()
         menuBottomView = binding.menuBottom
         navController = findNavController(R.id.navHostFragmentMain)
         NavigationUI.setupWithNavController(menuBottomView, navController)
         setUpTopAppBar()
-        getParams()
-    }
-
-    private fun initViewModel() {
-        viewModel = ViewModelProvider(this, viewModelFactory)[SharedViewModel::class.java]
-    }
-
-    private fun getParams() {
-        val extras = intent.extras
-        if(extras != null){
-            val param = extras.getString(CURRENCY_PARAM) ?: ""
-            viewModel.setCurrency(param)
-        }
+        setOnDestinationChangedListener()
     }
 
     private fun setUpTopAppBar() {
@@ -73,6 +59,16 @@ class MainActivity : BaseActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp()
+    }
+
+    private fun setOnDestinationChangedListener() {
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if(destination.label == "ChartFragment" && !toolbar.menu.findItem(R.id.filter).isVisible){
+                toolbar.menu.findItem(R.id.filter).isVisible = true
+            }else if(destination.label != "ChartFragment"){
+                toolbar.menu.findItem(R.id.filter).isVisible = false
+            }
+        }
     }
 
 }
