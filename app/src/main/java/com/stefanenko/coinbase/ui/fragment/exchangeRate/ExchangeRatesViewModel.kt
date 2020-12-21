@@ -49,7 +49,7 @@ class ExchangeRatesViewModel @Inject constructor(
         }
     }
 
-    fun getExchangeRatesRemote(baseCurrency: String) {
+    private fun getExchangeRatesRemote(baseCurrency: String) {
         Log.d("PERFORM GET EXCHANGE RATE CALLED", "Yeeees")
         stateScattering.value = StateScattering.StartLoading
         viewModelScope.launch {
@@ -67,7 +67,7 @@ class ExchangeRatesViewModel @Inject constructor(
 
     fun getCashedExchangeRates() {
         Log.d("CASHED GET EXCHANGE RATE CALLED", "Yeeees")
-
+        stateScattering.value = StateScattering.StartLoading
         viewModelScope.launch {
             when (val responseState = exchangeUseCases.getCashedExchangeRates()) {
                 is ResponseState.Data -> state.value =
@@ -83,7 +83,7 @@ class ExchangeRatesViewModel @Inject constructor(
 
     fun updateExchangeRates(baseCurrency: String) {
         Log.d("UPDATE EXCHANGE RATE CALLED", "Yeeees")
-
+        stateScattering.value = StateScattering.StartLoading
         if (connectivityManager.isConnected()) {
             viewModelScope.launch {
                 when (val responseState = exchangeUseCases.updateExchangeRates(baseCurrency)) {

@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.stefanenko.coinbase.R
-import com.stefanenko.coinbase.databinding.FragmentChartBinding
 import com.stefanenko.coinbase.databinding.FragmentChartFilterBinding
 import com.stefanenko.coinbase.domain.entity.ActiveCurrency
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
@@ -16,7 +15,6 @@ import com.stefanenko.coinbase.ui.base.BaseObserveFragment
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import com.stefanenko.coinbase.ui.base.decorators.GridItemDecorator
 import com.stefanenko.coinbase.ui.fragment.chart.chartFilter.recycler.AdapterActiveCurrency
-import com.stefanenko.coinbase.util.setNavigationResult
 import com.stefanenko.coinbase.util.toDp
 import javax.inject.Inject
 

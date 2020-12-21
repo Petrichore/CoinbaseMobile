@@ -1,7 +1,6 @@
 package com.stefanenko.coinbase.ui.activity.appMain
 
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -9,7 +8,6 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.databinding.ActivityMainBinding
-import com.stefanenko.coinbase.ui.activity.splash.SplashActivity.Companion.CURRENCY_PARAM
 import com.stefanenko.coinbase.ui.base.BaseActivity
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import dagger.android.AndroidInjection
@@ -19,7 +17,6 @@ class MainActivity : BaseActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var viewModel: SharedViewModel
 
     private lateinit var binding: ActivityMainBinding
 

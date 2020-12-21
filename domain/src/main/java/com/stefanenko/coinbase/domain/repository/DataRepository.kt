@@ -100,7 +100,7 @@ class DataRepository @Inject constructor(
         try {
             val responseExchangeRate = remoteDataService.getExchangeRates(baseCurrency)
             val exchangeRateList = responseExchangeRate.mapToExchangeRates(baseCurrency)
-            Log.d("Exchangerates:::", "${exchangeRateList.map { it.mapToExchangeRateEntity() }}")
+            Log.d("ExchangeRates REMOTE:::", "${exchangeRateList.map { it.mapToExchangeRateEntity() }}")
             databaseService.addExchangeRateList(exchangeRateList.map { it.mapToExchangeRateEntity() })
 
             return ResponseState.Data(exchangeRateList)
