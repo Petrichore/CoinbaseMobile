@@ -8,7 +8,7 @@ object ExceptionMapper {
 
     fun mapToAppError(dataException: String): String {
         return when (dataException) {
-            EXCEPTION_BAD_REQUEST -> ""
+            EXCEPTION_BAD_REQUEST -> ERROR_BAD_REQUEST
             EXCEPTION_UNAUTHORIZED -> ERROR_UNAUTHORIZED
             EXCEPTION_2FA_TOKEN -> ""
             EXCEPTION_INVALID_SCOPE -> ""

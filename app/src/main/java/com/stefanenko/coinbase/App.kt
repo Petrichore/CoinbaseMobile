@@ -1,6 +1,7 @@
 package com.stefanenko.coinbase
 
 import android.app.Application
+import android.util.Log
 import com.stefanenko.coinbase.di.DaggerAppComponent
 import com.stefanenko.coinbase.di.DatabaseModule
 import dagger.android.AndroidInjector
@@ -19,6 +20,7 @@ class App : Application(), HasAndroidInjector {
     }
 
     override fun onCreate() {
+        Log.d("APP", "App created")
         super.onCreate()
         initDagger()
         //authTokenManager = AuthTokenManager.build(clientId, clientSecret)

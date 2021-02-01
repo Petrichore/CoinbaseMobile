@@ -1,7 +1,6 @@
 package com.stefanenko.coinbase.data.service.webSocket
 
 import android.util.Log
-import com.stefanenko.coinbase.data.service.RetrofitService
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import okhttp3.*
@@ -10,12 +9,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RxWebSocketManager @Inject constructor(private val retrofitService: RetrofitService) {
+class RxWebSocketManager @Inject constructor(private val httpClient: OkHttpClient) {
 
     sealed class RxWebSocketState {
         data class OnMessage(val data: String) : RxWebSocketState()
         data class OnOpen(val socket: WebSocket) : RxWebSocketState()
-        data class OnError(val error: String): RxWebSocketState()
+        data class OnError(val error: String) : RxWebSocketState()
         object OnClose : RxWebSocketState()
     }
 
@@ -36,7 +35,7 @@ class RxWebSocketManager @Inject constructor(private val retrofitService: Retrof
     }
 
     fun stop() {
-        if(::webSocket.isInitialized){
+        if (::webSocket.isInitialized) {
             webSocket.close(closeCode, closeMessage)
         }
     }
@@ -46,8 +45,8 @@ class RxWebSocketManager @Inject constructor(private val retrofitService: Retrof
         createNewWebSocket(request)
     }
 
-    private fun createNewWebSocket(request: Request){
-        webSocket = retrofitService.getHttpClient().newWebSocket(request, getWebSocketListener())
+    private fun createNewWebSocket(request: Request) {
+        webSocket = httpClient.newWebSocket(request, getWebSocketListener())
     }
 
     private fun getWebSocketListener(): WebSocketListener {

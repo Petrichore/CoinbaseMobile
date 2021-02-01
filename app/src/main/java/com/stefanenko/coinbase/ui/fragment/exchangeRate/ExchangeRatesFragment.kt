@@ -121,8 +121,10 @@ class ExchangeRatesFragment : BaseObserveFragment() {
                 StateExchangeRates.NetworkAvailable -> {
                     showDebugLog("NETWORK AVAILABLE")
                     if (::recyclerAdapter.isInitialized) {
+                        showDebugLog("Network Action: Update exchange rates")
                         viewModel.updateExchangeRates(DEFAULT_BASE_CURRENCY)
                     } else {
+                        showDebugLog("Network Action: getExchangeRate")
                         viewModel.getExchangeRates(DEFAULT_BASE_CURRENCY)
                     }
                 }

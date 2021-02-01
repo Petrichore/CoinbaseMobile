@@ -6,7 +6,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
 
-interface ProfileApi {
+interface CoinbaseProfileApi {
 
     @GET("user")
     suspend fun getProfile(

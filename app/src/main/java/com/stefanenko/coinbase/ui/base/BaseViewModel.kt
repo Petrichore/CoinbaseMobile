@@ -2,7 +2,6 @@ package com.stefanenko.coinbase.ui.base
 
 import androidx.lifecycle.ViewModel
 import com.stefanenko.coinbase.domain.entity.ResponseState
-import com.stefanenko.coinbase.domain.repository.AuthRepository
 import com.stefanenko.coinbase.domain.useCase.AuthUseCases
 import javax.inject.Inject
 

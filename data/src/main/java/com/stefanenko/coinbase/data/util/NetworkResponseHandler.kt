@@ -2,8 +2,11 @@ package com.stefanenko.coinbase.data.util
 
 import com.stefanenko.coinbase.data.exception.*
 import retrofit2.Response
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object NetworkResponseHandler {
+@Singleton
+class NetworkResponseHandler @Inject constructor() {
     fun <T> handleResponse(response: Response<T>): T {
         if (response.isSuccessful) {
             return response.body() ?: throw Exception(EXCEPTION_NO_RESPONSE_DATA_EXCEPTION)

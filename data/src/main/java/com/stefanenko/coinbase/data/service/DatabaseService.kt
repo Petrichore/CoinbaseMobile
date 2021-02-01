@@ -3,44 +3,54 @@ package com.stefanenko.coinbase.data.service
 import com.stefanenko.coinbase.data.database.dao.CurrencyDao
 import com.stefanenko.coinbase.data.database.entity.ExchangeRateEntity
 import com.stefanenko.coinbase.data.database.entity.FavoriteExchangeRatesEntity
-import kotlinx.coroutines.Dispatchers
+import com.stefanenko.coinbase.data.util.coroutineDispatcher.BaseCoroutineDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DatabaseService @Inject constructor(private val currencyDao: CurrencyDao) {
+class DatabaseService @Inject constructor(
+    private val currencyDao: CurrencyDao,
+    private val dispatcher: BaseCoroutineDispatcher
+) {
 
-    suspend fun addExchangeRateToFavorite(favoriteExchangeRatesEntity: FavoriteExchangeRatesEntity) {
-        return withContext(Dispatchers.IO) {
-            currencyDao.addCurrencyExchangeRateToFavorite(favoriteExchangeRatesEntity)
+    suspend fun addExchangeRateToFavorite(favoriteExchangeRatesEntity: FavoriteExchangeRatesEntity): Boolean {
+        return withContext(dispatcher.io()) {
+            val id = currencyDao.addCurrencyExchangeRateToFavorite(favoriteExchangeRatesEntity)
+            id > 0
         }
     }
 
     suspend fun getExchangeRateList(): List<ExchangeRateEntity> {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher.io()) {
             currencyDao.getExchangeRates()
         }
     }
 
     suspend fun deleteExchangeRateFromFavorite(favoriteExchangeRatesEntity: FavoriteExchangeRatesEntity): Boolean {
-        return withContext(Dispatchers.IO) {
-            currencyDao.deleteExchangeRateFromFavorite(favoriteExchangeRatesEntity)
-            true
+        return withContext(dispatcher.io()) {
+            val amount = currencyDao.deleteExchangeRateFromFavorite(favoriteExchangeRatesEntity)
+            amount > 0
         }
     }
 
     suspend fun getFavorites(): List<ExchangeRateEntity> {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher.io()) {
             currencyDao.getFavoritesData()
         }
     }
 
-    suspend fun addExchangeRateList(exchangeRateList: List<ExchangeRateEntity>): Boolean {
-        return withContext(Dispatchers.IO) {
-            currencyDao.clearExchangeRateTable()
-            currencyDao.insertCurrencyExchangeRates(exchangeRateList)
-            true
+    /***
+     * TODO add description of updating principle (clear old data and insert new)
+     */
+    suspend fun updateExchangeRateList(exchangeRateList: List<ExchangeRateEntity>): Boolean {
+        return withContext(dispatcher.io()) {
+            try {
+                currencyDao.updateExchangeRateTable(exchangeRateList)
+            } catch (e: Exception) {
+                throw e
+            }
         }
     }
 }

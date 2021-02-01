@@ -17,7 +17,11 @@ import javax.inject.Singleton
 import kotlin.Exception
 
 @Singleton
-class AuthRepository @Inject constructor(private val oAuth2Service: OAuth2Service) {
+class AuthManager @Inject constructor(
+    private val oAuth2Service: OAuth2Service,
+    private val scopeBuilder: ScopeBuilder,
+    private val urlBuilder: UrlBuilder
+) {
 
     private val clientId = "979fbe1bf76735a1179d82729ed941ffdd5331686891c10c12d1b25f24ac5293"
     private val clientSecret = "208dfff66f3af0ad840541b2dc41f417ce785f187913acb6837bdb39e338e207"
@@ -38,14 +42,14 @@ class AuthRepository @Inject constructor(private val oAuth2Service: OAuth2Servic
     private val GRANT_TYPE_REFRESH_TOKEN = "refresh_token"
 
     internal fun startAuth(): Uri {
-        val scopeSting = ScopeBuilder.build(
+        val scopeSting = scopeBuilder.build(
             Scope.Wallet.User.READ,
             Scope.Wallet.User.EMAIL,
             Scope.Wallet.Accounts.READ,
             Scope.Wallet.Accounts.UPDATE
         )
 
-        val url = UrlBuilder.buildUrl(
+        val url = urlBuilder.buildUrl(
             BASE_AUTH_URL,
             Pair(CLIENT_ID_KEY, clientId),
             Pair(REDIRECT_URI_KEY, REDIRECT_URI_VALUE),

@@ -9,7 +9,7 @@ import retrofit2.http.Query
 interface CoinbaseMarketApi {
 
     @GET("exchange-rates")
-    suspend fun getExchangeRates(
+    suspend fun getExchangeRatesRequest(
         @Query("currency") currency: String
     ): Response<DefaultResponse<ResponseExchangerRates>>
 }

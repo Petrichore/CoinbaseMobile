@@ -8,5 +8,5 @@ data class ResponseExchangerRates(
     val currency: String,
 
     @SerializedName("rates")
-    val ratesList: Map<String, String>
+    val currencyRateMap: Map<String, String>
 )
