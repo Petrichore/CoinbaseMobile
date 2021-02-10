@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.databinding.ActivityLoginBinding
-import com.stefanenko.coinbase.databinding.ActivityMainBinding
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
 import com.stefanenko.coinbase.ui.base.BaseActivity
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
@@ -48,27 +46,21 @@ class LoginActivity : BaseActivity() {
 
         viewModel.state.observe(this, {
             when (it) {
-                is State.AuthCompleted -> {
+                is StateLogin.AuthCompleted -> {
                     startActivityInNewTask(MainActivity::class.java)
                 }
-                is State.ShowErrorMessage -> {
+                is StateLogin.ShowErrorMessage -> {
                     showInfoDialog("Error", it.error)
                 }
-                is State.OpenCoinbaseAuthPage -> {
+                is StateLogin.OpenCoinbaseAuthPage -> {
                     val intent = Intent(Intent.ACTION_VIEW, it.uri)
                     startActivity(intent)
                 }
-            }
-        })
-
-        viewModel.interruptibleState.observe(this, {
-            when (it) {
-                is InterruptibleState.StartLoading -> {
+                StateLogin.StartLoading -> {
                     binding.progressBar.visibility = View.VISIBLE
                     binding.shadowView.visibility = View.VISIBLE
                 }
-
-                is InterruptibleState.StopLoading -> {
+                StateLogin.StopLoading -> {
                     binding.progressBar.visibility = View.GONE
                     binding.shadowView.visibility = View.GONE
                 }

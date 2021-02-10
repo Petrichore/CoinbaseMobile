@@ -1,46 +1,34 @@
 package com.stefanenko.coinbase.data.service
 
 import com.google.common.truth.Truth.assertThat
-import com.stefanenko.coinbase.data.di.DaggerDataComponentTest
-import com.stefanenko.coinbase.data.di.DataTestModule
+import com.stefanenko.coinbase.data.BaseDataModuleTest
 import com.stefanenko.coinbase.data.network.api.AuthApi
 import com.stefanenko.coinbase.data.network.dto.token.RequestAccessToken
 import com.stefanenko.coinbase.data.network.dto.token.RequestRefreshToken
 import com.stefanenko.coinbase.data.network.dto.token.RequestRevokeToken
 import com.stefanenko.coinbase.data.network.dto.token.ResponseAccessToken
-import com.stefanenko.coinbase.data.service.OAuth2Service
 import com.stefanenko.coinbase.data.util.NetworkResponseHandler
-import com.stefanenko.coinbase.data.util.coroutineDispatcher.CoroutinesTestRule
-import com.stefanenko.coinbase.data.util.coroutineDispatcher.TestDispatchersProvider
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Rule
 import org.junit.Test
 import retrofit2.Response
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class OAuth2ServiceTest {
+class OAuth2ServiceTest: BaseDataModuleTest() {
 
     init {
-        val component =
-            DaggerDataComponentTest.builder().dataTestModule(DataTestModule()).build()
         component.inject(this)
     }
-
-    @get:Rule
-    val coroutinesTestRule = CoroutinesTestRule()
 
     @Inject
     lateinit var responseHandler: NetworkResponseHandler
 
     @Inject
     lateinit var authApi: AuthApi
-
-    private val coroutineTestDispatcher = TestDispatchersProvider(coroutinesTestRule)
 
     @Test
     fun `getAccessToken returns ResponseAccessToken if Response was successful`() {
@@ -75,10 +63,10 @@ class OAuth2ServiceTest {
             OAuth2Service(authApi, responseHandler, coroutineTestDispatcher)
 
         coroutinesTestRule.testDispatcher.runBlockingTest {
-            try{
+            try {
                 oAuth2Service.getAccessToken(requestAccessToken)
                 assertThat(false).isTrue()
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 assertThat(true).isTrue()
             }
         }
@@ -117,10 +105,10 @@ class OAuth2ServiceTest {
             OAuth2Service(authApi, responseHandler, coroutineTestDispatcher)
 
         coroutinesTestRule.testDispatcher.runBlockingTest {
-            try{
+            try {
                 oAuth2Service.refreshToken(requestRefreshToken)
                 assertThat(false).isTrue()
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 assertThat(true).isTrue()
             }
         }
@@ -161,10 +149,10 @@ class OAuth2ServiceTest {
             OAuth2Service(authApi, responseHandler, coroutineTestDispatcher)
 
         coroutinesTestRule.testDispatcher.runBlockingTest {
-            try{
+            try {
                 oAuth2Service.revokeToken(requestRevokeToken, bearerToken)
                 assertThat(false).isTrue()
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 assertThat(true).isTrue()
             }
         }

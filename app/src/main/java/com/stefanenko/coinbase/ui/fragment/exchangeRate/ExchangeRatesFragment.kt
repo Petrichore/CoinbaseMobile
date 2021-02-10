@@ -33,13 +33,6 @@ class ExchangeRatesFragment : BaseObserveFragment() {
 
     private lateinit var snackbar: Snackbar
 
-//    override fun onAttach(context: Context) {
-//        super.onAttach(context)
-//        if (sharedViewModel.getCurrency().isNotEmpty()) {
-//            findNavController().navigate(R.id.action_products_to_chart)
-//        }
-//    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -118,37 +111,11 @@ class ExchangeRatesFragment : BaseObserveFragment() {
                     recyclerAdapter.onUpdateAllItems(it.nItemList)
                 }
 
-                StateExchangeRates.NetworkAvailable -> {
-                    showDebugLog("NETWORK AVAILABLE")
-                    if (::recyclerAdapter.isInitialized) {
-                        showDebugLog("Network Action: Update exchange rates")
-                        viewModel.updateExchangeRates(DEFAULT_BASE_CURRENCY)
-                    } else {
-                        showDebugLog("Network Action: getExchangeRate")
-                        viewModel.getExchangeRates(DEFAULT_BASE_CURRENCY)
-                    }
-                }
-                StateExchangeRates.NetworkUnavailable -> {
-                    showDebugLog("NETWORK UNAVAILABLE")
-                    viewModel.getCashedExchangeRates()
-                }
-            }
-        })
-
-        viewModel.stateScattering.observe(viewLifecycleOwner, {
-            when (it) {
-                is StateScattering.ShowErrorMessage -> showInfoDialog("Error", it.error)
-
-                StateScattering.ShowSnackBar -> snackbar.show()
-
-                StateScattering.ShowDialogUserAuthMissing -> {
-                    showInfoDialog(
-                        "Auth missing",
-                        "Please, authorize to be able to save data locally"
-                    )
+                is StateExchangeRates.ShowErrorMessage -> {
+                    showInfoDialog("Error", it.error)
                 }
 
-                is StateScattering.ShowDialogSaveToFav -> {
+                is StateExchangeRates.ShowDialogSaveToFav -> {
                     showAlertDialog(
                         "Add to favorite",
                         "Add ${it.exchangeRate.currencyName} to favorite?",
@@ -160,22 +127,48 @@ class ExchangeRatesFragment : BaseObserveFragment() {
                         })
                 }
 
-                is StateScattering.StartLoading -> {
+                StateExchangeRates.NetworkAvailable -> {
+                    showDebugLog("NETWORK AVAILABLE")
+                    if (::recyclerAdapter.isInitialized) {
+                        showDebugLog("Network Action: Update exchange rates")
+                        viewModel.updateExchangeRates(DEFAULT_BASE_CURRENCY)
+                    } else {
+                        showDebugLog("Network Action: getExchangeRate")
+                        viewModel.getExchangeRates(DEFAULT_BASE_CURRENCY)
+                    }
+                }
+
+                StateExchangeRates.NetworkUnavailable -> {
+                    showDebugLog("NETWORK UNAVAILABLE")
+                    viewModel.getCashedExchangeRates()
+                }
+                StateExchangeRates.StartLoading -> {
                     binding.swipeToRefresh.isRefreshing = true
                     showDebugLog("START LOADING::::")
                 }
-                is StateScattering.StopLoading -> {
+                StateExchangeRates.StopLoading -> {
                     showDebugLog("STOP LOADING::::")
                     binding.swipeToRefresh.isRefreshing = false
                 }
+
+                StateExchangeRates.ShowDialogUserAuthMissing -> {
+                    showInfoDialog(
+                        "Auth missing",
+                        "Please, authorize to be able to save data locally"
+                    )
+                }
+
+                StateExchangeRates.ShowSnackBar -> snackbar.show()
+
+                StateExchangeRates.BlankState -> { }
+
             }
         })
-
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        viewModel.scatterStates()
+        viewModel.setBlankState()
     }
 }

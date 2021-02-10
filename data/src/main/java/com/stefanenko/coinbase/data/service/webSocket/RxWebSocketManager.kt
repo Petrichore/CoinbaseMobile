@@ -11,11 +11,10 @@ import javax.inject.Singleton
 @Singleton
 class RxWebSocketManager @Inject constructor(private val httpClient: OkHttpClient) {
 
-    sealed class RxWebSocketState {
-        data class OnMessage(val data: String) : RxWebSocketState()
-        data class OnOpen(val socket: WebSocket) : RxWebSocketState()
-        data class OnError(val error: String) : RxWebSocketState()
-        object OnClose : RxWebSocketState()
+    sealed class WebSocketEvent {
+        data class OnMessage(val data: String) : WebSocketEvent()
+        data class OnOpen(val socket: WebSocket) : WebSocketEvent()
+        data class OnError(val error: String) : WebSocketEvent()
     }
 
     private val closeCode = 1000
@@ -23,15 +22,20 @@ class RxWebSocketManager @Inject constructor(private val httpClient: OkHttpClien
 
     private lateinit var webSocket: WebSocket
 
-    private lateinit var emitter: ObservableEmitter<RxWebSocketState>
-    private lateinit var webSocketObservable: Observable<RxWebSocketState>
+    private lateinit var emitter: ObservableEmitter<WebSocketEvent>
+    private lateinit var webSocketObservable: Observable<WebSocketEvent>
 
-    fun start(url: String): Observable<RxWebSocketState> {
+    fun start(url: String): Observable<WebSocketEvent> {
         webSocketObservable = Observable.create {
             emitter = it
         }
         performConnectToWebSocket(url)
         return webSocketObservable
+    }
+
+    private fun performConnectToWebSocket(url: String) {
+        val request = Request.Builder().url(url).build()
+        createNewWebSocket(request)
     }
 
     fun stop() {
@@ -40,12 +44,10 @@ class RxWebSocketManager @Inject constructor(private val httpClient: OkHttpClien
         }
     }
 
-    private fun performConnectToWebSocket(url: String) {
-        val request = Request.Builder().url(url).build()
-        createNewWebSocket(request)
-    }
-
     private fun createNewWebSocket(request: Request) {
+        if(::webSocket.isInitialized){
+            webSocket.close(closeCode, closeMessage)
+        }
         webSocket = httpClient.newWebSocket(request, getWebSocketListener())
     }
 
@@ -53,7 +55,7 @@ class RxWebSocketManager @Inject constructor(private val httpClient: OkHttpClien
         return object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 super.onOpen(webSocket, response)
-                emitEvent(RxWebSocketState.OnOpen(webSocket))
+                emitEvent(WebSocketEvent.OnOpen(webSocket))
             }
 
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
@@ -64,7 +66,7 @@ class RxWebSocketManager @Inject constructor(private val httpClient: OkHttpClien
 
             override fun onMessage(webSocket: WebSocket, text: String) {
                 super.onMessage(webSocket, text)
-                emitEvent(RxWebSocketState.OnMessage(text))
+                emitEvent(WebSocketEvent.OnMessage(text))
             }
 
             override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
@@ -72,22 +74,17 @@ class RxWebSocketManager @Inject constructor(private val httpClient: OkHttpClien
                 Log.d("SOCKET STATE:::", "onClosing")
             }
 
-            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-                super.onClosed(webSocket, code, reason)
-                emitEvent(RxWebSocketState.OnClose)
-            }
-
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 super.onFailure(webSocket, t, response)
                 Log.d("SOCKET STATE:::", "onFailure")
 
-                emitEvent(RxWebSocketState.OnError(t.message ?: ""))
+                emitEvent(WebSocketEvent.OnError(t.message ?: ""))
                 t.printStackTrace()
             }
         }
     }
 
-    private fun emitEvent(state: RxWebSocketState) {
-        emitter.onNext(state)
+    private fun emitEvent(event: WebSocketEvent) {
+        emitter.onNext(event)
     }
 }

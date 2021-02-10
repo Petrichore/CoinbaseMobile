@@ -5,7 +5,9 @@ import com.stefanenko.coinbase.data.database.entity.FavoriteExchangeRatesEntity
 import com.stefanenko.coinbase.data.network.dto.activeCurrency.ActiveCurrencyResponse
 import com.stefanenko.coinbase.data.network.dto.exchange.ResponseExchangerRates
 import com.stefanenko.coinbase.data.network.dto.profile.ResponseProfile
+import com.stefanenko.coinbase.data.network.dto.socket.CurrencyRateInRealTime
 import com.stefanenko.coinbase.domain.entity.ActiveCurrency
+import com.stefanenko.coinbase.domain.entity.CurrencyMarketInfo
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.domain.entity.Profile
 import com.stefanenko.coinbase.domain.util.DateManager
@@ -45,7 +47,13 @@ class Mapper @Inject constructor(private val dateManager: DateManager) {
     fun mapToFavoriteExchangeRateEntity(exchangeRate: ExchangeRate): FavoriteExchangeRatesEntity =
         FavoriteExchangeRatesEntity(exchangeRate.currencyName)
 
-    fun mapToExchangeRateEntity(exchangeRate: ExchangeRate): ExchangeRateEntity = with(exchangeRate){
-        ExchangeRateEntity(currencyName, baseCurrency, this.exchangeRate, date, time)
-    }
+    fun mapToExchangeRateEntity(exchangeRate: ExchangeRate): ExchangeRateEntity =
+        with(exchangeRate) {
+            ExchangeRateEntity(currencyName, baseCurrency, this.exchangeRate, date, time)
+        }
+
+    fun map(currencyRateInRealTime: CurrencyRateInRealTime): CurrencyMarketInfo =
+        with(currencyRateInRealTime) {
+            CurrencyMarketInfo(symbol, action, price.toFloat())
+        }
 }

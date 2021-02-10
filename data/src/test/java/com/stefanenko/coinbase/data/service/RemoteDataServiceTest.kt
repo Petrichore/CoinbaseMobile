@@ -1,8 +1,6 @@
 package com.stefanenko.coinbase.data.service
 
 
-import com.stefanenko.coinbase.data.di.DaggerDataComponentTest
-import com.stefanenko.coinbase.data.di.DataTestModule
 import com.stefanenko.coinbase.data.network.api.BitmexMarketApi
 import com.stefanenko.coinbase.data.network.api.CoinbaseMarketApi
 import com.stefanenko.coinbase.data.network.api.CoinbaseProfileApi
@@ -10,40 +8,26 @@ import com.stefanenko.coinbase.data.network.dto.DefaultResponse
 import com.stefanenko.coinbase.data.network.dto.exchange.ResponseExchangerRates
 import com.stefanenko.coinbase.data.network.dto.profile.ProfileCountry
 import com.stefanenko.coinbase.data.network.dto.profile.ResponseProfile
-import com.stefanenko.coinbase.data.service.RemoteDataService
 import com.stefanenko.coinbase.data.util.NetworkResponseHandler
 import io.mockk.coEvery
 import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Rule
 import org.junit.Test
 import retrofit2.Response
 import javax.inject.Inject
 import com.google.common.truth.Truth.assertThat
+import com.stefanenko.coinbase.data.BaseDataModuleTest
 import com.stefanenko.coinbase.data.network.dto.activeCurrency.ActiveCurrencyResponse
-import com.stefanenko.coinbase.data.util.coroutineDispatcher.CoroutinesTestRule
-import com.stefanenko.coinbase.data.util.coroutineDispatcher.TestDispatchersProvider
 import io.mockk.mockk
 import kotlin.Exception
 
-
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 @ExperimentalCoroutinesApi
-class RemoteDataServiceTest {
+class RemoteDataServiceTest: BaseDataModuleTest() {
 
     init {
-        val component =
-            DaggerDataComponentTest.builder().dataTestModule(DataTestModule()).build()
         component.inject(this)
     }
-
-    @get:Rule
-    val coroutinesTestRule = CoroutinesTestRule()
 
     @Inject
     lateinit var coinbaseMarketApi: CoinbaseMarketApi
@@ -56,8 +40,6 @@ class RemoteDataServiceTest {
 
     @Inject
     lateinit var responseHandler: NetworkResponseHandler
-
-    private val coroutineTestDispatcher = TestDispatchersProvider(coroutinesTestRule)
 
     @Test
     fun `getExchangeRates returns data if response is success`() {

@@ -1,39 +1,25 @@
 package com.stefanenko.coinbase.data.service
 
 import com.google.common.truth.Truth.assertThat
+import com.stefanenko.coinbase.data.BaseDataModuleTest
 import com.stefanenko.coinbase.data.database.dao.CurrencyDao
 import com.stefanenko.coinbase.data.database.entity.ExchangeRateEntity
-import com.stefanenko.coinbase.data.di.DaggerDataComponentTest
-import com.stefanenko.coinbase.data.di.DataTestModule
-import com.stefanenko.coinbase.data.service.DatabaseService
-import com.stefanenko.coinbase.data.util.coroutineDispatcher.BaseCoroutineDispatcher
-import com.stefanenko.coinbase.data.util.coroutineDispatcher.CoroutinesTestRule
-import com.stefanenko.coinbase.data.util.coroutineDispatcher.TestDispatchersProvider
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class DatabaseServiceTest {
+class DatabaseServiceTest: BaseDataModuleTest() {
 
     init {
-        val component =
-            DaggerDataComponentTest.builder().dataTestModule(DataTestModule()).build()
         component.inject(this)
     }
 
-    @get:Rule
-    val coroutinesTestRule = CoroutinesTestRule()
-
     @Inject
     lateinit var currencyDao: CurrencyDao
-
-    private val coroutineTestDispatcher = TestDispatchersProvider(coroutinesTestRule)
 
     @Test
     fun `addExchangeRateToFavorite returns true if id greater than 0`() {

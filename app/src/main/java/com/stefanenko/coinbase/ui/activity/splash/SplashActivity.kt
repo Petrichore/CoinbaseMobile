@@ -35,17 +35,17 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun setObservers() {
-        viewModel.scatteringState.observe(this, {
+        viewModel.state.observe(this, {
             when (it) {
-                is SplashViewModel.ScatteringSplashState.ShowErrorMessage -> showInfoDialog(
+                is SplashActivityState.ShowErrorMessage -> showInfoDialog(
                     "Error",
                     it.error
                 )
-                SplashViewModel.ScatteringSplashState.UserIsAuth -> {
+                SplashActivityState.UserIsAuth -> {
                     showDebugLog("START MAIN")
                     startActivityInNewTask(MainActivity::class.java)
                 }
-                SplashViewModel.ScatteringSplashState.OpenLoginActivity -> startActivity(
+                SplashActivityState.OpenLoginActivity -> startActivity(
                     LoginActivity::class.java,
                     true
                 )

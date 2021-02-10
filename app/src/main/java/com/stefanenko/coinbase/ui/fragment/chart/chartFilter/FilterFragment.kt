@@ -56,14 +56,9 @@ class FilterFragment : BaseObserveFragment() {
         viewModel.state.observe(viewLifecycleOwner, {
             when (it) {
                 is StateFilter.ShowCurrencyRecycler -> initRecycler(it.itemList)
+                is StateFilter.ShowErrorMessage -> showInfoDialog("Error", it.error)
                 StateFilter.StartLoading -> binding.progressBar.visibility = View.VISIBLE
                 StateFilter.StopLoading -> binding.progressBar.visibility = View.GONE
-            }
-        })
-
-        viewModel.stateScattering.observe(viewLifecycleOwner, {
-            when (it) {
-                is StateScattering.ShowErrorMessage -> showInfoDialog("Error", it.error)
             }
         })
     }

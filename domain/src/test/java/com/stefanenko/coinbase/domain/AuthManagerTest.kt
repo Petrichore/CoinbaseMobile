@@ -1,6 +1,6 @@
 package com.stefanenko.coinbase.domain
 
-import android.net.Uri
+import com.BaseDomainModuleTest
 import com.google.common.truth.Truth.assertThat
 import com.stefanenko.coinbase.data.service.OAuth2Service
 import com.stefanenko.coinbase.domain.di.DaggerDomainComponentTest
@@ -8,12 +8,12 @@ import com.stefanenko.coinbase.domain.repository.AuthManager
 import com.stefanenko.coinbase.domain.util.UrlBuilder
 import com.stefanenko.coinbase.domain.util.oAuthScope.ScopeBuilder
 import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkStatic
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 import javax.inject.Inject
 
-class AuthManagerTest {
+@ExperimentalCoroutinesApi
+class AuthManagerTest: BaseDomainModuleTest() {
 
     @Inject
     lateinit var oAuth2Service: OAuth2Service
@@ -25,7 +25,7 @@ class AuthManagerTest {
     lateinit var urlBuilder: UrlBuilder
 
     init {
-        DaggerDomainComponentTest.builder().build().inject(this)
+        component.inject(this)
     }
 
     @Test
@@ -35,7 +35,9 @@ class AuthManagerTest {
 
         every { scopeBuilder.build(*anyVararg()) } returns "scope"
         every { urlBuilder.buildUrl(any(), *anyVararg(), any()) } returns createdUrl
-        every { Uri.parse(createdUrl)} returns mockk()
+
+        //TODO Should be run with android dependency
+        //every { Uri.parse(createdUrl)} returns
 
         val authManager = AuthManager(oAuth2Service, scopeBuilder, urlBuilder)
         val uri = authManager.startAuth()

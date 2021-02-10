@@ -35,10 +35,10 @@ interface CurrencyDao {
 
     @Transaction
     suspend fun updateExchangeRateTable(exchangeRateList: List<ExchangeRateEntity>): Boolean {
-        val itemAmount = getExchangeRatesAmount()
+        val itemsAmount = getExchangeRatesAmount()
         val deletedItemsAmount = clearExchangeRateTable()
 
-        if (itemAmount == deletedItemsAmount) {
+        if (itemsAmount == deletedItemsAmount) {
             val idList = insertCurrencyExchangeRates(exchangeRateList)
             if (idList.size == exchangeRateList.size) {
                 return true
@@ -46,7 +46,7 @@ interface CurrencyDao {
                 throw Exception("Adding new items exception")
             }
         } else {
-            throw Exception("Table clearing error")
+            throw Exception("Table clearing exception")
         }
     }
 }

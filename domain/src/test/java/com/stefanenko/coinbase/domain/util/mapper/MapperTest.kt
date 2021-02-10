@@ -1,5 +1,6 @@
 package com.stefanenko.coinbase.domain.util.mapper
 
+import com.BaseDomainModuleTest
 import com.google.common.truth.Truth.assertThat
 import com.stefanenko.coinbase.data.database.entity.ExchangeRateEntity
 import com.stefanenko.coinbase.data.database.entity.FavoriteExchangeRatesEntity
@@ -14,17 +15,19 @@ import com.stefanenko.coinbase.domain.entity.Profile
 import com.stefanenko.coinbase.domain.util.DateManager
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 import javax.inject.Inject
 
-class MapperTest {
+@ExperimentalCoroutinesApi
+class MapperTest: BaseDomainModuleTest() {
+
+    init {
+        component.inject(this)
+    }
 
     @Inject
     lateinit var dateManagerTest: DateManager
-
-    init {
-        DaggerDomainComponentTest.builder().build().inject(this)
-    }
 
     @Test
     fun `map ResponseExchangeRates to List of ExchangeRate`() {

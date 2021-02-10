@@ -60,6 +60,7 @@ class MainActivity : BaseActivity() {
 
     private fun setOnDestinationChangedListener() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
+            showDebugLog("Destination changed")
             if(destination.label == "ChartFragment" && !toolbar.menu.findItem(R.id.filter).isVisible){
                 toolbar.menu.findItem(R.id.filter).isVisible = true
             }else if(destination.label != "ChartFragment"){
@@ -67,5 +68,4 @@ class MainActivity : BaseActivity() {
             }
         }
     }
-
 }

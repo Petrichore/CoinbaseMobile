@@ -7,15 +7,18 @@ import com.stefanenko.coinbase.data.network.api.CoinbaseMarketApi
 import com.stefanenko.coinbase.data.network.api.CoinbaseProfileApi
 import com.stefanenko.coinbase.data.service.webSocket.RxWebSocketManager
 import com.stefanenko.coinbase.data.util.NetworkResponseHandler
-import com.stefanenko.coinbase.data.util.coroutineDispatcher.BaseCoroutineDispatcher
+import com.stefanenko.coinbase.data.util.coroutineDispatcher.CoroutinesTestRule
 import com.stefanenko.coinbase.data.util.coroutineDispatcher.TestDispatchersProvider
+import com.stefanenko.coinbase.data.util.scheduler.TestRxSchedulersProvider
 import dagger.Module
 import dagger.Provides
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okhttp3.OkHttpClient
 
+@ExperimentalCoroutinesApi
 @Module
-class DataTestModule {
+class DataTestModule(private val coroutineTestRule: CoroutinesTestRule) {
 
     @Provides
     fun providesMockAuthApi(): AuthApi {
@@ -55,5 +58,15 @@ class DataTestModule {
     @Provides
     fun provideCurrencyDao(): CurrencyDao{
         return mockk()
+    }
+
+    @Provides
+    fun provideTestRxScheduleProvider(): TestRxSchedulersProvider {
+        return TestRxSchedulersProvider()
+    }
+
+    @Provides
+    fun provideTestCoroutineDispatcher(): TestDispatchersProvider{
+        return TestDispatchersProvider(coroutineTestRule)
     }
 }

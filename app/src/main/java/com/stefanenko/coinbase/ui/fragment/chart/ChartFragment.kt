@@ -4,7 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.findNavController
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
@@ -24,6 +28,7 @@ class ChartFragment : BaseObserveFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: ChartViewModel
+    private lateinit var destinationChangeListener: NavController.OnDestinationChangedListener
 
     private var _binding: FragmentChartBinding? = null
     private val binding: FragmentChartBinding
@@ -40,24 +45,33 @@ class ChartFragment : BaseObserveFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val currencyParam = ChartFragmentArgs.fromBundle(requireArguments()).currency
-        val selectedCurrency: String
 
-        if (currencyParam != NOT_SPECIFIED) {
-            selectedCurrency = currencyParam
-            showDebugLog("DEEP LINK PARAM:::: $currencyParam")
-        } else {
-            selectedCurrency = DEFAULT_CURRENCY
-        }
+        val selectedCurrency: String = getChartCurrency()
 
-        (activity as MainActivity).toolbar.title = "${resources.getString(R.string.title_chart)} ($selectedCurrency)"
-
+        setUpUI(selectedCurrency)
         configChart(selectedCurrency)
+        setOnDestinationChangeListener()
+
         viewModel.subscribeOnCurrencyDataFlow(selectedCurrency)
     }
 
-    private fun configChart(selectedCurrency: String) {
+    private fun getChartCurrency(): String {
+        val currencyParam = ChartFragmentArgs.fromBundle(requireArguments()).currency
+        if (currencyParam != NOT_SPECIFIED) {
+            showDebugLog("DEEP LINK PARAM:::: $currencyParam")
+            return currencyParam
+        } else {
+            return DEFAULT_CURRENCY
+        }
+    }
 
+    private fun setUpUI(currency: String){
+        (activity as MainActivity).toolbar.menu.findItem(R.id.filter).isVisible = true
+        (activity as MainActivity).toolbar.title =
+            "${resources.getString(R.string.title_chart)} ($currency)"
+    }
+
+    private fun configChart(selectedCurrency: String) {
         val chartConfig = LineDataSet(mutableListOf(), selectedCurrency).apply {
             lineWidth = 3f
             setDrawValues(false)
@@ -84,6 +98,11 @@ class ChartFragment : BaseObserveFragment() {
                 is StateChart.OnNewMessage -> {
                     updateChart(state.currencyEntryList)
                 }
+
+                is StateChart.ShowErrorMessage -> {
+                    showInfoDialog("Websocket Error", state.error)
+                }
+
                 StateChart.StartLoading -> {
                     binding.chart.visibility = View.GONE
                     binding.progressBar.visibility = View.VISIBLE
@@ -92,13 +111,9 @@ class ChartFragment : BaseObserveFragment() {
                     binding.chart.visibility = View.VISIBLE
                     binding.progressBar.visibility = View.GONE
                 }
-            }
-        })
-
-        viewModel.stateScattering.observe(viewLifecycleOwner, { scatteringState ->
-            when (scatteringState) {
-                is StateScattering.ShowErrorMessage -> {
-                    showInfoDialog("Websocket Error", scatteringState.error)
+                StateChart.OnConnectToWebSocket -> {
+                    Toast.makeText(requireContext(), "Connection established", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         })
@@ -121,10 +136,21 @@ class ChartFragment : BaseObserveFragment() {
         )
     }
 
+    private fun setOnDestinationChangeListener() {
+        destinationChangeListener =
+            NavController.OnDestinationChangedListener { controller, destination, arguments ->
+                showDebugLog("Fragment_Destination_changed: ${destination.label}")
+                if (destination.label != "ChartFragment") {
+                    viewModel.unsubscribeFromCurrencyDataFlow()
+                }
+                binding.root.findNavController()
+                    .removeOnDestinationChangedListener(destinationChangeListener)
+            }
+        binding.root.findNavController().addOnDestinationChangedListener(destinationChangeListener)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.unsubscribeFromCurrencyDataFlow()
-        viewModel.scatterStates()
-        (activity as MainActivity).toolbar.menu.findItem(R.id.filter).isVisible = false
+        viewModel.setBlankState()
     }
 }

@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.stefanenko.coinbase.R
-import com.stefanenko.coinbase.databinding.FragmentExchangeRateBinding
 import com.stefanenko.coinbase.databinding.FragmentFavoritesBinding
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
@@ -73,6 +72,10 @@ class FavoritesFragment : BaseObserveFragment() {
                     recyclerAdapter.onInsertItem(state.position, state.item)
                 }
 
+                is StateFavorites.ShowErrorMessage -> {
+                    showInfoDialog("Error", state.error)
+                }
+
                 StateFavorites.GuestMode -> {
                     childFragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainer, FavoritesGuestModeFragment()).commit()
@@ -80,15 +83,8 @@ class FavoritesFragment : BaseObserveFragment() {
 
                 StateFavorites.StartLoading -> binding.progressBar.visibility = View.VISIBLE
                 StateFavorites.StopLoading -> binding.progressBar.visibility = View.GONE
-            }
-        })
 
-        viewModel.stateScattering.observe(viewLifecycleOwner, { stateScattering ->
-            when (stateScattering) {
-                is StateScattering.ShowErrorMessage -> {
-                    showInfoDialog("Error", stateScattering.error)
-                }
-                StateScattering.ShowRetrieveItemSnackBar -> {
+                StateFavorites.ShowRetrieveItemSnackBar -> {
                     snackbar.show()
                 }
             }
@@ -146,6 +142,7 @@ class FavoritesFragment : BaseObserveFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.scatterStates()
+        //snackbar.dismiss()
+        viewModel.setBlankState()
     }
 }

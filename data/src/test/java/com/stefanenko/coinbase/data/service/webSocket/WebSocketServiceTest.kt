@@ -1,76 +1,67 @@
 package com.stefanenko.coinbase.data.service.webSocket
 
-import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth
 import com.google.gson.Gson
-import com.stefanenko.coinbase.data.di.DaggerDataComponentTest
-import com.stefanenko.coinbase.data.di.DataTestModule
-import com.stefanenko.coinbase.data.network.dto.socket.CurrencyRateRT
+import com.stefanenko.coinbase.data.BaseDataModuleTest
+import com.stefanenko.coinbase.data.network.dto.socket.CurrencyRateInRealTime
 import com.stefanenko.coinbase.data.network.dto.socket.SocketResponse
-import com.stefanenko.coinbase.data.service.webSocket.RxWebSocketManager
-import com.stefanenko.coinbase.data.service.webSocket.WebSocketService
 import com.stefanenko.coinbase.data.util.scheduler.TestRxSchedulersProvider
 import io.mockk.every
 import io.reactivex.Observable
-import io.reactivex.android.plugins.RxAndroidPlugins
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 import javax.inject.Inject
 
-class WebSocketServiceTest {
+@ExperimentalCoroutinesApi
+class WebSocketServiceTest : BaseDataModuleTest() {
 
     init {
-        val component =
-            DaggerDataComponentTest.builder().dataTestModule(DataTestModule()).build()
         component.inject(this)
-
-        RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
     }
 
     @Inject
     lateinit var wsManager: RxWebSocketManager
 
-    private val schedulersProvider = TestRxSchedulersProvider()
+    @Inject
+    lateinit var schedulersProvider: TestRxSchedulersProvider
 
     @Test
     fun `dataStream emit data`() {
         val gson = Gson()
 
-        val currencyRateRT1 = CurrencyRateRT("BTC", "action", 64.0)
-        val currencyRateRT2 = CurrencyRateRT("BTC", "action", 128.0)
-        val currencyRateRT3 = CurrencyRateRT("BTC", "action", 256.0)
-        val currencyRateRT4 = CurrencyRateRT("BTC", "action", 512.0)
+        val currencyRateRT1 = CurrencyRateInRealTime("BTC", "action", 64.0)
+        val currencyRateRT2 = CurrencyRateInRealTime("BTC", "action", 128.0)
+        val currencyRateRT3 = CurrencyRateInRealTime("BTC", "action", 256.0)
+        val currencyRateRT4 = CurrencyRateInRealTime("BTC", "action", 512.0)
 
         val wsResponse1 = SocketResponse("table", "action", listOf(currencyRateRT1))
-        val wsResponse2 = SocketResponse("table", "action", listOf(currencyRateRT1, currencyRateRT2, currencyRateRT3))
+        val wsResponse2 = SocketResponse(
+            "table",
+            "action",
+            listOf(currencyRateRT1, currencyRateRT2, currencyRateRT3)
+        )
         val wsResponse3 = SocketResponse("table", "action", listOf(currencyRateRT4))
 
         val message1 = gson.toJson(wsResponse1)
         val message2 = gson.toJson(wsResponse2)
         val message3 = gson.toJson(wsResponse3)
 
-        every { wsManager.start(any()) } returns Observable.just(
-            RxWebSocketManager.RxWebSocketState.OnMessage(message1),
-            RxWebSocketManager.RxWebSocketState.OnMessage(message2),
-            RxWebSocketManager.RxWebSocketState.OnMessage(message3),
+        //set 3 event message
+        val observable: Observable<RxWebSocketManager.WebSocketEvent> = Observable.just(
+            RxWebSocketManager.WebSocketEvent.OnMessage(message1),
+            RxWebSocketManager.WebSocketEvent.OnMessage(message2),
+            RxWebSocketManager.WebSocketEvent.OnMessage(message3)
         )
+
+        every { wsManager.start(any()) } returns observable
 
         val webSocketService = WebSocketService(wsManager, schedulersProvider)
 
+        //count amount of event messages
         var counter = 0
         webSocketService.startDataStream("url") {
-            println(it.data)
-            when (counter) {
-                0 -> {
-                    assertThat(it.data.size).isEqualTo(1)
-                }
-                1 -> {
-                    assertThat(it.data.size).isEqualTo(3)
-                }
-                2 -> {
-                    assertThat(it.data.size).isEqualTo(1)
-                }
-            }
             counter++
         }
+        Truth.assertThat(counter).isEqualTo(3)
     }
 }

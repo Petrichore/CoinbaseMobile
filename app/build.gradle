@@ -18,10 +18,19 @@ android {
         applicationId "com.stefanenko.coinbase"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        debug {
+            keyPassword 'coinbase'
+            storeFile file('keystore/key-store')
+            storePassword 'coinbase'
+            keyAlias 'key-debug'
+        }
     }
 
     buildTypes {
@@ -56,6 +65,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     kaptTest "com.google.dagger:dagger-compiler:2.30.1"
+    testImplementation "android.arch.core:core-testing:1.1.1"
 
     //Layout
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'

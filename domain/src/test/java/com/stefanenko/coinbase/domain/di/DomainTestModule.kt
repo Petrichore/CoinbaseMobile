@@ -3,6 +3,7 @@ package com.stefanenko.coinbase.domain.di
 import com.stefanenko.coinbase.data.service.DatabaseService
 import com.stefanenko.coinbase.data.service.OAuth2Service
 import com.stefanenko.coinbase.data.service.RemoteDataService
+import com.stefanenko.coinbase.data.service.webSocket.WebSocketService
 import com.stefanenko.coinbase.domain.util.mapper.Mapper
 import com.stefanenko.coinbase.domain.util.DateManager
 import com.stefanenko.coinbase.domain.util.UrlBuilder
@@ -36,6 +37,11 @@ class DomainTestModule {
 
     @Provides
     fun providesScopeBuilder(): ScopeBuilder{
+        return mockk()
+    }
+
+    @Provides
+    fun providesWebSocketService(): WebSocketService {
         return mockk()
     }
 

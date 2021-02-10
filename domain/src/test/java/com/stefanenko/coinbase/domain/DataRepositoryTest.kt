@@ -1,5 +1,6 @@
 package com.stefanenko.coinbase.domain
 
+import com.BaseDomainModuleTest
 import com.google.common.truth.Truth.assertThat
 import com.stefanenko.coinbase.data.database.entity.ExchangeRateEntity
 import com.stefanenko.coinbase.data.database.entity.FavoriteExchangeRatesEntity
@@ -15,20 +16,18 @@ import com.stefanenko.coinbase.domain.entity.Profile
 import com.stefanenko.coinbase.domain.entity.ResponseState
 import com.stefanenko.coinbase.domain.util.mapper.Mapper
 import com.stefanenko.coinbase.domain.repository.DataRepository
-import com.stefanenko.coinbase.domain.util.CoroutinesTestRule
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Rule
+
 import org.junit.Test
 import javax.inject.Inject
 
-
 @ExperimentalCoroutinesApi
-class DataRepositoryTest {
+class DataRepositoryTest: BaseDomainModuleTest() {
 
     init {
-        DaggerDomainComponentTest.builder().build().inject(this)
+        component.inject(this)
     }
 
     @Inject
@@ -39,9 +38,6 @@ class DataRepositoryTest {
 
     @Inject
     lateinit var mapper: Mapper
-
-    @get:Rule
-    val coroutinesTestRule = CoroutinesTestRule()
 
     @Test
     fun `getExchangeRates returns ResponseState Data with list of ExchangeRate if locale list is empty`() {

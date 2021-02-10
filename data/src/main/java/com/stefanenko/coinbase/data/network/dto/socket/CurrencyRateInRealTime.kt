@@ -2,7 +2,7 @@ package com.stefanenko.coinbase.data.network.dto.socket
 
 import com.google.gson.annotations.SerializedName
 
-data class CurrencyRateRT(
+data class CurrencyRateInRealTime(
     @SerializedName("symbol")
     val symbol: String,
 
