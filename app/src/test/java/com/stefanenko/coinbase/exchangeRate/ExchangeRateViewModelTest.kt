@@ -2,7 +2,6 @@ package com.stefanenko.coinbase.exchangeRate
 
 import androidx.lifecycle.Observer
 import com.stefanenko.coinbase.BaseAppModuleTest
-import com.stefanenko.coinbase.di.DaggerAppComponentTest
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.domain.entity.ResponseState
 import com.stefanenko.coinbase.domain.useCase.ExchangeRateUseCases
@@ -48,23 +47,22 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
 
     @Test
     fun `viewModel state if getExchangeRates performed successfully and network connection exists`() {
-
         val baseCurrency = "USD"
         val expectedResponse: ResponseState.Data<List<ExchangeRate>> = ResponseState.Data(listOf())
         every { networkConnectivityManager.isConnected() } returns true
         every { networkConnectivityManager.regNetworkCallBack(any(), any()) } returns mockk()
         coEvery { exchangeRateUseCases.getExchangeRates(baseCurrency) } returns expectedResponse
 
-        val viewModelTest = ExchangeRatesViewModel(
+        val viewModel = ExchangeRatesViewModel(
             exchangeRateUseCases,
             favoriteUseCases,
             authPref,
             networkConnectivityManager
         )
-        viewModelTest.state.observeForever(stateObserver)
+        viewModel.state.observeForever(stateObserver)
 
         coroutinesTestRule.testDispatcher.runBlockingTest {
-            viewModelTest.getExchangeRates(baseCurrency)
+            viewModel.getExchangeRates(baseCurrency)
 
             verifyAll {
                 stateObserver.onChanged(StateExchangeRates.StartLoading)
@@ -76,25 +74,23 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
 
     @Test
     fun `viewModel state if network connection is lack and getCachedExchangeRates performed successfully`() {
-
         val baseCurrency = "USD"
         val expectedResponse: ResponseState.Data<List<ExchangeRate>> = ResponseState.Data(listOf())
-
 
         every { networkConnectivityManager.isConnected() } returns false
         every { networkConnectivityManager.regNetworkCallBack(any(), any()) } returns mockk()
         coEvery { exchangeRateUseCases.getCashedExchangeRates() } returns expectedResponse
 
-        val viewModelTest = ExchangeRatesViewModel(
+        val viewModel = ExchangeRatesViewModel(
             exchangeRateUseCases,
             favoriteUseCases,
             authPref,
             networkConnectivityManager
         )
-        viewModelTest.state.observeForever(stateObserver)
+        viewModel.state.observeForever(stateObserver)
 
         coroutinesTestRule.testDispatcher.runBlockingTest {
-            viewModelTest.getExchangeRates(baseCurrency)
+            viewModel.getExchangeRates(baseCurrency)
 
             verifyOrder {
                 stateObserver.onChanged(StateExchangeRates.StartLoading)
@@ -106,7 +102,6 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
 
     @Test
     fun `viewModel state if getExchangeRates returns error and network connection exists`() {
-
         val baseCurrency = "USD"
         val errorMessage = "getExchangeRates test error"
         val expectedResponse: ResponseState.Error<List<ExchangeRate>> =
@@ -116,16 +111,16 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
         every { networkConnectivityManager.regNetworkCallBack(any(), any()) } returns mockk()
         coEvery { exchangeRateUseCases.getExchangeRates(baseCurrency) } returns expectedResponse
 
-        val viewModelTest = ExchangeRatesViewModel(
+        val viewModel = ExchangeRatesViewModel(
             exchangeRateUseCases,
             favoriteUseCases,
             authPref,
             networkConnectivityManager
         )
-        viewModelTest.state.observeForever(stateObserver)
+        viewModel.state.observeForever(stateObserver)
 
         coroutinesTestRule.testDispatcher.runBlockingTest {
-            viewModelTest.getExchangeRates(baseCurrency)
+            viewModel.getExchangeRates(baseCurrency)
 
             verifyOrder {
                 stateObserver.onChanged(StateExchangeRates.StartLoading)
@@ -138,7 +133,6 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
 
     @Test
     fun `viewModel state if getExchangeRates returns error and network connection connection is lack`() {
-
         val baseCurrency = "USD"
         val errorMessage = "getExchangeRates test error"
         val expectedResponse: ResponseState.Error<List<ExchangeRate>> =
@@ -148,16 +142,16 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
         every { networkConnectivityManager.regNetworkCallBack(any(), any()) } returns mockk()
         coEvery { exchangeRateUseCases.getCashedExchangeRates() } returns expectedResponse
 
-        val viewModelTest = ExchangeRatesViewModel(
+        val viewModel = ExchangeRatesViewModel(
             exchangeRateUseCases,
             favoriteUseCases,
             authPref,
             networkConnectivityManager
         )
-        viewModelTest.state.observeForever(stateObserver)
+        viewModel.state.observeForever(stateObserver)
 
         coroutinesTestRule.testDispatcher.runBlockingTest {
-            viewModelTest.getExchangeRates(baseCurrency)
+            viewModel.getExchangeRates(baseCurrency)
 
             verifyOrder {
                 stateObserver.onChanged(StateExchangeRates.StartLoading)
@@ -169,7 +163,6 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
 
     @Test
     fun `viewModel state if updateExchangeRates performed successfully`() {
-
         val baseCurrency = "USD"
         val expectedResponse: ResponseState.Data<List<ExchangeRate>> = ResponseState.Data(listOf())
 
@@ -177,16 +170,16 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
         every { networkConnectivityManager.regNetworkCallBack(any(), any()) } returns mockk()
         coEvery { exchangeRateUseCases.updateExchangeRates(baseCurrency) } returns expectedResponse
 
-        val viewModelTest = ExchangeRatesViewModel(
+        val viewModel = ExchangeRatesViewModel(
             exchangeRateUseCases,
             favoriteUseCases,
             authPref,
             networkConnectivityManager
         )
-        viewModelTest.state.observeForever(stateObserver)
+        viewModel.state.observeForever(stateObserver)
 
         coroutinesTestRule.testDispatcher.runBlockingTest {
-            viewModelTest.updateExchangeRates(baseCurrency)
+            viewModel.updateExchangeRates(baseCurrency)
 
             verifyOrder {
                 stateObserver.onChanged(StateExchangeRates.StartLoading)
@@ -198,7 +191,6 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
 
     @Test
     fun `viewModel state if updateExchangeRates returns error`() {
-
         val baseCurrency = "USD"
         val expectedResponse: ResponseState.Error<List<ExchangeRate>> =
             ResponseState.Error("updateExchangeRates test error")
@@ -207,16 +199,16 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
         every { networkConnectivityManager.regNetworkCallBack(any(), any()) } returns mockk()
         coEvery { exchangeRateUseCases.updateExchangeRates(baseCurrency) } returns expectedResponse
 
-        val viewModelTest = ExchangeRatesViewModel(
+        val viewModel = ExchangeRatesViewModel(
             exchangeRateUseCases,
             favoriteUseCases,
             authPref,
             networkConnectivityManager
         )
-        viewModelTest.state.observeForever(stateObserver)
+        viewModel.state.observeForever(stateObserver)
 
         coroutinesTestRule.testDispatcher.runBlockingTest {
-            viewModelTest.updateExchangeRates(baseCurrency)
+            viewModel.updateExchangeRates(baseCurrency)
 
             verifyOrder {
                 stateObserver.onChanged(StateExchangeRates.StartLoading)
@@ -228,7 +220,6 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
 
     @Test
     fun `viewModel state if updateExchangeRates not performed due to lack of internet connection`() {
-
         val baseCurrency = "USD"
         val expectedResponse: ResponseState.Error<List<ExchangeRate>> =
             ResponseState.Error(ERROR_INTERNET_CONNECTION)
@@ -237,16 +228,16 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
         every { networkConnectivityManager.regNetworkCallBack(any(), any()) } returns mockk()
         coEvery { exchangeRateUseCases.updateExchangeRates(baseCurrency) } returns expectedResponse
 
-        val viewModelTest = ExchangeRatesViewModel(
+        val viewModel = ExchangeRatesViewModel(
             exchangeRateUseCases,
             favoriteUseCases,
             authPref,
             networkConnectivityManager
         )
-        viewModelTest.state.observeForever(stateObserver)
+        viewModel.state.observeForever(stateObserver)
 
         coroutinesTestRule.testDispatcher.runBlockingTest {
-            viewModelTest.updateExchangeRates(baseCurrency)
+            viewModel.updateExchangeRates(baseCurrency)
 
             verifyOrder {
                 stateObserver.onChanged(StateExchangeRates.StartLoading)
@@ -258,7 +249,6 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
 
     @Test
     fun `viewModel state if addToFavorite performed successfully`() {
-
         val fakeExchangeRate: ExchangeRate = mockk()
         val expectedResponse: ResponseState.Data<Boolean> = ResponseState.Data(true)
 
@@ -266,16 +256,16 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
         every { networkConnectivityManager.regNetworkCallBack(any(), any()) } returns mockk()
         coEvery { favoriteUseCases.addFavorite(fakeExchangeRate) } returns expectedResponse
 
-        val viewModelTest = ExchangeRatesViewModel(
+        val viewModel = ExchangeRatesViewModel(
             exchangeRateUseCases,
             favoriteUseCases,
             authPref,
             networkConnectivityManager
         )
-        viewModelTest.state.observeForever(stateObserver)
+        viewModel.state.observeForever(stateObserver)
 
         coroutinesTestRule.testDispatcher.runBlockingTest {
-            viewModelTest.addCurrencyToFavorite(fakeExchangeRate)
+            viewModel.addCurrencyToFavorite(fakeExchangeRate)
 
             verifyOrder {
                 stateObserver.onChanged(StateExchangeRates.ShowSnackBar)
@@ -285,7 +275,6 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
 
     @Test
     fun `viewModel state if addToFavorite returns error`() {
-
         val fakeExchangeRate: ExchangeRate = mockk()
         val errorMessage = "addToFavorite test error"
         val expectedResponse: ResponseState.Error<Boolean> = ResponseState.Error(errorMessage)
@@ -294,16 +283,16 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
         every { networkConnectivityManager.regNetworkCallBack(any(), any()) } returns mockk()
         coEvery { favoriteUseCases.addFavorite(fakeExchangeRate) } returns expectedResponse
 
-        val viewModelTest = ExchangeRatesViewModel(
+        val viewModel = ExchangeRatesViewModel(
             exchangeRateUseCases,
             favoriteUseCases,
             authPref,
             networkConnectivityManager
         )
-        viewModelTest.state.observeForever(stateObserver)
+        viewModel.state.observeForever(stateObserver)
 
         coroutinesTestRule.testDispatcher.runBlockingTest {
-            viewModelTest.addCurrencyToFavorite(fakeExchangeRate)
+            viewModel.addCurrencyToFavorite(fakeExchangeRate)
 
             verifyOrder {
                 stateObserver.onChanged(StateExchangeRates.ShowErrorMessage(errorMessage))
@@ -313,23 +302,22 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
 
     @Test
     fun `viewModel state if checkAbilityToSaveFavorites and user is auth`() {
-
         val fakeExchangeRate: ExchangeRate = mockk()
 
         every { networkConnectivityManager.isConnected() } returns false
         every { networkConnectivityManager.regNetworkCallBack(any(), any()) } returns mockk()
         coEvery { authPref.isUserAuth() } returns true
 
-        val viewModelTest = ExchangeRatesViewModel(
+        val viewModel = ExchangeRatesViewModel(
             exchangeRateUseCases,
             favoriteUseCases,
             authPref,
             networkConnectivityManager
         )
-        viewModelTest.state.observeForever(stateObserver)
+        viewModel.state.observeForever(stateObserver)
 
         coroutinesTestRule.testDispatcher.runBlockingTest {
-            viewModelTest.checkAbilityToSaveCurrency(fakeExchangeRate)
+            viewModel.checkAbilityToSaveCurrency(fakeExchangeRate)
 
             verifyOrder {
                 stateObserver.onChanged(StateExchangeRates.ShowDialogSaveToFav(fakeExchangeRate))
@@ -339,23 +327,22 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
 
     @Test
     fun `viewModel state if checkAbilityToSaveFavorites and user isn't auth yet`() {
-
         val fakeExchangeRate: ExchangeRate = mockk()
 
         every { networkConnectivityManager.isConnected() } returns false
         every { networkConnectivityManager.regNetworkCallBack(any(), any()) } returns mockk()
         coEvery { authPref.isUserAuth() } returns true
 
-        val viewModelTest = ExchangeRatesViewModel(
+        val viewModel = ExchangeRatesViewModel(
             exchangeRateUseCases,
             favoriteUseCases,
             authPref,
             networkConnectivityManager
         )
-        viewModelTest.state.observeForever(stateObserver)
+        viewModel.state.observeForever(stateObserver)
 
         coroutinesTestRule.testDispatcher.runBlockingTest {
-            viewModelTest.checkAbilityToSaveCurrency(fakeExchangeRate)
+            viewModel.checkAbilityToSaveCurrency(fakeExchangeRate)
 
             verifyOrder {
                 stateObserver.onChanged(StateExchangeRates.ShowDialogSaveToFav(fakeExchangeRate))
@@ -365,20 +352,19 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
 
     @Test
     fun `viewModel state will change to BlankState after setBlankState is called`() {
-
         every { networkConnectivityManager.isConnected() } returns false
         every { networkConnectivityManager.regNetworkCallBack(any(), any()) } returns mockk()
 
-        val viewModelTest = ExchangeRatesViewModel(
+        val viewModel = ExchangeRatesViewModel(
             exchangeRateUseCases,
             favoriteUseCases,
             authPref,
             networkConnectivityManager
         )
-        viewModelTest.state.observeForever(stateObserver)
+        viewModel.state.observeForever(stateObserver)
 
         coroutinesTestRule.testDispatcher.runBlockingTest {
-            viewModelTest.setBlankState()
+            viewModel.setBlankState()
 
             verifyOrder {
                 stateObserver.onChanged(StateExchangeRates.BlankState)

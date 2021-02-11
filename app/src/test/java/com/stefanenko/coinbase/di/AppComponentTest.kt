@@ -6,8 +6,10 @@ import com.stefanenko.coinbase.chartFilter.ChartFilterViewModelTest
 import com.stefanenko.coinbase.exchangeRate.ExchangeRateViewModelTest
 import com.stefanenko.coinbase.favorites.FavoritesViewModelTest
 import com.stefanenko.coinbase.login.LoginViewModelTest
+import com.stefanenko.coinbase.profile.ProfileViewModelTest
 import com.stefanenko.coinbase.splash.SplashViewModelTest
 import com.stefanenko.coinbase.ui.fragment.chart.chartFilter.FilterViewModel
+import com.stefanenko.coinbase.util.viewModelErrorHandler.ViewModelErrorHandlerTest
 import dagger.Component
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -26,4 +28,6 @@ interface AppComponentTest {
     fun inject(favoritesViewModelTest: FavoritesViewModelTest)
     fun inject(favoritesChartViewModelTest: ChartViewModelTest)
     fun inject(filterViewModelTest: ChartFilterViewModelTest)
+    fun inject(profileViewModelTest: ProfileViewModelTest)
+    fun inject(viewModelErrorHandlerTest: ViewModelErrorHandlerTest)
 }

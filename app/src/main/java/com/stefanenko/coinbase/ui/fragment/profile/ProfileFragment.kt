@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.stefanenko.coinbase.R
-import com.stefanenko.coinbase.databinding.FragmentFavoritesForGuestsBinding
 import com.stefanenko.coinbase.databinding.FragmentProfileBinding
 import com.stefanenko.coinbase.domain.entity.Profile
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
@@ -57,6 +56,9 @@ class ProfileFragment : BaseObserveFragment() {
                 is StateProfile.LogOut -> {
                     (activity as MainActivity).startActivityInNewTask(LoginActivity::class.java)
                 }
+                is StateProfile.ShowErrorMessage -> {
+                    showInfoDialog("Error", it.error)
+                }
 
                 StateProfile.GuestMode -> {
                     childFragmentManager.beginTransaction()
@@ -86,13 +88,6 @@ class ProfileFragment : BaseObserveFragment() {
                 }
             }
         })
-        viewModel.stateScattering.observe(viewLifecycleOwner, { stateScattering ->
-            when (stateScattering) {
-                is StateScattering.ShowErrorMessage -> {
-                    showInfoDialog("Error", stateScattering.error)
-                }
-            }
-        })
     }
 
     private fun setListeners() {
@@ -119,6 +114,6 @@ class ProfileFragment : BaseObserveFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.scatterStates()
+        viewModel.setBlankState()
     }
 }

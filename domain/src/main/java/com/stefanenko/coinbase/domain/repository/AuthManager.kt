@@ -97,7 +97,9 @@ class AuthManager @Inject constructor(
             )
             val responseToken = oAuth2Service.refreshToken(requestRefreshToken)
 
-            return ResponseState.Data(Pair(responseToken.accessToken, responseToken.refreshToken))
+            return ResponseState.Data(
+                Pair("$tokenType${responseToken.accessToken}", responseToken.refreshToken)
+            )
         } catch (e: Exception) {
             e.printStackTrace()
             return ResponseState.Error(e.message ?: "ERROR_MESSAGE_MISSING")

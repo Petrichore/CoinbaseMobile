@@ -66,7 +66,7 @@ open class RetrofitApiModule {
 
     @Provides
     open fun providesCoinbaseProfileApi(): CoinbaseProfileApi {
-        return retrofitBitmex.create(CoinbaseProfileApi::class.java)
+        return retrofitCoinbase.create(CoinbaseProfileApi::class.java)
     }
 
     @Provides
