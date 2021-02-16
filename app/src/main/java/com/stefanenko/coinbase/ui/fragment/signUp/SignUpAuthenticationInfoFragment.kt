@@ -28,11 +28,14 @@ class SignUpAuthenticationInfoFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as SignUpActivity).toolbar.title =
-            resources.getString(R.string.toolbar_title_sign_up_step_3)
 
         binding.sigUpStep3NextBtn.setOnClickListener {
             findNavController().navigate(R.id.action_signUpAuthenticationInfoFragment_to_signUpFinishFragment)
         }
     }
+
+//    override fun setUpGeneralUIElements() {
+//        (activity as SignUpActivity).toolbar.title =
+//            resources.getString(R.string.toolbar_title_sign_up_step_3)
+//    }
 }

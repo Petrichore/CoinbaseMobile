@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -17,11 +18,13 @@ import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import com.stefanenko.coinbase.ui.fragment.guestMode.ProfileGuestModeFragment
 import javax.inject.Inject
 
-class ProfileFragment : BaseObserveFragment() {
+class ProfileFragment: BaseObserveFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var viewModel: ProfileViewModel
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    lateinit var viewModel: ProfileViewModel
 
     private var _binding: FragmentProfileBinding? = null
     private val binding: FragmentProfileBinding
@@ -31,7 +34,7 @@ class ProfileFragment : BaseObserveFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View{
+    ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -39,11 +42,11 @@ class ProfileFragment : BaseObserveFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setListeners()
-        (activity as MainActivity).toolbar.title = resources.getString(R.string.toolbar_title_profile)
         viewModel.getProfile()
     }
 
     override fun initViewModel() {
+        print("InitViewModel")
         viewModel = ViewModelProvider(this, viewModelFactory)[ProfileViewModel::class.java]
     }
 
@@ -54,7 +57,7 @@ class ProfileFragment : BaseObserveFragment() {
                     initProfileData(it.profile)
                 }
                 is StateProfile.LogOut -> {
-                    (activity as MainActivity).startActivityInNewTask(LoginActivity::class.java)
+                    startActivityInNewTask(LoginActivity::class.java)
                 }
                 is StateProfile.ShowErrorMessage -> {
                     showInfoDialog("Error", it.error)
@@ -89,6 +92,7 @@ class ProfileFragment : BaseObserveFragment() {
             }
         })
     }
+
 
     private fun setListeners() {
         binding.logOutBtn.setOnClickListener {

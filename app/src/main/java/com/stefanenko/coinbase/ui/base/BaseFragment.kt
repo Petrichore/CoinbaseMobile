@@ -1,12 +1,14 @@
 package com.stefanenko.coinbase.ui.base
 
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.fragment.app.Fragment
 
 abstract class BaseFragment : Fragment() {
@@ -82,5 +84,13 @@ abstract class BaseFragment : Fragment() {
             }
             .create()
             .show()
+    }
+
+    fun startActivityInNewTask(activityClass: Class<out Activity>) {
+        val intent = Intent(requireContext(), activityClass).apply {
+            flags.and(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        }
+        startActivity(intent)
+        finishAffinity(requireActivity())
     }
 }

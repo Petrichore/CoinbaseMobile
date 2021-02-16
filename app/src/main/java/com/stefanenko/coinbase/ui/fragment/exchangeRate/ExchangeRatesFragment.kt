@@ -47,8 +47,8 @@ class ExchangeRatesFragment : BaseObserveFragment() {
         initRecycler()
         configSnackBar()
         configSwipeToRefresh()
-        (activity as MainActivity).toolbar.title =
-            resources.getString(R.string.toolbar_title_exchange_rate)
+        showDebugLog(":::::${(activity as MainActivity).toolbar.toString()}")
+
     }
 
     private fun configSnackBar() {

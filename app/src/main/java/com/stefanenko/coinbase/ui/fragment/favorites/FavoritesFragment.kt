@@ -48,7 +48,7 @@ class FavoritesFragment : BaseObserveFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as MainActivity).toolbar.title = resources.getString(R.string.title_favorites)
+
         configSnackBar()
         viewModel.getFavorites()
     }

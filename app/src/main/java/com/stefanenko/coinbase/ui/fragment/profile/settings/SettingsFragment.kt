@@ -38,7 +38,6 @@ class SettingsFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as MainActivity).toolbar.title = resources.getString(R.string.toolbar_title_settings)
         setListeners()
         setCurrentSwitchersState()
     }

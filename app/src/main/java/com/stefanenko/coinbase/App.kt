@@ -14,16 +14,10 @@ class App : Application(), HasAndroidInjector {
     @Inject
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
 
-    companion object {
-//        lateinit var authTokenManager: TokenManager
-//            private set
-    }
-
     override fun onCreate() {
         Log.d("APP", "App created")
         super.onCreate()
         initDagger()
-        //authTokenManager = AuthTokenManager.build(clientId, clientSecret)
     }
 
     private fun initDagger() {

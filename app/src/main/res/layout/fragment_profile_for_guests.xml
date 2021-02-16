@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:background="@color/white"
+    android:id="@+id/fragment_profile_guest_mode"
     android:layout_height="match_parent">
 
     <View

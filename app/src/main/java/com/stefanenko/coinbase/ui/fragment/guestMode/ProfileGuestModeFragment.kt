@@ -27,7 +27,7 @@ class ProfileGuestModeFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.toAuthBtn.setOnClickListener {
-            (activity as MainActivity).startActivityInNewTask(LoginActivity::class.java)
+            startActivityInNewTask(LoginActivity::class.java)
         }
     }
 }

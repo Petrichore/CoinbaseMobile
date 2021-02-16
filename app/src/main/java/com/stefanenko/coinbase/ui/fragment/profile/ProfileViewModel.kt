@@ -25,6 +25,7 @@ class ProfileViewModel @Inject constructor(
     val state = MutableLiveData<StateProfile>()
 
     fun getProfile() {
+        print("GetProfile called")
         if (authPreferences.isUserAuth()) {
             if (connectivityManager.isConnected()) {
                 state.value = StateProfile.StartLoading

@@ -183,7 +183,7 @@ class ProfileViewModelTest : BaseAppModuleTest() {
     }
 
     @Test
-    fun `viewModel state when getProfile and user is authed but network is lack`() {
+    fun `viewModel state when user is authed but network is lack`() {
 
         every { authPref.isUserAuth() } returns true
         every { connectivityManager.isConnected() } returns false

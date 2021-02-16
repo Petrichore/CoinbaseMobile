@@ -29,6 +29,7 @@ class ChartFragment : BaseObserveFragment() {
     lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: ChartViewModel
     private lateinit var destinationChangeListener: NavController.OnDestinationChangedListener
+    private lateinit var selectedCurrency: String
 
     private var _binding: FragmentChartBinding? = null
     private val binding: FragmentChartBinding
@@ -44,14 +45,11 @@ class ChartFragment : BaseObserveFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        selectedCurrency = getChartCurrency()
         super.onViewCreated(view, savedInstanceState)
 
-        val selectedCurrency: String = getChartCurrency()
-
-        setUpUI(selectedCurrency)
         configChart(selectedCurrency)
         setOnDestinationChangeListener()
-
         viewModel.subscribeOnCurrencyDataFlow(selectedCurrency)
     }
 
@@ -63,12 +61,6 @@ class ChartFragment : BaseObserveFragment() {
         } else {
             return DEFAULT_CURRENCY
         }
-    }
-
-    private fun setUpUI(currency: String){
-        (activity as MainActivity).toolbar.menu.findItem(R.id.filter).isVisible = true
-        (activity as MainActivity).toolbar.title =
-            "${resources.getString(R.string.title_chart)} ($currency)"
     }
 
     private fun configChart(selectedCurrency: String) {
@@ -118,6 +110,7 @@ class ChartFragment : BaseObserveFragment() {
             }
         })
     }
+
 
     private fun updateChart(itemList: List<Entry>) {
         val data = binding.chart.data
