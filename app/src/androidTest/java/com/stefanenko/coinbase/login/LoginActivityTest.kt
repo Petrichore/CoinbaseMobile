@@ -22,7 +22,7 @@ import org.junit.runner.RunWith
 class LoginActivityTest {
 
     @get:Rule
-    var mainActivityScenarioRule = ActivityScenarioRule(LoginActivity::class.java)
+    var activityScenario = ActivityScenarioRule(LoginActivity::class.java)
 
     @Test
     fun click_on_quickStart_btn_open_MainActivity() {

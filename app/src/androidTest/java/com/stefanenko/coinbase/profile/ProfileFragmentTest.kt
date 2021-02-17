@@ -1,5 +1,6 @@
 package com.stefanenko.coinbase.profile
 
+
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -49,7 +50,7 @@ class ProfileFragmentTest {
 
         onView(withId(R.id.fragment_profile_layout)).check(matches(isDisplayed()))
         onView(withId(R.id.logOutBtn)).perform(click())
-        Thread.sleep(1000)
+
 //        onView(withId(R.id.activity_login_layout)).check(matches(isDisplayed()))
     }
 }

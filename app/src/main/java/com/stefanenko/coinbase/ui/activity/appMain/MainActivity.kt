@@ -88,7 +88,7 @@ class MainActivity : BaseActivity() {
 
             if (destination.label == getString(R.string.nav_label_chart) && !toolbar.menu.findItem(R.id.filter).isVisible) {
                 toolbar.menu.findItem(R.id.filter).isVisible = true
-            } else if (destination.label != getString(R.string.nav_label_chart) && !toolbar.menu.findItem(R.id.filter).isVisible
+            } else if (destination.label != getString(R.string.nav_label_chart) && toolbar.menu.findItem(R.id.filter).isVisible
             ) {
                 toolbar.menu.findItem(R.id.filter).isVisible = false
             }
