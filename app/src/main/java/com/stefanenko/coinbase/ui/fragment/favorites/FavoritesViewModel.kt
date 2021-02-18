@@ -8,13 +8,14 @@ import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.domain.entity.ResponseState
 import com.stefanenko.coinbase.domain.repository.DataRepository
 import com.stefanenko.coinbase.domain.useCase.FavoritesUseCases
+import com.stefanenko.coinbase.util.espressoIdleResource.EspressoIdlingResource
 import com.stefanenko.coinbase.util.preferences.AuthPreferences
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class FavoritesViewModel @Inject constructor(
     private val favoritesUseCases: FavoritesUseCases,
-    private val authPreferences: AuthPreferences
+    val authPreferences: AuthPreferences
 ) : ViewModel() {
 
     val state = MutableLiveData<StateFavorites>()
@@ -25,6 +26,7 @@ class FavoritesViewModel @Inject constructor(
     fun getFavorites() {
         if (authPreferences.isUserAuth()) {
             state.value = StateFavorites.StartLoading
+            EspressoIdlingResource.increment()
             viewModelScope.launch {
                 val response = favoritesUseCases.getFavorites()
                 when (response) {
@@ -38,6 +40,7 @@ class FavoritesViewModel @Inject constructor(
                     }
                 }
                 state.value = StateFavorites.StopLoading
+                EspressoIdlingResource.decrement()
             }
         } else {
             state.value = StateFavorites.GuestMode
@@ -66,6 +69,7 @@ class FavoritesViewModel @Inject constructor(
     }
 
     private fun deleteItem(exchangeRate: ExchangeRate) {
+        EspressoIdlingResource.increment()
         viewModelScope.launch {
             val response = favoritesUseCases.deleteFavorite(exchangeRate)
             when (response) {
@@ -74,6 +78,7 @@ class FavoritesViewModel @Inject constructor(
                     StateFavorites.ShowErrorMessage(response.error)
             }
             clearDeleteItemData()
+            EspressoIdlingResource.decrement()
         }
     }
 

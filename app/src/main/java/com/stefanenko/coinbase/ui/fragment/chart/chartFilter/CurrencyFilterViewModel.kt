@@ -10,31 +10,31 @@ import com.stefanenko.coinbase.util.networkConnectivity.NetworkConnectivityManag
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class FilterViewModel @Inject constructor(
+class CurrencyFilterViewModel @Inject constructor(
     private val chartFilterUseCases: ChartFilterUseCases,
     private val connectivityManager: NetworkConnectivityManager
 ) : ViewModel() {
 
-    val state = MutableLiveData<StateFilter>()
+    val state = MutableLiveData<StateCurrencyFilter>()
 
     fun getActiveCurrency() {
         if (connectivityManager.isConnected()) {
-            state.value = StateFilter.StartLoading
+            state.value = StateCurrencyFilter.StartLoading
             viewModelScope.launch {
                 val response = chartFilterUseCases.getActiveCurrency()
 
                 when (response) {
                     is ResponseState.Data -> state.value =
-                        StateFilter.ShowCurrencyRecycler(response.data)
+                        StateCurrencyFilter.ShowCurrencyRecycler(response.data)
 
                     is ResponseState.Error -> state.value =
-                        StateFilter.ShowErrorMessage(response.error)
+                        StateCurrencyFilter.ShowErrorMessage(response.error)
                 }
 
-                state.value = StateFilter.StopLoading
+                state.value = StateCurrencyFilter.StopLoading
             }
         } else {
-            state.value = StateFilter.ShowErrorMessage(ERROR_INTERNET_CONNECTION)
+            state.value = StateCurrencyFilter.ShowErrorMessage(ERROR_INTERNET_CONNECTION)
         }
     }
 }

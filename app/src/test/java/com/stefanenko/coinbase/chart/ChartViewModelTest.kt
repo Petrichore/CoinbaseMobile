@@ -1,5 +1,6 @@
 package com.stefanenko.coinbase.chart
 
+import android.text.TextUtils
 import androidx.lifecycle.Observer
 import com.github.mikephil.charting.data.Entry
 import com.stefanenko.coinbase.BaseAppModuleTest
@@ -11,6 +12,7 @@ import com.stefanenko.coinbase.ui.fragment.chart.StateChart
 import com.stefanenko.coinbase.ui.fragment.exchangeRate.ExchangeRatesViewModel
 import com.stefanenko.coinbase.ui.fragment.exchangeRate.StateExchangeRates
 import com.stefanenko.coinbase.util.Mapper
+import com.stefanenko.coinbase.util.espressoIdleResource.EspressoIdlingResource
 import com.stefanenko.coinbase.util.networkConnectivity.NetworkConnectivityManager
 import io.mockk.*
 import io.mockk.verifyOrder
@@ -26,6 +28,13 @@ class ChartViewModelTest : BaseAppModuleTest() {
 
     init {
         component.inject(this)
+
+        mockkStatic(TextUtils::class)
+        every { TextUtils.isEmpty(any()) } returns false
+
+        mockkObject(EspressoIdlingResource)
+        every { EspressoIdlingResource.increment() } returns Unit
+        every { EspressoIdlingResource.decrement() } returns Unit
     }
 
     @Inject

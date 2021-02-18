@@ -1,12 +1,13 @@
 package com.stefanenko.coinbase.ui.fragment.profile
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stefanenko.coinbase.domain.entity.Profile
 import com.stefanenko.coinbase.domain.entity.ResponseState
 import com.stefanenko.coinbase.domain.exception.ERROR_UNAUTHORIZED
 import com.stefanenko.coinbase.domain.useCase.ProfileUseCases
-import com.stefanenko.coinbase.ui.base.BaseViewModel
 import com.stefanenko.coinbase.util.errorHandler.ViewModelErrorHandler
 import com.stefanenko.coinbase.util.exception.ERROR_INTERNET_CONNECTION
 import com.stefanenko.coinbase.util.networkConnectivity.NetworkConnectivityManager
@@ -18,14 +19,13 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val profileUseCases: ProfileUseCases,
     private val connectivityManager: NetworkConnectivityManager,
-    private val authPreferences: AuthPreferences,
+    val authPreferences: AuthPreferences,
     private val viewModelErrorHandler: ViewModelErrorHandler
-) : BaseViewModel() {
+) : ViewModel() {
 
     val state = MutableLiveData<StateProfile>()
 
     fun getProfile() {
-        print("GetProfile called")
         if (authPreferences.isUserAuth()) {
             if (connectivityManager.isConnected()) {
                 state.value = StateProfile.StartLoading

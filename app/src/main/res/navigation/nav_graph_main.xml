@@ -42,7 +42,7 @@
         android:label="@string/nav_label_favorites" />
     <fragment
         android:id="@+id/filterFragment"
-        android:name="com.stefanenko.coinbase.ui.fragment.chart.chartFilter.FilterFragment"
+        android:name="com.stefanenko.coinbase.ui.fragment.chart.chartFilter.CurrencyFilterFragment"
         android:label="@string/nav_label_filter" >
         <action
             android:id="@+id/action_filterFragment_to_chart"

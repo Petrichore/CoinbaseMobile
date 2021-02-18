@@ -8,9 +8,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.stefanenko.coinbase.R
-import com.stefanenko.coinbase.databinding.FragmentChartFilterBinding
+import com.stefanenko.coinbase.databinding.FragmentCurrencyFilterBinding
 import com.stefanenko.coinbase.domain.entity.ActiveCurrency
-import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
 import com.stefanenko.coinbase.ui.base.BaseObserveFragment
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import com.stefanenko.coinbase.ui.base.decorators.GridItemDecorator
@@ -18,7 +17,7 @@ import com.stefanenko.coinbase.ui.fragment.chart.chartFilter.recycler.AdapterAct
 import com.stefanenko.coinbase.util.toDp
 import javax.inject.Inject
 
-class FilterFragment : BaseObserveFragment() {
+class CurrencyFilterFragment : BaseObserveFragment() {
 
     companion object {
         const val FILTER_NAV_RESULT_KEY = "FILTER_NAV_RESULT_KEY"
@@ -26,10 +25,10 @@ class FilterFragment : BaseObserveFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var viewModel: FilterViewModel
+    private lateinit var viewModelCurrency: CurrencyFilterViewModel
 
-    private var _binding: FragmentChartFilterBinding? = null
-    private val binding: FragmentChartFilterBinding
+    private var _binding: FragmentCurrencyFilterBinding? = null
+    private val binding: FragmentCurrencyFilterBinding
         get() = _binding!!
 
     override fun onCreateView(
@@ -37,26 +36,29 @@ class FilterFragment : BaseObserveFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentChartFilterBinding.inflate(inflater, container, false)
+        _binding = FragmentCurrencyFilterBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getActiveCurrency()
+        viewModelCurrency.getActiveCurrency()
     }
 
     override fun initViewModel() {
-        viewModel = ViewModelProvider(this, viewModelFactory)[FilterViewModel::class.java]
+        viewModelCurrency = ViewModelProvider(this, viewModelFactory)[CurrencyFilterViewModel::class.java]
     }
 
     override fun initObservers() {
-        viewModel.state.observe(viewLifecycleOwner, {
+        viewModelCurrency.state.observe(viewLifecycleOwner, {
             when (it) {
-                is StateFilter.ShowCurrencyRecycler -> initRecycler(it.itemList)
-                is StateFilter.ShowErrorMessage -> showInfoDialog("Error", it.error)
-                StateFilter.StartLoading -> binding.progressBar.visibility = View.VISIBLE
-                StateFilter.StopLoading -> binding.progressBar.visibility = View.GONE
+                is StateCurrencyFilter.ShowCurrencyRecycler -> initRecycler(it.itemList)
+                is StateCurrencyFilter.ShowErrorMessage -> showInfoDialog(
+                    resources.getString(R.string.alert_dialog_title_error),
+                    it.error
+                )
+                StateCurrencyFilter.StartLoading -> binding.progressBar.visibility = View.VISIBLE
+                StateCurrencyFilter.StopLoading -> binding.progressBar.visibility = View.GONE
             }
         })
     }
@@ -65,14 +67,9 @@ class FilterFragment : BaseObserveFragment() {
         with(binding.activeCurrencyRecycler) {
             layoutManager = GridLayoutManager(context, 2)
             adapter = AdapterActiveCurrency(itemList) {
-                findNavController().navigate(FilterFragmentDirections.actionFilterFragmentToChart(it.name))
+                findNavController().navigate(CurrencyFilterFragmentDirections.actionFilterFragmentToChart(it.name))
             }
             addItemDecoration(GridItemDecorator(16.toDp()))
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        (activity as MainActivity).menuBottomView.visibility = View.VISIBLE
     }
 }

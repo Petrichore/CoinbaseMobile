@@ -1,11 +1,10 @@
 package com.stefanenko.coinbase.ui.activity.login
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.databinding.ActivityLoginBinding
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
 import com.stefanenko.coinbase.ui.base.BaseActivity
@@ -21,7 +20,6 @@ class LoginActivity : BaseActivity() {
 
     lateinit var binding: ActivityLoginBinding
 
-    @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
@@ -50,10 +48,12 @@ class LoginActivity : BaseActivity() {
                     startActivityInNewTask(MainActivity::class.java)
                 }
                 is StateLogin.ShowErrorMessage -> {
-                    showInfoDialog("Error", it.error)
+                    showInfoDialog(resources.getString(R.string.alert_dialog_title_error), it.error)
                 }
                 is StateLogin.OpenCoinbaseAuthPage -> {
-                    val intent = Intent(Intent.ACTION_VIEW, it.uri)
+                    val intent = Intent(Intent.ACTION_VIEW, it.uri).apply {
+                        addCategory(Intent.CATEGORY_BROWSABLE)
+                    }
                     startActivity(intent)
                 }
                 StateLogin.StartLoading -> {
@@ -82,13 +82,5 @@ class LoginActivity : BaseActivity() {
         if (intent.action != null && intent.action == Intent.ACTION_VIEW && intent.data != null) {
             viewModel.completeAuth(intent.data!!)
         }
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        showDebugLog("onNewIntent")
-        if (intent != null) {
-            Log.d("Intent", "$intent")
-        }
-        super.onNewIntent(intent)
     }
 }

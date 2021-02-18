@@ -1,5 +1,6 @@
 package com.stefanenko.coinbase.exchangeRate
 
+import android.text.TextUtils
 import androidx.lifecycle.Observer
 import com.stefanenko.coinbase.BaseAppModuleTest
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
@@ -8,6 +9,7 @@ import com.stefanenko.coinbase.domain.useCase.ExchangeRateUseCases
 import com.stefanenko.coinbase.domain.useCase.FavoritesUseCases
 import com.stefanenko.coinbase.ui.fragment.exchangeRate.ExchangeRatesViewModel
 import com.stefanenko.coinbase.ui.fragment.exchangeRate.StateExchangeRates
+import com.stefanenko.coinbase.util.espressoIdleResource.EspressoIdlingResource
 import com.stefanenko.coinbase.util.exception.ERROR_INTERNET_CONNECTION
 import com.stefanenko.coinbase.util.networkConnectivity.NetworkConnectivityManager
 import com.stefanenko.coinbase.util.preferences.AuthPreferences
@@ -24,6 +26,13 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
 
     init {
         component.inject(this)
+
+        mockkStatic(TextUtils::class)
+        every { TextUtils.isEmpty(any()) } returns false
+
+        mockkObject(EspressoIdlingResource)
+        every { EspressoIdlingResource.increment() } returns Unit
+        every { EspressoIdlingResource.decrement() } returns Unit
     }
 
     @Inject
@@ -86,6 +95,7 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
             favoriteUseCases,
             authPref,
             networkConnectivityManager
+
         )
         viewModel.state.observeForever(stateObserver)
 
@@ -183,7 +193,11 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
 
             verifyOrder {
                 stateObserver.onChanged(StateExchangeRates.StartLoading)
-                stateObserver.onChanged(StateExchangeRates.UpdateExchangeRateRecycler(expectedResponse.data))
+                stateObserver.onChanged(
+                    StateExchangeRates.UpdateExchangeRateRecycler(
+                        expectedResponse.data
+                    )
+                )
                 stateObserver.onChanged(StateExchangeRates.StopLoading)
             }
         }
@@ -240,7 +254,6 @@ class ExchangeRateViewModelTest : BaseAppModuleTest() {
             viewModel.updateExchangeRates(baseCurrency)
 
             verifyOrder {
-                stateObserver.onChanged(StateExchangeRates.StartLoading)
                 stateObserver.onChanged(StateExchangeRates.ShowErrorMessage(expectedResponse.error))
                 stateObserver.onChanged(StateExchangeRates.StopLoading)
             }

@@ -1,18 +1,17 @@
 package com.stefanenko.coinbase.chartFilter
 
+import android.text.TextUtils
 import androidx.lifecycle.Observer
 import com.stefanenko.coinbase.BaseAppModuleTest
 import com.stefanenko.coinbase.domain.entity.ActiveCurrency
 import com.stefanenko.coinbase.domain.entity.ResponseState
 import com.stefanenko.coinbase.domain.useCase.ChartFilterUseCases
-import com.stefanenko.coinbase.ui.fragment.chart.chartFilter.FilterViewModel
-import com.stefanenko.coinbase.ui.fragment.chart.chartFilter.StateFilter
+import com.stefanenko.coinbase.ui.fragment.chart.chartFilter.CurrencyFilterViewModel
+import com.stefanenko.coinbase.ui.fragment.chart.chartFilter.StateCurrencyFilter
+import com.stefanenko.coinbase.util.espressoIdleResource.EspressoIdlingResource
 import com.stefanenko.coinbase.util.exception.ERROR_INTERNET_CONNECTION
 import com.stefanenko.coinbase.util.networkConnectivity.NetworkConnectivityManager
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verifyOrder
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
@@ -20,10 +19,17 @@ import org.junit.Test
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
-class ChartFilterViewModelTest : BaseAppModuleTest() {
+class ChartCurrencyFilterViewModelTest : BaseAppModuleTest() {
 
     init {
         component.inject(this)
+
+        mockkStatic(TextUtils::class)
+        every { TextUtils.isEmpty(any()) } returns false
+
+        mockkObject(EspressoIdlingResource)
+        every { EspressoIdlingResource.increment() } returns Unit
+        every { EspressoIdlingResource.decrement() } returns Unit
     }
 
     @Inject
@@ -32,11 +38,11 @@ class ChartFilterViewModelTest : BaseAppModuleTest() {
     @Inject
     lateinit var connectivityManager: NetworkConnectivityManager
 
-    private val stateObserver: Observer<StateFilter> = mockk()
+    private val stateCurrencyObserver: Observer<StateCurrencyFilter> = mockk()
 
     @Before
     fun setUp() {
-        every { stateObserver.onChanged(any()) } returns Unit
+        every { stateCurrencyObserver.onChanged(any()) } returns Unit
     }
 
     @Test
@@ -48,16 +54,16 @@ class ChartFilterViewModelTest : BaseAppModuleTest() {
         every { connectivityManager.isConnected() } returns true
         coEvery { chartFilterUseCases.getActiveCurrency() } returns responseStateData
 
-        val viewMode = FilterViewModel(chartFilterUseCases, connectivityManager)
-        viewMode.state.observeForever(stateObserver)
+        val viewMode = CurrencyFilterViewModel(chartFilterUseCases, connectivityManager)
+        viewMode.state.observeForever(stateCurrencyObserver)
 
         coroutinesTestRule.testDispatcher.runBlockingTest {
             viewMode.getActiveCurrency()
 
             verifyOrder {
-                stateObserver.onChanged(StateFilter.StartLoading)
-                stateObserver.onChanged(StateFilter.ShowCurrencyRecycler(dataList))
-                stateObserver.onChanged(StateFilter.StopLoading)
+                stateCurrencyObserver.onChanged(StateCurrencyFilter.StartLoading)
+                stateCurrencyObserver.onChanged(StateCurrencyFilter.ShowCurrencyRecycler(dataList))
+                stateCurrencyObserver.onChanged(StateCurrencyFilter.StopLoading)
             }
         }
     }
@@ -66,14 +72,14 @@ class ChartFilterViewModelTest : BaseAppModuleTest() {
     fun `viewModel state if network connection is lack`() {
         every { connectivityManager.isConnected() } returns false
 
-        val viewMode = FilterViewModel(chartFilterUseCases, connectivityManager)
-        viewMode.state.observeForever(stateObserver)
+        val viewMode = CurrencyFilterViewModel(chartFilterUseCases, connectivityManager)
+        viewMode.state.observeForever(stateCurrencyObserver)
 
         coroutinesTestRule.testDispatcher.runBlockingTest {
             viewMode.getActiveCurrency()
 
             verifyOrder {
-                stateObserver.onChanged(StateFilter.ShowErrorMessage(ERROR_INTERNET_CONNECTION))
+                stateCurrencyObserver.onChanged(StateCurrencyFilter.ShowErrorMessage(ERROR_INTERNET_CONNECTION))
             }
         }
     }
@@ -86,16 +92,16 @@ class ChartFilterViewModelTest : BaseAppModuleTest() {
         every { connectivityManager.isConnected() } returns true
         coEvery { chartFilterUseCases.getActiveCurrency() } returns responseStateData
 
-        val viewMode = FilterViewModel(chartFilterUseCases, connectivityManager)
-        viewMode.state.observeForever(stateObserver)
+        val viewMode = CurrencyFilterViewModel(chartFilterUseCases, connectivityManager)
+        viewMode.state.observeForever(stateCurrencyObserver)
 
         coroutinesTestRule.testDispatcher.runBlockingTest {
             viewMode.getActiveCurrency()
 
             verifyOrder {
-                stateObserver.onChanged(StateFilter.StartLoading)
-                stateObserver.onChanged(StateFilter.ShowErrorMessage(errorMessage))
-                stateObserver.onChanged(StateFilter.StopLoading)
+                stateCurrencyObserver.onChanged(StateCurrencyFilter.StartLoading)
+                stateCurrencyObserver.onChanged(StateCurrencyFilter.ShowErrorMessage(errorMessage))
+                stateCurrencyObserver.onChanged(StateCurrencyFilter.StopLoading)
             }
         }
     }

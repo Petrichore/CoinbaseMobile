@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.fragment.app.Fragment
+import com.stefanenko.coinbase.R
 
 abstract class BaseFragment : Fragment() {
 
@@ -61,16 +62,15 @@ abstract class BaseFragment : Fragment() {
         AlertDialog.Builder(context)
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton("Ok") { dialog, _ ->
+            .setPositiveButton(resources.getString(R.string.alert_dialog_positive_button_ok)) { dialog, _ ->
                 positiveAction.invoke(dialog)
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            .setNegativeButton(resources.getString(R.string.alert_dialog_negative_button_cancel)) { dialog, _ ->
                 negativeAction.invoke(dialog)
             }
             .create()
             .show()
     }
-
 
     protected fun showInfoDialog(
         title: String,
@@ -79,7 +79,7 @@ abstract class BaseFragment : Fragment() {
         AlertDialog.Builder(context)
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton("Ok") { dialog, _ ->
+            .setPositiveButton(resources.getString(R.string.alert_dialog_positive_button_ok)) { dialog, _ ->
                 dialog.dismiss()
             }
             .create()

@@ -8,6 +8,7 @@ import com.stefanenko.coinbase.domain.entity.CurrencyMarketInfo
 import com.stefanenko.coinbase.domain.entity.WebSocketState
 import com.stefanenko.coinbase.domain.useCase.ChartUseCases
 import com.stefanenko.coinbase.util.Mapper
+import com.stefanenko.coinbase.util.espressoIdleResource.EspressoIdlingResource
 import com.stefanenko.coinbase.util.exception.ERROR_INTERNET_CONNECTION
 import com.stefanenko.coinbase.util.networkConnectivity.NetworkConnectivityManager
 import io.reactivex.disposables.Disposable
@@ -33,6 +34,7 @@ class ChartViewModel @Inject constructor(
     fun subscribeOnCurrencyDataFlow(currency: String) {
         if (connectivityManager.isConnected()) {
             state.value = StateChart.StartLoading
+            EspressoIdlingResource.increment()
             disposable = chartUseCases.subscribeOnCurrencyDataFlow(currency) { wsState ->
                 when (wsState) {
                     is WebSocketState.Data -> {
@@ -49,6 +51,7 @@ class ChartViewModel @Inject constructor(
                     is WebSocketState.Connected -> {
                         state.value = StateChart.OnConnectToWebSocket
                         state.value = StateChart.StopLoading
+                        EspressoIdlingResource.decrement()
                     }
                 }
             }

@@ -6,7 +6,7 @@ import com.stefanenko.coinbase.ui.activity.login.LoginViewModel
 import com.stefanenko.coinbase.ui.activity.splash.SplashViewModel
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import com.stefanenko.coinbase.ui.fragment.chart.ChartViewModel
-import com.stefanenko.coinbase.ui.fragment.chart.chartFilter.FilterViewModel
+import com.stefanenko.coinbase.ui.fragment.chart.chartFilter.CurrencyFilterViewModel
 import com.stefanenko.coinbase.ui.fragment.exchangeRate.ExchangeRatesViewModel
 import com.stefanenko.coinbase.ui.fragment.favorites.FavoritesViewModel
 import com.stefanenko.coinbase.ui.fragment.profile.ProfileViewModel
@@ -47,8 +47,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(FilterViewModel::class)
-    abstract fun bindFilterViewModel(chartViewModel: FilterViewModel): ViewModel
+    @ViewModelKey(CurrencyFilterViewModel::class)
+    abstract fun bindFilterViewModel(chartViewModelCurrency: CurrencyFilterViewModel): ViewModel
 
     @Binds
     @IntoMap

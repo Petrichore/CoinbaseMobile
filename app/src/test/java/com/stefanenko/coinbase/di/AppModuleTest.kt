@@ -3,6 +3,7 @@ package com.stefanenko.coinbase.di
 import com.stefanenko.coinbase.domain.useCase.*
 import com.stefanenko.coinbase.util.Mapper
 import com.stefanenko.coinbase.util.errorHandler.ViewModelErrorHandler
+import com.stefanenko.coinbase.util.espressoIdleResource.EspressoIdlingResource
 import com.stefanenko.coinbase.util.networkConnectivity.NetworkConnectivityManager
 import com.stefanenko.coinbase.util.preferences.AuthPreferences
 import dagger.Module

@@ -8,6 +8,7 @@ import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.domain.entity.ResponseState
 import com.stefanenko.coinbase.domain.useCase.ExchangeRateUseCases
 import com.stefanenko.coinbase.domain.useCase.FavoritesUseCases
+import com.stefanenko.coinbase.util.espressoIdleResource.EspressoIdlingResource
 import com.stefanenko.coinbase.util.exception.ERROR_INTERNET_CONNECTION
 import com.stefanenko.coinbase.util.networkConnectivity.NetworkConnectivityManager
 import com.stefanenko.coinbase.util.preferences.AuthPreferences
@@ -51,6 +52,7 @@ class ExchangeRatesViewModel @Inject constructor(
     private fun getExchangeRatesRemote(baseCurrency: String) {
         Log.d("PERFORM GET EXCHANGE RATE CALLED", "Yeeees")
         state.value = StateExchangeRates.StartLoading
+        EspressoIdlingResource.increment()
         viewModelScope.launch {
             when (val responseState = exchangeUseCases.getExchangeRates(baseCurrency)) {
                 is ResponseState.Data -> {
@@ -63,12 +65,14 @@ class ExchangeRatesViewModel @Inject constructor(
                 }
             }
             state.value = StateExchangeRates.StopLoading
+            EspressoIdlingResource.decrement()
         }
     }
 
     fun getCashedExchangeRates() {
         Log.d("CASHED GET EXCHANGE RATE CALLED", "Yeeees")
         state.value = StateExchangeRates.StartLoading
+        EspressoIdlingResource.increment()
         viewModelScope.launch {
             when (val responseState = exchangeUseCases.getCashedExchangeRates()) {
                 is ResponseState.Data -> {
@@ -81,13 +85,16 @@ class ExchangeRatesViewModel @Inject constructor(
                 }
             }
             state.value = StateExchangeRates.StopLoading
+            EspressoIdlingResource.decrement()
         }
     }
 
     fun updateExchangeRates(baseCurrency: String) {
         Log.d("UPDATE EXCHANGE RATE CALLED", "Yeeees")
-        state.value = StateExchangeRates.StartLoading
         if (connectivityManager.isConnected()) {
+            state.value = StateExchangeRates.StartLoading
+            EspressoIdlingResource.increment()
+
             viewModelScope.launch {
                 when (val responseState = exchangeUseCases.updateExchangeRates(baseCurrency)) {
                     is ResponseState.Data -> {
@@ -100,6 +107,7 @@ class ExchangeRatesViewModel @Inject constructor(
                     }
                 }
                 state.value = StateExchangeRates.StopLoading
+                EspressoIdlingResource.decrement()
             }
         } else {
             state.value = StateExchangeRates.ShowErrorMessage(ERROR_INTERNET_CONNECTION)
@@ -108,6 +116,7 @@ class ExchangeRatesViewModel @Inject constructor(
     }
 
     fun addCurrencyToFavorite(exchangeRate: ExchangeRate) {
+        EspressoIdlingResource.increment()
         viewModelScope.launch {
             val response = favoritesUseCases.addFavorite(exchangeRate)
             when (response) {
@@ -119,6 +128,7 @@ class ExchangeRatesViewModel @Inject constructor(
                         StateExchangeRates.ShowErrorMessage(response.error)
                 }
             }
+            EspressoIdlingResource.decrement()
         }
     }
 

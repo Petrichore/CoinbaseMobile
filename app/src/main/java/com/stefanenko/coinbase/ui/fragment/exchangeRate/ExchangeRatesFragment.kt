@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.databinding.FragmentExchangeRateBinding
-import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
 import com.stefanenko.coinbase.ui.base.BaseObserveFragment
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import com.stefanenko.coinbase.ui.base.decorators.VerticalItemDecoration
@@ -47,29 +46,22 @@ class ExchangeRatesFragment : BaseObserveFragment() {
         initRecycler()
         configSnackBar()
         configSwipeToRefresh()
-        showDebugLog(":::::${(activity as MainActivity).toolbar.toString()}")
-
     }
 
     private fun configSnackBar() {
         snackbar =
-            Snackbar.make(requireView(), "Currency successfully saved", Snackbar.LENGTH_SHORT)
-                .apply {
-                    this.view.setBackgroundColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.main_green
-                        )
-                    )
-                    setTextColor(ContextCompat.getColor(context, R.color.white))
-                    setAction("OK") { snackbar.dismiss() }
-                    setActionTextColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.color_secondary_variant
-                        )
-                    )
+            Snackbar.make(
+                requireView(),
+                resources.getString(R.string.snackBar_text_currency_saved),
+                Snackbar.LENGTH_SHORT
+            ).apply {
+                view.setBackgroundColor(ContextCompat.getColor(context, R.color.main_green))
+                setTextColor(ContextCompat.getColor(context, R.color.white))
+                setActionTextColor(ContextCompat.getColor(context, R.color.color_secondary_variant))
+                setAction(resources.getString(R.string.snackBar_positive_button_ok)) {
+                    snackbar.dismiss()
                 }
+            }
     }
 
     private fun initRecycler() {
@@ -112,14 +104,14 @@ class ExchangeRatesFragment : BaseObserveFragment() {
                 }
 
                 is StateExchangeRates.ShowErrorMessage -> {
-                    showInfoDialog("Error", it.error)
+                    showInfoDialog(resources.getString(R.string.alert_dialog_title_error), it.error)
                 }
 
                 is StateExchangeRates.ShowDialogSaveToFav -> {
                     showAlertDialog(
-                        "Add to favorite",
+                        resources.getString(R.string.alert_dialog_title_add_to_favorite),
                         "Add ${it.exchangeRate.currencyName} to favorite?",
-                        { dialog ->
+                        { _ ->
                             viewModel.addCurrencyToFavorite(it.exchangeRate)
                         },
                         { dialog ->
@@ -153,14 +145,15 @@ class ExchangeRatesFragment : BaseObserveFragment() {
 
                 StateExchangeRates.ShowDialogUserAuthMissing -> {
                     showInfoDialog(
-                        "Auth missing",
-                        "Please, authorize to be able to save data locally"
+                        resources.getString(R.string.alert_dialog_title_auth_missing),
+                        resources.getString(R.string.alert_dialog_message_auth_messing),
                     )
                 }
 
                 StateExchangeRates.ShowSnackBar -> snackbar.show()
 
-                StateExchangeRates.BlankState -> { }
+                StateExchangeRates.BlankState -> {
+                }
 
             }
         })

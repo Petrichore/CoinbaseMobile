@@ -1,5 +1,6 @@
 package com.stefanenko.coinbase.favorites
 
+import android.text.TextUtils
 import androidx.lifecycle.Observer
 import com.google.common.truth.Truth
 import com.stefanenko.coinbase.BaseAppModuleTest
@@ -9,11 +10,9 @@ import com.stefanenko.coinbase.domain.entity.ResponseState
 import com.stefanenko.coinbase.domain.useCase.FavoritesUseCases
 import com.stefanenko.coinbase.ui.fragment.favorites.FavoritesViewModel
 import com.stefanenko.coinbase.ui.fragment.favorites.StateFavorites
+import com.stefanenko.coinbase.util.espressoIdleResource.EspressoIdlingResource
 import com.stefanenko.coinbase.util.preferences.AuthPreferences
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verifyOrder
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
@@ -25,6 +24,13 @@ class FavoritesViewModelTest : BaseAppModuleTest() {
 
     init {
         component.inject(this)
+
+        mockkStatic(TextUtils::class)
+        every { TextUtils.isEmpty(any()) } returns false
+
+        mockkObject(EspressoIdlingResource)
+        every { EspressoIdlingResource.increment() } returns Unit
+        every { EspressoIdlingResource.decrement() } returns Unit
     }
 
     @Inject

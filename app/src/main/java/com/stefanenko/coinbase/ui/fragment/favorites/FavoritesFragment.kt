@@ -27,7 +27,7 @@ class FavoritesFragment : BaseObserveFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var viewModel: FavoritesViewModel
+    lateinit var viewModel: FavoritesViewModel
 
     private var _binding: FragmentFavoritesBinding? = null
     private val binding: FragmentFavoritesBinding
@@ -73,7 +73,7 @@ class FavoritesFragment : BaseObserveFragment() {
                 }
 
                 is StateFavorites.ShowErrorMessage -> {
-                    showInfoDialog("Error", state.error)
+                    showInfoDialog(resources.getString(R.string.alert_dialog_title_error), state.error)
                 }
 
                 StateFavorites.GuestMode -> {
@@ -92,12 +92,17 @@ class FavoritesFragment : BaseObserveFragment() {
     }
 
     private fun configSnackBar() {
-        snackbar = Snackbar.make(requireView(), "Exchange rate have removed", Snackbar.LENGTH_SHORT)
+        snackbar = Snackbar.make(
+            requireView(),
+            resources.getString(R.string.snackBar_text_exchange_rate_removed),
+            Snackbar.LENGTH_SHORT
+        )
             .apply {
-                this.view.setBackgroundColor(ContextCompat.getColor(context, R.color.main_green))
+                view.setBackgroundColor(ContextCompat.getColor(context, R.color.main_green))
                 setTextColor(ContextCompat.getColor(context, R.color.white))
                 setActionTextColor(ContextCompat.getColor(context, R.color.color_secondary))
-                setAction("Retrieve") {
+
+                setAction(resources.getString(R.string.snackBar_text_undo_remove)) {
                     viewModel.cancelItemDelete()
                 }
                 addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {

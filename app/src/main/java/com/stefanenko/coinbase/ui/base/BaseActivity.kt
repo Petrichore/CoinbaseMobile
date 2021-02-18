@@ -24,7 +24,6 @@ abstract class BaseActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
             when (resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
                 Configuration.UI_MODE_NIGHT_NO -> {
-                    Log.e("Change bar color", "yesss")
                     window.navigationBarColor = getColor(R.color.white)
                     window.statusBarColor = getColor(R.color.white)
                 }
@@ -56,7 +55,10 @@ abstract class BaseActivity : AppCompatActivity() {
         Log.d(":::${this.javaClass.name}", message)
     }
 
-    fun startActivityInNewTask(activityClass: Class<out Activity>, paramKeyValue: Pair<String, String>) {
+    fun startActivityInNewTask(
+        activityClass: Class<out Activity>,
+        paramKeyValue: Pair<String, String>
+    ) {
         val intent = Intent(this, activityClass).apply {
             flags.and(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             putExtra(paramKeyValue.first, paramKeyValue.second)
@@ -89,10 +91,10 @@ abstract class BaseActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton("Ok") { dialog, _ ->
+            .setPositiveButton(resources.getString(R.string.alert_dialog_positive_button_ok)) { dialog, _ ->
                 positiveAction.invoke(dialog)
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            .setNegativeButton(resources.getString(R.string.alert_dialog_negative_button_cancel)) { dialog, _ ->
                 negativeAction.invoke(dialog)
             }
             .create()
@@ -106,7 +108,7 @@ abstract class BaseActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton("Ok") { dialog, _ ->
+            .setPositiveButton(resources.getString(R.string.alert_dialog_positive_button_ok)) { dialog, _ ->
                 dialog.dismiss()
             }
             .create()

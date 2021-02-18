@@ -33,7 +33,6 @@ class MainActivity : BaseActivity() {
         navController = findNavController(R.id.navHostFragmentMain)
         NavigationUI.setupWithNavController(menuBottomView, navController)
         setOnDestinationChangedListener()
-        showDebugLog("MainActivityCreated")
     }
 
     private fun setUpTopAppBar() {
@@ -78,7 +77,6 @@ class MainActivity : BaseActivity() {
                     toolbar.title = getString(R.string.toolbar_title_chart)
                 }
                 getString(R.string.nav_label_filter) -> {
-                    menuBottomView.visibility = View.GONE
                     toolbar.title = getString(R.string.toolbar_title_filter)
                 }
                 getString(R.string.nav_label_settings) -> {
@@ -88,9 +86,17 @@ class MainActivity : BaseActivity() {
 
             if (destination.label == getString(R.string.nav_label_chart) && !toolbar.menu.findItem(R.id.filter).isVisible) {
                 toolbar.menu.findItem(R.id.filter).isVisible = true
-            } else if (destination.label != getString(R.string.nav_label_chart) && toolbar.menu.findItem(R.id.filter).isVisible
+            } else if (destination.label != getString(R.string.nav_label_chart) && toolbar.menu.findItem(
+                    R.id.filter
+                ).isVisible
             ) {
                 toolbar.menu.findItem(R.id.filter).isVisible = false
+            }
+
+            if (destination.label == getString(R.string.nav_label_filter)) {
+                menuBottomView.visibility = View.GONE
+            } else if (menuBottomView.visibility == View.GONE) {
+                menuBottomView.visibility = View.VISIBLE
             }
         }
     }
