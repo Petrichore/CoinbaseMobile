@@ -60,6 +60,6 @@ class SplashActivity : BaseActivity() {
     private fun navigateToNextScreen() {
         Handler().postDelayed({
             viewModel.checkUserAuth()
-        }, 500)
+        }, 3000)
     }
 }

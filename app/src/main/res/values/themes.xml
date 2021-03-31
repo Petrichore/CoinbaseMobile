@@ -7,7 +7,6 @@
         <item name="colorPrimaryVariant">#7A009688</item>
         <item name="colorOnPrimary">@color/white</item>
 
-
         <!-- Secondary brand color. -->
         <item name="colorSecondary">#FFC107</item>
         <item name="colorSecondaryVariant">#FF9800</item>
@@ -17,10 +16,8 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="Theme.CoinbaseMobile.Launcher">
+        <item name="android:windowBackground">@drawable/launch_bg</item>
+    </style>
 
-
-    <!--    <style name="TextAppearanceNotoRegularFont" parent="TextAppearance.MaterialComponents.Body1">-->
-    <!--        <item name="android:fontFamily">@font/noto_sans_jp_regular</item>-->
-    <!--        <item name="android:textColor"></item>-->
-    <!--    </style>-->
 </resources>

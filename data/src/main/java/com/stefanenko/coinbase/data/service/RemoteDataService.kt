@@ -22,15 +22,16 @@ class RemoteDataService @Inject constructor(
 ) {
 
     suspend fun getExchangeRates(baseCurrency: String): ResponseExchangerRates {
-        return withContext(dispatcher.io()) {
-            try {
-                val response = marketApi.getExchangeRatesRequest(baseCurrency)
-                val defaultResponse = responseHandler.handleResponse(response)
-                defaultResponse.data
-            } catch (e: Exception) {
-                throw e
-            }
+        return try {
+            val response = marketApi.getExchangeRatesRequest(baseCurrency)
+            val defaultResponse = responseHandler.handleResponse(response)
+            defaultResponse.data
+        } catch (e: Exception) {
+            throw e
         }
+//        return withContext(dispatcher.io()) {
+//
+//        }
     }
 
     suspend fun getProfile(accessToken: String): ResponseProfile {

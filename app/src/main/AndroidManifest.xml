@@ -15,33 +15,36 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CoinbaseMobile">
 
-        <activity android:name=".ui.activity.splash.SplashActivity">
+        <activity
+            android:name=".ui.activity.splash.SplashActivity"
+            android:theme="@style/Theme.CoinbaseMobile.Launcher">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.VIEW" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
-<!--                <data-->
-<!--                    android:host="www.bitmex.com"-->
-<!--                    android:pathPrefix="/app/trade/"-->
-<!--                    android:pathPattern=".*\\"-->
-<!--                    android:scheme="https" />-->
-<!--            </intent-filter>-->
+            <!--            <intent-filter>-->
+            <!--                <action android:name="android.intent.action.VIEW" />-->
+            <!--                <category android:name="android.intent.category.DEFAULT" />-->
+            <!--                <category android:name="android.intent.category.BROWSABLE" />-->
+            <!--                <data-->
+            <!--                    android:host="www.bitmex.com"-->
+            <!--                    android:pathPrefix="/app/trade/"-->
+            <!--                    android:pathPattern=".*\\"-->
+            <!--                    android:scheme="https" />-->
+            <!--            </intent-filter>-->
         </activity>
 
         <activity android:name=".ui.activity.login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
                     android:host="www.coinbase.com"
-                    android:pathPrefix="/oauth/authorize/"
                     android:pathPattern=".*\\"
+                    android:pathPrefix="/oauth/authorize/"
                     android:scheme="https" />
             </intent-filter>
 
@@ -49,7 +52,7 @@
 
         <activity android:name=".ui.activity.signup.SignUpActivity" />
         <activity android:name=".ui.activity.appMain.MainActivity">
-            <nav-graph android:value="@navigation/nav_graph_main"/>
+            <nav-graph android:value="@navigation/nav_graph_main" />
         </activity>
 
     </application>

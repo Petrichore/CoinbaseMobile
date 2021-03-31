@@ -20,6 +20,10 @@ class NetworkConnectivityManager @Inject constructor(appContext: Context) {
             ?: false
     }
 
+    private val pevConnectivityType = ""
+    private val wifiType = "wifi"
+    private val cellularType = "cellular"
+
     fun regNetworkCallBack(
         onAvailable: (Network) -> Unit,
         onLost: (Network) -> Unit
@@ -27,14 +31,19 @@ class NetworkConnectivityManager @Inject constructor(appContext: Context) {
         val callBack = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 super.onAvailable(network)
-                Log.d("NETWORK STATE:::", "AVAILABLE")
+                Log.d("NETWORKINFO", "AVAILABLE")
                 onAvailable.invoke(network)
             }
 
             override fun onLost(network: Network) {
                 super.onLost(network)
-                Log.d("NETWORK STATE:::", "LOST")
-                onLost.invoke(network)
+                Log.d(
+                    "NETWORKINFO",
+                    "LOST(is connected:${isConnected()})\nALL NETWORKS: ${cm.allNetworks}"
+                )
+                if (!isConnected()) {
+                    onLost.invoke(network)
+                }
             }
         }
         cm.registerDefaultNetworkCallback(callBack)
@@ -47,6 +56,16 @@ class NetworkConnectivityManager @Inject constructor(appContext: Context) {
 
     private fun getNetworkInfo(): NetworkCapabilities? {
         val activeNetwork = cm.activeNetwork
+        Log.d(
+            "NETWORKINFO",
+            "Active: \nWIFI:${
+                cm.getNetworkCapabilities(activeNetwork)
+                    ?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+            }\nMOBILE:${
+                cm.getNetworkCapabilities(activeNetwork)
+                    ?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+            }"
+        )
         return cm.getNetworkCapabilities(activeNetwork)
     }
 }

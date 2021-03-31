@@ -13,5 +13,6 @@
     <color name="progress_bar_grey">#B1B1B1</color>
     <color name="color_secondary">#FFC107</color>
     <color name="color_secondary_variant">#FF9800</color>
+    <color name="color_bg_dark_mode">#3D4547</color>
 
 </resources>

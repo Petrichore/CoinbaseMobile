@@ -1,17 +1,20 @@
 package com.stefanenko.coinbase.ui.fragment.exchangeRate
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.databinding.FragmentExchangeRateBinding
 import com.stefanenko.coinbase.ui.base.BaseObserveFragment
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
+import com.stefanenko.coinbase.ui.base.decorators.GridItemDecorator
 import com.stefanenko.coinbase.ui.base.decorators.VerticalItemDecoration
 import com.stefanenko.coinbase.ui.fragment.exchangeRate.ExchangeRatesViewModel.Companion.DEFAULT_BASE_CURRENCY
 import com.stefanenko.coinbase.ui.fragment.exchangeRate.recycler.AdapterExchangeRate
@@ -43,7 +46,7 @@ class ExchangeRatesFragment : BaseObserveFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initRecycler()
+        configRecycler()
         configSnackBar()
         configSwipeToRefresh()
     }
@@ -64,14 +67,24 @@ class ExchangeRatesFragment : BaseObserveFragment() {
             }
     }
 
-    private fun initRecycler() {
-        with(binding.exchangeRatesRecycler) {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+    private fun configRecycler() {
+        binding.exchangeRatesRecycler.let {
+            when (resources.configuration.orientation) {
+                Configuration.ORIENTATION_LANDSCAPE -> {
+                    it.layoutManager = GridLayoutManager(context, 2)
+                    it.addItemDecoration(GridItemDecorator(14.toDp()))
+                }
+                else -> {
+                    it.layoutManager =
+                        LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                    it.addItemDecoration(VerticalItemDecoration(14.toDp()))
+                }
+            }
+
             recyclerAdapter = AdapterExchangeRate {
                 viewModel.checkAbilityToSaveCurrency(it)
             }
-            adapter = recyclerAdapter
-            addItemDecoration(VerticalItemDecoration(14.toDp()))
+            it.adapter = recyclerAdapter
         }
     }
 

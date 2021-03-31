@@ -33,6 +33,11 @@ class ChartFragment : BaseObserveFragment() {
     private val binding: FragmentChartBinding
         get() = _binding!!
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        retainInstance = false
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

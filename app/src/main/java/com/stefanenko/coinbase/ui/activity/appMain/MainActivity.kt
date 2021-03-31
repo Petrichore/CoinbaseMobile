@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -30,7 +30,8 @@ class MainActivity : BaseActivity() {
         setUpTopAppBar()
 
         menuBottomView = binding.menuBottom
-        navController = findNavController(R.id.navHostFragmentMain)
+        navController =
+            (supportFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment).navController
         NavigationUI.setupWithNavController(menuBottomView, navController)
         setOnDestinationChangedListener()
     }

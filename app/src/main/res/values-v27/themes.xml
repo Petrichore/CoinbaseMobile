@@ -5,7 +5,6 @@
         <!-- Primary brand color. -->
 
         <item name="android:windowLightStatusBar">true</item>
-        
         <item name="android:windowLightNavigationBar">true</item>
         <item name="colorPrimary">@color/main_green</item>
         <item name="colorPrimaryVariant">#7A009688</item>
@@ -20,6 +19,10 @@
         <item name="android:navigationBarColor" tools:targetApi="l">@color/white</item>
 
         <!-- Customize your theme here. -->
+    </style>
+
+    <style name="Theme.CoinbaseMobile.Launcher">
+        <item name="android:windowBackground">@drawable/launch_bg</item>
     </style>
 
 </resources>
