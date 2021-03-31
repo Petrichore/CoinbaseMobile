@@ -37,6 +37,12 @@ class ChartFragment : BaseObserveFragment() {
             showDebugLog("DEEP LINK PARAM:::: $currencyParam")
         } else {
             selectedCurrency = DEFAULT_CURRENCY
+
+
+
+
+
+
         }
 
         (activity as MainActivity).toolbar.title = "${resources.getString(R.string.title_chart)} ($selectedCurrency)"
