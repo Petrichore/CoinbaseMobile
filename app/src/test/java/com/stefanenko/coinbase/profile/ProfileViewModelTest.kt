@@ -62,6 +62,9 @@ class ProfileViewModelTest : BaseAppModuleTest() {
 
         coEvery { profileUseCases.getProfile(accessToken) } returns response
 
+
+
+
         val viewModel =
             ProfileViewModel(profileUseCases, connectivityManager, authPref, viewModelErrorHandler)
         viewModel.state.observeForever(stateObserver)

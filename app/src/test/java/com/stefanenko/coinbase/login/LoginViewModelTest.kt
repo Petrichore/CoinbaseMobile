@@ -3,7 +3,6 @@ package com.stefanenko.coinbase.login
 import android.net.Uri
 import androidx.lifecycle.Observer
 import com.stefanenko.coinbase.BaseAppModuleTest
-import com.stefanenko.coinbase.di.DaggerAppComponentTest
 import com.stefanenko.coinbase.domain.entity.ResponseState
 import com.stefanenko.coinbase.domain.useCase.AuthUseCases
 import com.stefanenko.coinbase.ui.activity.login.LoginViewModel
