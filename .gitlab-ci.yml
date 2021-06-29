@@ -39,6 +39,7 @@ assembleDebug:
       - app/build/outputs/
   after_script:
     - ./gradlew testAfterJobTask
+    - git commit -m "update version"
 #
 #debugTests:
 #  stage: test
