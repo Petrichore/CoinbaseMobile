@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.stefanenko.coinbase.R
-import com.stefanenko.coinbase.databinding.FragmentExchangeRateBinding
 import com.stefanenko.coinbase.databinding.FragmentFavoritesBinding
 import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
@@ -28,7 +27,7 @@ class FavoritesFragment : BaseObserveFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var viewModel: FavoritesViewModel
+    lateinit var viewModel: FavoritesViewModel
 
     private var _binding: FragmentFavoritesBinding? = null
     private val binding: FragmentFavoritesBinding
@@ -49,7 +48,7 @@ class FavoritesFragment : BaseObserveFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as MainActivity).toolbar.title = resources.getString(R.string.title_favorites)
+
         configSnackBar()
         viewModel.getFavorites()
     }
@@ -73,6 +72,10 @@ class FavoritesFragment : BaseObserveFragment() {
                     recyclerAdapter.onInsertItem(state.position, state.item)
                 }
 
+                is StateFavorites.ShowErrorMessage -> {
+                    showInfoDialog(resources.getString(R.string.alert_dialog_title_error), state.error)
+                }
+
                 StateFavorites.GuestMode -> {
                     childFragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainer, FavoritesGuestModeFragment()).commit()
@@ -80,15 +83,8 @@ class FavoritesFragment : BaseObserveFragment() {
 
                 StateFavorites.StartLoading -> binding.progressBar.visibility = View.VISIBLE
                 StateFavorites.StopLoading -> binding.progressBar.visibility = View.GONE
-            }
-        })
 
-        viewModel.stateScattering.observe(viewLifecycleOwner, { stateScattering ->
-            when (stateScattering) {
-                is StateScattering.ShowErrorMessage -> {
-                    showInfoDialog("Error", stateScattering.error)
-                }
-                StateScattering.ShowRetrieveItemSnackBar -> {
+                StateFavorites.ShowRetrieveItemSnackBar -> {
                     snackbar.show()
                 }
             }
@@ -96,12 +92,17 @@ class FavoritesFragment : BaseObserveFragment() {
     }
 
     private fun configSnackBar() {
-        snackbar = Snackbar.make(requireView(), "Exchange rate have removed", Snackbar.LENGTH_SHORT)
+        snackbar = Snackbar.make(
+            requireView(),
+            resources.getString(R.string.snackBar_text_exchange_rate_removed),
+            Snackbar.LENGTH_SHORT
+        )
             .apply {
-                this.view.setBackgroundColor(ContextCompat.getColor(context, R.color.main_green))
+                view.setBackgroundColor(ContextCompat.getColor(context, R.color.main_green))
                 setTextColor(ContextCompat.getColor(context, R.color.white))
                 setActionTextColor(ContextCompat.getColor(context, R.color.color_secondary))
-                setAction("Retrieve") {
+
+                setAction(resources.getString(R.string.snackBar_text_undo_remove)) {
                     viewModel.cancelItemDelete()
                 }
                 addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
@@ -146,6 +147,7 @@ class FavoritesFragment : BaseObserveFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.scatterStates()
+        //snackbar.dismiss()
+        viewModel.setBlankState()
     }
 }

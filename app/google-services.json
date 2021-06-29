@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "58158548699",
+    "project_id": "coinbasemarket-3dde7",
+    "storage_bucket": "coinbasemarket-3dde7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:58158548699:android:c7e89101d5b2280a57eefe",
+        "android_client_info": {
+          "package_name": "com.stefanenko.coinbase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "58158548699-glbgd944g39nbpugpbeivu7692mgb986.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrAnQ607o5RxsSbWP1syDHE5-nELRZwAo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "58158548699-glbgd944g39nbpugpbeivu7692mgb986.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

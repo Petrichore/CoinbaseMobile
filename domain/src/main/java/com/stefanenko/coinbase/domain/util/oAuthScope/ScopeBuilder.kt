@@ -1,8 +1,11 @@
 package com.stefanenko.coinbase.domain.util.oAuthScope
 
 import java.lang.StringBuilder
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object ScopeBuilder {
+@Singleton
+class ScopeBuilder @Inject constructor() {
 
     fun build(vararg scopes: String): String {
         if (scopes.isNotEmpty()) {

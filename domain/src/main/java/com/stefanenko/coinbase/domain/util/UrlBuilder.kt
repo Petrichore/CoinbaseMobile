@@ -1,11 +1,12 @@
 package com.stefanenko.coinbase.domain.util
 
 import java.lang.StringBuilder
+import javax.inject.Inject
 
-object UrlBuilder {
+class UrlBuilder @Inject constructor() {
 
-    private const val PARAMS_MARKER = "?"
-    private const val PARAMS_DELIMITER = "&"
+    private val PARAMS_MARKER = "?"
+    private val PARAMS_DELIMITER = "&"
 
     /**
      * Returns configured URL

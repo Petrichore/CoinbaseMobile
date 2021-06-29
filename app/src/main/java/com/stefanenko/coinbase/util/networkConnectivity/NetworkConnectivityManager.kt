@@ -9,7 +9,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class NetworkConnectivityManager @Inject constructor(private val appContext: Context) {
+class NetworkConnectivityManager @Inject constructor(appContext: Context) {
 
     private val cm =
         appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

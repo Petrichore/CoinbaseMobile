@@ -1,8 +1,11 @@
 package com.stefanenko.coinbase.domain.util
 
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object DateManager {
+@Singleton
+class DateManager @Inject constructor() {
 
     fun getCurrentDateAsString(): String {
         val calendar = Calendar.getInstance()

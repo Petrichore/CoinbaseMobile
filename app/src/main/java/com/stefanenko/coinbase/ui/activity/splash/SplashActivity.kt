@@ -3,6 +3,7 @@ package com.stefanenko.coinbase.ui.activity.splash
 import android.os.Bundle
 import android.os.Handler
 import androidx.lifecycle.ViewModelProvider
+import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.databinding.ActivitySplashscreenBinding
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
 import com.stefanenko.coinbase.ui.activity.login.LoginActivity
@@ -35,20 +36,18 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun setObservers() {
-        viewModel.scatteringState.observe(this, {
+        viewModel.state.observe(this, {
             when (it) {
-                is SplashViewModel.ScatteringSplashState.ShowErrorMessage -> showInfoDialog(
-                    "Error",
-                    it.error
-                )
-                SplashViewModel.ScatteringSplashState.UserIsAuth -> {
+                is SplashActivityState.ShowErrorMessage -> {
+                    showInfoDialog(resources.getString(R.string.alert_dialog_title_error), it.error)
+                }
+                SplashActivityState.UserIsAuth -> {
                     showDebugLog("START MAIN")
                     startActivityInNewTask(MainActivity::class.java)
                 }
-                SplashViewModel.ScatteringSplashState.OpenLoginActivity -> startActivity(
-                    LoginActivity::class.java,
-                    true
-                )
+                SplashActivityState.OpenLoginActivity -> {
+                    startActivity(LoginActivity::class.java, true)
+                }
             }
         })
     }

@@ -4,6 +4,14 @@
     <string name="redirect_uri">urn:ietf:wg:oauth:2.0:oob</string>
     <string name="base_auth_url">https://www.coinbase.com/oauth/authorize</string>
 
+    <!--    Fragment labels-->
+    <string name="nav_label_exchange_rates">ExchangeRates</string>
+    <string name="nav_label_profile">ProfileFragment</string>
+    <string name="nav_label_chart">ChartFragment</string>
+    <string name="nav_label_favorites">FavoritesFragment</string>
+    <string name="nav_label_filter">FilterFragment</string>
+    <string name="nav_label_settings">SettingsFragment</string>
+
     <!--    ToolBar titles-->
     <string name="toolbar_title_sign_up">Sign up</string>
     <string name="toolbar_title_profile">Profile</string>
@@ -53,6 +61,33 @@
     <string name="title_favorites">Favorites</string>
     <string name="title_profile">Profile</string>
     <string name="title_filter">Filter</string>
+
+    <!--    SnackBar text-->
+    <string name="snackBar_text_currency_saved">Currency successfully saved</string>
+    <string name="snackBar_text_exchange_rate_removed">Exchange rate have removed</string>
+    <string name="snackBar_text_undo_remove">Undo</string>
+
+    <!--    SnackBar base buttons-->
+    <string name="snackBar_positive_button_ok">OK</string>
+
+    <!--    AlertDialog title-->
+    <string name="alert_dialog_title_error">Sorry, Something went wrong</string>
+    <string name="alert_dialog_title_add_to_favorite">Add to favorite</string>
+    <string name="alert_dialog_title_auth_missing">Auth missing</string>
+    <string name="alert_dialog_title_auth_performed">Authorization</string>
+    <string name="alert_dialog_title_log_out">Log out</string>
+
+    <!--    AlertDialog default message-->
+    <string name="alert_dialog_message_auth_messing">Please, authorize to be able to save data locally</string>
+    <string name="alert_dialog_message_auth_performed_reload_profile">Authorization performed successfully!\nReload profile?</string>
+    <string name="alert_dialog_message_log_out">Do you want to log out?</string>
+
+    <!--    AlertDialog buttons-->
+    <string name="alert_dialog_positive_button_ok">OK</string>
+    <string name="alert_dialog_negative_button_cancel">Cancel</string>
+
+    <!--    Toast text-->
+    <string name="toast_test_connected_to_webSocket">Connection established</string>
 
     <!--    Card type-->
     <string name="card_type_settings">Settings</string>

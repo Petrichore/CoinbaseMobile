@@ -1,14 +1,11 @@
 package com.stefanenko.coinbase.ui.activity.login
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.databinding.ActivityLoginBinding
-import com.stefanenko.coinbase.databinding.ActivityMainBinding
 import com.stefanenko.coinbase.ui.activity.appMain.MainActivity
 import com.stefanenko.coinbase.ui.base.BaseActivity
 import com.stefanenko.coinbase.ui.base.ViewModelFactory
@@ -23,7 +20,6 @@ class LoginActivity : BaseActivity() {
 
     lateinit var binding: ActivityLoginBinding
 
-    @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
@@ -48,27 +44,23 @@ class LoginActivity : BaseActivity() {
 
         viewModel.state.observe(this, {
             when (it) {
-                is State.AuthCompleted -> {
+                is StateLogin.AuthCompleted -> {
                     startActivityInNewTask(MainActivity::class.java)
                 }
-                is State.ShowErrorMessage -> {
-                    showInfoDialog("Error", it.error)
+                is StateLogin.ShowErrorMessage -> {
+                    showInfoDialog(resources.getString(R.string.alert_dialog_title_error), it.error)
                 }
-                is State.OpenCoinbaseAuthPage -> {
-                    val intent = Intent(Intent.ACTION_VIEW, it.uri)
+                is StateLogin.OpenCoinbaseAuthPage -> {
+                    val intent = Intent(Intent.ACTION_VIEW, it.uri).apply {
+                        addCategory(Intent.CATEGORY_BROWSABLE)
+                    }
                     startActivity(intent)
                 }
-            }
-        })
-
-        viewModel.interruptibleState.observe(this, {
-            when (it) {
-                is InterruptibleState.StartLoading -> {
+                StateLogin.StartLoading -> {
                     binding.progressBar.visibility = View.VISIBLE
                     binding.shadowView.visibility = View.VISIBLE
                 }
-
-                is InterruptibleState.StopLoading -> {
+                StateLogin.StopLoading -> {
                     binding.progressBar.visibility = View.GONE
                     binding.shadowView.visibility = View.GONE
                 }
@@ -90,13 +82,5 @@ class LoginActivity : BaseActivity() {
         if (intent.action != null && intent.action == Intent.ACTION_VIEW && intent.data != null) {
             viewModel.completeAuth(intent.data!!)
         }
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        showDebugLog("onNewIntent")
-        if (intent != null) {
-            Log.d("Intent", "$intent")
-        }
-        super.onNewIntent(intent)
     }
 }

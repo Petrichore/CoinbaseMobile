@@ -10,5 +10,5 @@ data class SocketResponse(
     val action: String,
 
     @SerializedName("data")
-    val data: List<CurrencyRateRT>
+    val data: List<CurrencyRateInRealTime>
 )

@@ -7,12 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stefanenko.coinbase.domain.entity.ResponseState
 import com.stefanenko.coinbase.domain.useCase.AuthUseCases
-import com.stefanenko.coinbase.util.exception.ERROR_AUTH_DEFAULT
 import com.stefanenko.coinbase.util.exception.ERROR_INTERNET_CONNECTION
 import com.stefanenko.coinbase.util.networkConnectivity.NetworkConnectivityManager
 import com.stefanenko.coinbase.util.preferences.AuthPreferences
 import kotlinx.coroutines.launch
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 class LoginViewModel @Inject constructor(
@@ -21,45 +19,39 @@ class LoginViewModel @Inject constructor(
     private val connectivityManager: NetworkConnectivityManager
 ) : ViewModel() {
 
-    val state = MutableLiveData<State>()
-    val interruptibleState = MutableLiveData<InterruptibleState>()
+    val state = MutableLiveData<StateLogin>()
 
     fun performAuth() {
         if (connectivityManager.isConnected()) {
             val uri = authUseCases.startAuth()
-
-            state.value = State.OpenCoinbaseAuthPage(uri)
+            state.value = StateLogin.OpenCoinbaseAuthPage(uri)
         } else {
-            state.value = State.ShowErrorMessage(ERROR_INTERNET_CONNECTION)
+            state.value = StateLogin.ShowErrorMessage(ERROR_INTERNET_CONNECTION)
         }
     }
 
     fun completeAuth(uri: Uri) {
-        try {
-            interruptibleState.value = InterruptibleState.StartLoading
+        state.value = StateLogin.StartLoading
 
-            val authUrl = uri.toString()
-            Log.d("URI", authUrl)
+        val authUrl = uri.toString()
 
-            viewModelScope.launch {
-                when (val responseState = authUseCases.completeAuth(authUrl)) {
-                    is ResponseState.Data -> {
-                        authPreferences.setUserAuthState(true)
-                        authPreferences.saveAccessToken(responseState.data.first)
-                        authPreferences.saveRefreshToken(responseState.data.second)
+        Log.d("URI", authUrl)
+        viewModelScope.launch {
+            Log.d("CoroutineScope", "${this.javaClass}")
+            when (val responseState = authUseCases.completeAuth(authUrl)) {
+                is ResponseState.Data -> {
+                    authPreferences.setUserAuthState(true)
+                    authPreferences.saveAccessToken(responseState.data.first)
+                    authPreferences.saveRefreshToken(responseState.data.second)
 
-                        state.value = State.AuthCompleted
-                        interruptibleState.value = InterruptibleState.StopLoading
-                    }
+                    state.value = StateLogin.AuthCompleted
+                }
 
-                    is ResponseState.Error -> {
-                        state.value = State.ShowErrorMessage(responseState.error)
-                    }
+                is ResponseState.Error -> {
+                    state.value = StateLogin.ShowErrorMessage(responseState.error)
                 }
             }
-        } catch (e: IllegalArgumentException) {
-            state.value = State.ShowErrorMessage(ERROR_AUTH_DEFAULT)
-            e.printStackTrace()
+            state.value = StateLogin.StopLoading
         }
     }
 }

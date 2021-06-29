@@ -1,7 +1,9 @@
 package com.stefanenko.coinbase.ui.activity.appMain
 
 import android.os.Bundle
+import android.view.View
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -10,14 +12,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.databinding.ActivityMainBinding
 import com.stefanenko.coinbase.ui.base.BaseActivity
-import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import dagger.android.AndroidInjection
-import javax.inject.Inject
 
 class MainActivity : BaseActivity() {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
 
     private lateinit var binding: ActivityMainBinding
 
@@ -31,6 +28,7 @@ class MainActivity : BaseActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setUpTopAppBar()
 
         menuBottomView = binding.menuBottom
 
@@ -38,7 +36,6 @@ class MainActivity : BaseActivity() {
             supportFragmentManager.findFragmentById(R.id.navHostFragmentMain) as NavHostFragment
         navController = navHostFragment.navController
         NavigationUI.setupWithNavController(menuBottomView, navController)
-        setUpTopAppBar()
         setOnDestinationChangedListener()
     }
 
@@ -64,12 +61,47 @@ class MainActivity : BaseActivity() {
 
     private fun setOnDestinationChangedListener() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.label == "ChartFragment" && !toolbar.menu.findItem(R.id.filter).isVisible) {
-                toolbar.menu.findItem(R.id.filter).isVisible = true
-            } else if (destination.label != "ChartFragment") {
-                toolbar.menu.findItem(R.id.filter).isVisible = false
-            }
+            setUpActivityUI(destination)
         }
     }
 
+    private fun setUpActivityUI(destination: NavDestination) {
+        with(resources) {
+            when (destination.label) {
+                getString(R.string.nav_label_exchange_rates) -> {
+                    toolbar.title = getString(R.string.toolbar_title_exchange_rate)
+                }
+                getString(R.string.nav_label_profile) -> {
+                    toolbar.title = getString(R.string.toolbar_title_profile)
+                }
+                getString(R.string.nav_label_favorites) -> {
+                    toolbar.title = getString(R.string.toolbar_title_favorites)
+                }
+                getString(R.string.nav_label_chart) -> {
+                    toolbar.title = getString(R.string.toolbar_title_chart)
+                }
+                getString(R.string.nav_label_filter) -> {
+                    toolbar.title = getString(R.string.toolbar_title_filter)
+                }
+                getString(R.string.nav_label_settings) -> {
+                    toolbar.title = getString(R.string.toolbar_title_settings)
+                }
+            }
+
+            if (destination.label == getString(R.string.nav_label_chart) && !toolbar.menu.findItem(R.id.filter).isVisible) {
+                toolbar.menu.findItem(R.id.filter).isVisible = true
+            } else if (destination.label != getString(R.string.nav_label_chart) && toolbar.menu.findItem(
+                    R.id.filter
+                ).isVisible
+            ) {
+                toolbar.menu.findItem(R.id.filter).isVisible = false
+            }
+
+            if (destination.label == getString(R.string.nav_label_filter)) {
+                menuBottomView.visibility = View.GONE
+            } else if (menuBottomView.visibility == View.GONE) {
+                menuBottomView.visibility = View.VISIBLE
+            }
+        }
+    }
 }

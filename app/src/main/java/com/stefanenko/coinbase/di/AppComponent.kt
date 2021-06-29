@@ -2,6 +2,9 @@ package com.stefanenko.coinbase.di
 
 import android.app.Application
 import com.stefanenko.coinbase.App
+import com.stefanenko.coinbase.data.di.CoroutineDispatcherModule
+import com.stefanenko.coinbase.data.di.RetrofitApiModule
+import com.stefanenko.coinbase.data.di.RxSchedulersProviderModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
@@ -15,7 +18,10 @@ import javax.inject.Singleton
         ViewModelModule::class,
         FragmentModule::class,
         ActivityModule::class,
-        DatabaseModule::class
+        DatabaseModule::class,
+        RetrofitApiModule::class,
+        CoroutineDispatcherModule::class,
+        RxSchedulersProviderModule::class
     ]
 )
 interface AppComponent {

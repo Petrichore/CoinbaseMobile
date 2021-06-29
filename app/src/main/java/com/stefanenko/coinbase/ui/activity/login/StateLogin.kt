@@ -2,13 +2,10 @@ package com.stefanenko.coinbase.ui.activity.login
 
 import android.net.Uri
 
-sealed class State {
-    object AuthCompleted : State()
-    data class ShowErrorMessage(val error: String) : State()
-    data class OpenCoinbaseAuthPage(val uri: Uri) : State()
-}
-
-sealed class InterruptibleState {
-    object StartLoading : InterruptibleState()
-    object StopLoading : InterruptibleState()
+sealed class StateLogin {
+    object AuthCompleted : StateLogin()
+    data class ShowErrorMessage(val error: String) : StateLogin()
+    data class OpenCoinbaseAuthPage(val uri: Uri) : StateLogin()
+    object StartLoading : StateLogin()
+    object StopLoading : StateLogin()
 }

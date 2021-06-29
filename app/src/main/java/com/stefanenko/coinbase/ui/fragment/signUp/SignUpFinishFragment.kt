@@ -30,13 +30,17 @@ class SignUpFinishFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         defineOnBackPressedCallBack()
-        with(activity as SignUpActivity) {
-            toolbar.visibility = View.GONE
-            binding.sigUpFinishBtn.setOnClickListener {
-                (activity as SignUpActivity).finish()
-            }
-        }
     }
+
+
+//    override fun setUpGeneralUIElements() {
+//        with(activity as SignUpActivity) {
+//            toolbar.visibility = View.GONE
+//            binding.sigUpFinishBtn.setOnClickListener {
+//                (activity as SignUpActivity).finish()
+//            }
+//        }
+//    }
 
     /**
      * Do nothing cause we shouldn't navigate to previous signUp screen

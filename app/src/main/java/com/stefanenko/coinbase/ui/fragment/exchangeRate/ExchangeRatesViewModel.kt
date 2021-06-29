@@ -8,6 +8,7 @@ import com.stefanenko.coinbase.domain.entity.ExchangeRate
 import com.stefanenko.coinbase.domain.entity.ResponseState
 import com.stefanenko.coinbase.domain.useCase.ExchangeRateUseCases
 import com.stefanenko.coinbase.domain.useCase.FavoritesUseCases
+import com.stefanenko.coinbase.util.espressoIdleResource.EspressoIdlingResource
 import com.stefanenko.coinbase.util.exception.ERROR_INTERNET_CONNECTION
 import com.stefanenko.coinbase.util.networkConnectivity.NetworkConnectivityManager
 import com.stefanenko.coinbase.util.preferences.AuthPreferences
@@ -26,18 +27,17 @@ class ExchangeRatesViewModel @Inject constructor(
     }
 
     val state: MutableLiveData<StateExchangeRates> = MutableLiveData<StateExchangeRates>()
-    val stateScattering: MutableLiveData<StateScattering> = MutableLiveData<StateScattering>()
 
-    init {
-        if (!connectivityManager.isConnected()) {
-            state.value = StateExchangeRates.NetworkUnavailable
-        }
-    }
+//    init {
+//        if (!connectivityManager.isConnected()) {
+//            state.value = StateExchangeRates.NetworkUnavailable
+//        }
+//    }
 
     private var networkCallback = connectivityManager.regNetworkCallBack({
         state.postValue(StateExchangeRates.NetworkAvailable)
     }, {
-        stateScattering.postValue(StateScattering.ShowErrorMessage(ERROR_INTERNET_CONNECTION))
+        state.postValue(StateExchangeRates.ShowErrorMessage(ERROR_INTERNET_CONNECTION))
     })
 
     fun getExchangeRates(baseCurrency: String) {
@@ -51,82 +51,98 @@ class ExchangeRatesViewModel @Inject constructor(
 
     private fun getExchangeRatesRemote(baseCurrency: String) {
         Log.d("PERFORM GET EXCHANGE RATE CALLED", "Yeeees")
-        stateScattering.value = StateScattering.StartLoading
+        state.value = StateExchangeRates.StartLoading
+        EspressoIdlingResource.increment()
         viewModelScope.launch {
             when (val responseState = exchangeUseCases.getExchangeRates(baseCurrency)) {
-                is ResponseState.Data -> state.value =
-                    StateExchangeRates.ShowExchangeRateRecycler(responseState.data)
+                is ResponseState.Data -> {
+                    state.value =
+                        StateExchangeRates.ShowExchangeRateRecycler(responseState.data)
+                }
 
                 is ResponseState.Error -> {
-                    stateScattering.value = StateScattering.ShowErrorMessage(responseState.error)
+                    state.value = StateExchangeRates.ShowErrorMessage(responseState.error)
                 }
             }
-            stateScattering.value = StateScattering.StopLoading
+            state.value = StateExchangeRates.StopLoading
+            EspressoIdlingResource.decrement()
         }
     }
 
     fun getCashedExchangeRates() {
         Log.d("CASHED GET EXCHANGE RATE CALLED", "Yeeees")
-        stateScattering.value = StateScattering.StartLoading
+        state.value = StateExchangeRates.StartLoading
+        EspressoIdlingResource.increment()
         viewModelScope.launch {
             when (val responseState = exchangeUseCases.getCashedExchangeRates()) {
-                is ResponseState.Data -> state.value =
-                    StateExchangeRates.ShowExchangeRateRecycler(responseState.data)
+                is ResponseState.Data -> {
+                    state.value =
+                        StateExchangeRates.ShowExchangeRateRecycler(responseState.data)
+                }
                 is ResponseState.Error -> {
-                    stateScattering.value =
-                        StateScattering.ShowErrorMessage(responseState.error)
+                    state.value =
+                        StateExchangeRates.ShowErrorMessage(responseState.error)
                 }
             }
-            stateScattering.value = StateScattering.StopLoading
+            state.value = StateExchangeRates.StopLoading
+            EspressoIdlingResource.decrement()
         }
     }
 
     fun updateExchangeRates(baseCurrency: String) {
         Log.d("UPDATE EXCHANGE RATE CALLED", "Yeeees")
-        stateScattering.value = StateScattering.StartLoading
         if (connectivityManager.isConnected()) {
+            state.value = StateExchangeRates.StartLoading
+            EspressoIdlingResource.increment()
+
             viewModelScope.launch {
                 when (val responseState = exchangeUseCases.updateExchangeRates(baseCurrency)) {
-                    is ResponseState.Data -> state.value =
-                        StateExchangeRates.UpdateExchangeRateRecycler(responseState.data)
+                    is ResponseState.Data -> {
+                        state.value =
+                            StateExchangeRates.UpdateExchangeRateRecycler(responseState.data)
+                    }
                     is ResponseState.Error -> {
-                        stateScattering.value =
-                            StateScattering.ShowErrorMessage(responseState.error)
+                        state.value =
+                            StateExchangeRates.ShowErrorMessage(responseState.error)
                     }
                 }
-                stateScattering.value = StateScattering.StopLoading
+                state.value = StateExchangeRates.StopLoading
+                EspressoIdlingResource.decrement()
             }
         } else {
-            stateScattering.value = StateScattering.ShowErrorMessage(ERROR_INTERNET_CONNECTION)
+            state.value = StateExchangeRates.ShowErrorMessage(ERROR_INTERNET_CONNECTION)
+            state.value = StateExchangeRates.StopLoading
         }
     }
 
     fun addCurrencyToFavorite(exchangeRate: ExchangeRate) {
+        EspressoIdlingResource.increment()
         viewModelScope.launch {
             val response = favoritesUseCases.addFavorite(exchangeRate)
             when (response) {
                 is ResponseState.Data -> {
-                    stateScattering.value = StateScattering.ShowSnackBar
-                    stateScattering.value = StateScattering.ScatterLastState
+                    state.value = StateExchangeRates.ShowSnackBar
                 }
                 is ResponseState.Error -> {
-
+                    state.value =
+                        StateExchangeRates.ShowErrorMessage(response.error)
                 }
             }
+            EspressoIdlingResource.decrement()
         }
     }
 
     fun checkAbilityToSaveCurrency(exchangeRate: ExchangeRate) {
         if (authPreferences.isUserAuth()) {
-            stateScattering.value = StateScattering.ShowDialogSaveToFav(exchangeRate)
+            state.value = StateExchangeRates.ShowDialogSaveToFav(exchangeRate)
         } else {
-            stateScattering.value = StateScattering.ShowDialogUserAuthMissing
+            state.value = StateExchangeRates.ShowDialogUserAuthMissing
         }
     }
 
 
-    fun scatterStates() {
-        stateScattering.value = StateScattering.ScatterLastState
+    fun setBlankState() {
+        state.value = StateExchangeRates.BlankState
     }
 
     override fun onCleared() {

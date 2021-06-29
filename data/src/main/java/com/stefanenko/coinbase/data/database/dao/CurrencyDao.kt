@@ -10,8 +10,11 @@ interface CurrencyDao {
     @Query("select * from exchange_rate")
     suspend fun getExchangeRates(): List<ExchangeRateEntity>
 
+    @Query("select count(name) from exchange_rate")
+    suspend fun getExchangeRatesAmount(): Int
+
     @Query("delete from exchange_rate")
-    suspend fun clearExchangeRateTable()
+    suspend fun clearExchangeRateTable(): Int
 
     @Query("select * from fav_exchange_rates")
     suspend fun getFavorites(): List<FavoriteExchangeRatesEntity>
@@ -21,15 +24,29 @@ interface CurrencyDao {
     )
     suspend fun getFavoritesData(): List<ExchangeRateEntity>
 
-    @Insert
-    suspend fun insertCurrencyExchangeRates(exchangeRateList: List<ExchangeRateEntity>)
-
-    @Update
-    suspend fun updateExchangeRateTable(exchangeRateList: List<ExchangeRateEntity>)
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addCurrencyExchangeRateToFavorite(favoriteExchangeRatesEntity: FavoriteExchangeRatesEntity)
+    suspend fun addCurrencyExchangeRateToFavorite(favoriteExchangeRatesEntity: FavoriteExchangeRatesEntity?): Long
 
     @Delete
-    suspend fun deleteExchangeRateFromFavorite(favoriteExchangeRatesEntity: FavoriteExchangeRatesEntity)
+    suspend fun deleteExchangeRateFromFavorite(favoriteExchangeRatesEntity: FavoriteExchangeRatesEntity): Int
+
+    @Insert
+    suspend fun insertCurrencyExchangeRates(exchangeRateList: List<ExchangeRateEntity>): List<Long>
+
+    @Transaction
+    suspend fun updateExchangeRateTable(exchangeRateList: List<ExchangeRateEntity>): Boolean {
+        val itemsAmount = getExchangeRatesAmount()
+        val deletedItemsAmount = clearExchangeRateTable()
+
+        if (itemsAmount == deletedItemsAmount) {
+            val idList = insertCurrencyExchangeRates(exchangeRateList)
+            if (idList.size == exchangeRateList.size) {
+                return true
+            } else {
+                throw Exception("Adding new items exception")
+            }
+        } else {
+            throw Exception("Table clearing exception")
+        }
+    }
 }

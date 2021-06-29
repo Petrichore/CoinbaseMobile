@@ -14,7 +14,7 @@ class ExchangeRateUseCases @Inject constructor(private val dataRepository: DataR
     }
 
     suspend fun getCashedExchangeRates(): ResponseState<List<ExchangeRate>> {
-        return dataRepository.getCasedExchangeRates()
+        return dataRepository.getCashedExchangeRates()
     }
 
     suspend fun updateExchangeRates(baseCurrency: String): ResponseState<List<ExchangeRate>> {

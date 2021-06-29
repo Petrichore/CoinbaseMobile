@@ -1,13 +1,14 @@
 package com.stefanenko.coinbase.ui.fragment.profile
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.stefanenko.coinbase.domain.entity.Profile
 import com.stefanenko.coinbase.domain.entity.ResponseState
 import com.stefanenko.coinbase.domain.exception.ERROR_UNAUTHORIZED
-import com.stefanenko.coinbase.domain.repository.DataRepository
 import com.stefanenko.coinbase.domain.useCase.ProfileUseCases
-import com.stefanenko.coinbase.ui.base.BaseViewModel
-import com.stefanenko.coinbase.ui.fragment.favorites.StateFavorites
+import com.stefanenko.coinbase.util.errorHandler.ViewModelErrorHandler
 import com.stefanenko.coinbase.util.exception.ERROR_INTERNET_CONNECTION
 import com.stefanenko.coinbase.util.networkConnectivity.NetworkConnectivityManager
 import com.stefanenko.coinbase.util.preferences.AuthPreferences
@@ -18,44 +19,51 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val profileUseCases: ProfileUseCases,
     private val connectivityManager: NetworkConnectivityManager,
-    private val authPreferences: AuthPreferences
-) : BaseViewModel() {
+    val authPreferences: AuthPreferences,
+    private val viewModelErrorHandler: ViewModelErrorHandler
+) : ViewModel() {
 
     val state = MutableLiveData<StateProfile>()
-    val stateScattering = MutableLiveData<StateScattering>()
 
     fun getProfile() {
-        if(authPreferences.isUserAuth()){
+        if (authPreferences.isUserAuth()) {
             if (connectivityManager.isConnected()) {
                 state.value = StateProfile.StartLoading
                 viewModelScope.launch {
-                    val responseState = profileUseCases.getProfile(authPreferences.getAccessToken())
+                    val accessToken = authPreferences.getAccessToken()
+                    val responseState = profileUseCases.getProfile(accessToken)
+
                     when (responseState) {
                         is ResponseState.Data -> state.value =
                             StateProfile.ShowProfileData(responseState.data)
                         is ResponseState.Error -> {
-                            when (responseState.error) {
-                                ERROR_UNAUTHORIZED -> {
-                                    handleTokenRefresh(authPreferences.getRefreshToken(), {
-                                        authPreferences.saveAccessToken(it.first)
-                                        authPreferences.saveRefreshToken(it.second)
-                                        state.value = StateProfile.ReAuthPerformed
-                                    }, {
-                                        stateScattering.value = StateScattering.ShowErrorMessage(it)
-                                    })
-                                }
-                                else -> stateScattering.value =
-                                    StateScattering.ShowErrorMessage(responseState.error)
-                            }
+                            handleResponseError(responseState)
                         }
                     }
+
                     state.value = StateProfile.StopLoading
                 }
             } else {
-                stateScattering.value = StateScattering.ShowErrorMessage(ERROR_INTERNET_CONNECTION)
+                state.value = StateProfile.ShowErrorMessage(ERROR_INTERNET_CONNECTION)
             }
-        }else{
+        } else {
             state.value = StateProfile.GuestMode
+        }
+    }
+
+    private suspend fun handleResponseError(responseState: ResponseState.Error<Profile>) {
+        when (responseState.error) {
+            ERROR_UNAUTHORIZED -> {
+                viewModelErrorHandler.handleUnauthorizedError(
+                    {
+                        authPreferences.saveAccessToken(it.first)
+                        authPreferences.saveRefreshToken(it.second)
+                        state.value = StateProfile.ReAuthPerformed
+                    }, {
+                        state.value = StateProfile.ShowErrorMessage(it)
+                    })
+            }
+            else -> state.value = StateProfile.ShowErrorMessage(responseState.error)
         }
     }
 
@@ -64,7 +72,7 @@ class ProfileViewModel @Inject constructor(
         state.value = StateProfile.LogOut
     }
 
-    fun scatterStates(){
-        stateScattering.value = StateScattering.ScatterLastState
+    fun setBlankState() {
+        state.value = StateProfile.BlankState
     }
 }
