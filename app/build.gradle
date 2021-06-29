@@ -89,7 +89,7 @@ task testTask2 {
 
 task testAfterJobTask {
     doLast {
-        def versionCode = 300
+        def versionCode = (versionProperties["versionCode"]).toInteger() + 100
 
         versionProperties["versionCode"] = versionCode.toString()
         versionProperties.store(file("version.properties").newWriter(), null)
