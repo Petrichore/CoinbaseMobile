@@ -50,6 +50,54 @@ android {
     }
 }
 
+project.ext.versionProperties = new Properties()
+
+task configFile {
+    def versionPropsFile = file("version.properties")
+
+    if (versionPropsFile.exists()) {
+        def fileInputStream = new FileInputStream(versionPropsFile)
+        versionProperties.load(fileInputStream)
+    } else {
+        throw new FileNotFoundException("File version.properties doesn't exist")
+    }
+}
+
+task testTask1 {
+    doLast {
+        // def versionCode = (versionProperties["versionCode"]).toInteger()
+        def versionCode = 100
+
+        versionProperties["versionCode"] = versionCode.toString()
+        versionProperties.store(file("version.properties").newWriter(), null)
+
+        println "Task1: ${versionProperties["versionCode"]}"
+    }
+}
+
+task testTask2 {
+    doLast{
+        // def versionCode = (versionProperties["versionCode"]).toInteger()
+        def versionCode = 200
+
+        versionProperties["versionCode"] = versionCode.toString()
+        versionProperties.store(file("version.properties").newWriter(), null)
+
+        println "Task2: ${versionProperties["versionCode"]}"
+    }
+}
+
+task testAfterJobTask {
+    doLast {
+        def versionCode = 300
+
+        versionProperties["versionCode"] = versionCode.toString()
+        versionProperties.store(file("version.properties").newWriter(), null)
+
+        println "TaskAfterJob: ${versionProperties["versionCode"]}"
+    }
+}
+
 dependencies {
 
     //core

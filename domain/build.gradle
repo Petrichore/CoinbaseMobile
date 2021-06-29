@@ -41,9 +41,6 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-}
-repositories {
-    mavenCentral()
 
     implementation "androidx.test:core:1.3.0"
     testImplementation 'junit:junit:4.13.1'
@@ -51,4 +48,7 @@ repositories {
     testImplementation "com.google.truth:truth:1.1"
     kaptTest "com.google.dagger:dagger-compiler:$daggerVersion"
     testImplementation "io.mockk:mockk:1.10.0"
+}
+repositories {
+    mavenCentral()
 }
