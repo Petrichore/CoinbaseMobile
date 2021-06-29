@@ -3,6 +3,7 @@ package com.stefanenko.coinbase.ui.activity.appMain
 import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -32,7 +33,10 @@ class MainActivity : BaseActivity() {
         setContentView(binding.root)
 
         menuBottomView = binding.menuBottom
-        navController = findNavController(R.id.navHostFragmentMain)
+
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.navHostFragmentMain) as NavHostFragment
+        navController = navHostFragment.navController
         NavigationUI.setupWithNavController(menuBottomView, navController)
         setUpTopAppBar()
         setOnDestinationChangedListener()
@@ -60,9 +64,9 @@ class MainActivity : BaseActivity() {
 
     private fun setOnDestinationChangedListener() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if(destination.label == "ChartFragment" && !toolbar.menu.findItem(R.id.filter).isVisible){
+            if (destination.label == "ChartFragment" && !toolbar.menu.findItem(R.id.filter).isVisible) {
                 toolbar.menu.findItem(R.id.filter).isVisible = true
-            }else if(destination.label != "ChartFragment"){
+            } else if (destination.label != "ChartFragment") {
                 toolbar.menu.findItem(R.id.filter).isVisible = false
             }
         }
