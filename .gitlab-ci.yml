@@ -44,7 +44,7 @@ assembleDebug:
     - git status
     - git remote add gitlab_origin https://gitlab.com/Ob1van/coinbasemobile.git
     - git add version.properties
-    - git commit -m "update version"
+    - git commit -a -m 'update version'
     - git push gitlab_origin master
 #
 #debugTests:
