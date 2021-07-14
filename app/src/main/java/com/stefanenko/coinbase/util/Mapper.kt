@@ -15,7 +15,6 @@ class Mapper @Inject constructor() {
         for (i in itemList.indices) {
             entryList.add(Entry(counter++, itemList[i].price))
         }
-
         return entryList
     }
 }
