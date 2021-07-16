@@ -41,12 +41,11 @@ assembleDebug:
     - ./gradlew testAfterJobTask
     - git config user.email "stefanenkoivi@gmail.com"
     - git config user.name "Ivan Stefanenko"
-    - git remote add gitlab_origin https://gitlab.com/Ob1van/coinbasemobile.git
     - git status
     - git show-ref
     - git add app/version.properties
     - git commit -m 'update versionCode'
-    - git push gitlab_origin master
+    - git push origin master
 #
 #debugTests:
 #  stage: test
