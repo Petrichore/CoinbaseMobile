@@ -4,7 +4,7 @@ variables:
   ANDROID_COMPILE_SDK: "30"
   ANDROID_BUILD_TOOLS: "30.0.3"
   ANDROID_SDK_TOOLS:   "4333796"
-  CI_PUSH_REPO: `echo $CI_REPOSITORY_URL | perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#'`
+  CI_PUSH_REPO: "echo $CI_REPOSITORY_URL | perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#'"
 
 
 before_script:
