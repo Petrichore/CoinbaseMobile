@@ -33,12 +33,11 @@ assembleDebug:
   stage: build
   script:
     - ./gradlew assembleDebug
-    - ./gradlew testTask1
   artifacts:
     paths:
       - app/build/outputs/
   after_script:
-    - echo $CI_REPOSITORY_UR
+    - echo $CI_REPOSITORY_URL
     - ./gradlew testAfterJobTask
     - git config user.email "stefanenkoivi@gmail.com"
     - git config user.name "Ivan Stefanenko"
