@@ -4,6 +4,8 @@ variables:
   ANDROID_COMPILE_SDK: "30"
   ANDROID_BUILD_TOOLS: "30.0.3"
   ANDROID_SDK_TOOLS:   "4333796"
+  CI_PUSH_REPO: `echo $CI_REPOSITORY_URL | perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#'`
+
 
 before_script:
   - apt-get --quiet update --yes
@@ -38,6 +40,7 @@ assembleDebug:
     paths:
       - app/build/outputs/
   after_script:
+    - echo "$CI_PUSH_REPO"
     - ./gradlew testAfterJobTask
     - git config user.email "stefanenkoivi@gmail.com"
     - git config user.name "Ivan Stefanenko"
@@ -45,7 +48,7 @@ assembleDebug:
     - git show-ref
     - git add app/version.properties
     - git commit -m 'update versionCode'
-    - git push origin HEAD:$CI_COMMIT_REF_NAME
+    - git push -o ci.scip origin HEAD:$CI_COMMIT_REF_NAME
 #
 #debugTests:
 #  stage: test
