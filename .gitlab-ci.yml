@@ -23,6 +23,7 @@ before_script:
 
 stages:
   - build
+  - commit-changes
 
 #lintDebug:
 #  stage: build
@@ -32,20 +33,26 @@ stages:
 assembleDebug:
   stage: build
   script:
-    - ./gradlew assembleDebug
+    - ./gradlew assembleDebu
     - ./gradlew testTask1
   artifacts:
     paths:
       - app/build/outputs/
   after_script:
     - ./gradlew testAfterJobTask
+
+
+commit-changes:
+  stage: commit-changes
+  script:
     - git config user.email "stefanenkoivi@gmail.com"
     - git config user.name "Ivan Stefanenko"
     - git status
     - git show-ref
+    - git remote show origin
     - git add app/version.properties
     - git commit -m 'update versionCode'
-    - git push origin master
+    - git push
 #
 #debugTests:
 #  stage: test
