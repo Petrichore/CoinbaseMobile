@@ -38,8 +38,7 @@ assembleDebug:
     paths:
       - app/build/outputs/
   after_script:
-    - export CI_PUSH_REPO = echo $CI_REPOSITORY_URL | perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#'
-    - echo "${CI_PUSH_REPO}"
+    - echo $CI_REPOSITORY_UR
     - ./gradlew testAfterJobTask
     - git config user.email "stefanenkoivi@gmail.com"
     - git config user.name "Ivan Stefanenko"
