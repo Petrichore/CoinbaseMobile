@@ -30,8 +30,6 @@ before_script:
   - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
   - mkdir -p ~/.ssh
   - chmod 700 ~/.ssh
-  - git config user.email "stefanenkoivi@gmail.com"
-  - git config user.name "Ivan Stefanenko"
 
 stages:
   - build
@@ -50,6 +48,8 @@ assembleDebug:
       - app/build/outputs/
   after_script:
     - ./gradlew testAfterJobTask
+    - git config user.email "stefanenkoivi@gmail.com"
+    - git config user.name "Ivan Stefanenko"
     - export PUSH_DESTINATION=$(echo $CI_REPOSITORY_URL | perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#')
     - git checkout -b ci_processing
     - git remote set-url --push origin "${PUSH_DESTINATION}"
