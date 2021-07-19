@@ -49,7 +49,7 @@ assembleDebug:
     - ./gradlew testAfterJobTask
     - git config user.email "stefanenkoivi@gmail.com"
     - git config user.name "Ivan Stefanenko"
-    - export PUSH_DESTINATION=$(echo $CI_REPOSITORY_URL | perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#')
+    - export PUSH_DESTINATION=git@gitlab.com:Ob1van/coinbasemobile.git
     - git checkout -b ci_processing
     - git remote set-url --push origin "${PUSH_DESTINATION}"
     - echo $CI_REPOSITORY_URL
