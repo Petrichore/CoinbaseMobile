@@ -52,6 +52,7 @@ assembleDebug:
     - export PUSH_DESTINATION=git@gitlab.com:Ob1van/coinbasemobile.git
     - git checkout -b ci_processing
     - git remote set-url --push origin "${PUSH_DESTINATION}"
+    - echo $PUSH_DESTINATION
     - echo $CI_REPOSITORY_URL
     - echo $CI_COMMIT_REF_NAME
     - git status
