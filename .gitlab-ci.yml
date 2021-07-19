@@ -49,8 +49,3 @@ assembleDebug:
     - git add app/version.properties
     - git commit -m 'update versionCode'
     - git push origin HEAD:${CI_COMMIT_REF_NAME}
-#
-#debugTests:
-#  stage: test
-#  script:
-#    - ./gradlew -Pci --console=plain :app:testDebug
