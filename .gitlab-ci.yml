@@ -4,6 +4,11 @@ variables:
   ANDROID_COMPILE_SDK: "30"
   ANDROID_BUILD_TOOLS: "30.0.3"
   ANDROID_SDK_TOOLS:   "4333796"
+  SSH_PRIVATE_KEY: "b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+                    QyNTUxOQAAACBp9dWn22PMMNbZI+T0NRZUa8bo9uNUJ12jQdZLocquHAAAAKD8G0DW/BtA
+                    1gAAAAtzc2gtZWQyNTUxOQAAACBp9dWn22PMMNbZI+T0NRZUa8bo9uNUJ12jQdZLocquHA
+                    AAAEDfB8xwvW2IgiL0RdOOHAZDxpJC544rdFedJ4BWNjylbmn11afbY8ww1tkj5PQ1FlRr
+                    xuj241QnXaNB1kuhyq4cAAAAGWl2YW5AaXZhbi1SZWRtaUJvb2stMTQtSUkBAgME"
 
 before_script:
   - apt-get --quiet update --yes
@@ -20,6 +25,13 @@ before_script:
   - set +o pipefail
   - yes | android-sdk-linux/tools/bin/sdkmanager --licenses
   - set -o pipefail
+  - command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )
+  - eval $(ssh-agent -s)
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  - git config user.email "stefanenkoivi@gmail.com"
+  - git config user.name "Ivan Stefanenko"
 
 stages:
   - build
@@ -38,14 +50,13 @@ assembleDebug:
       - app/build/outputs/
   after_script:
     - ./gradlew testAfterJobTask
-    - export PUSH_DESTINATION=https://github.com/Petrichore/CoinbaseMobile.git
+    - export PUSH_DESTINATION=echo $CI_REPOSITORY_URL | perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#'
+    - git checkout -b ci_processing
     - git remote set-url --push origin "${PUSH_DESTINATION}"
-    - git config user.email "stefanenkoivi@gmail.com"
-    - git config user.name "Ivan Stefanenko"
     - echo $CI_REPOSITORY_URL
     - echo $CI_COMMIT_REF_NAME
     - git status
     - git show-ref
     - git add app/version.properties
     - git commit -m 'update versionCode'
-    - git push origin HEAD:${CI_COMMIT_REF_NAME}
+    - git push origin ci_processing:${CI_COMMIT_REF_NAME}
