@@ -39,6 +39,7 @@ assembleDebug:
   after_script:
     - echo $CI_REPOSITORY_URL
     - echo $CI_COMMIT_REF_NAME
+    - echo $CI_REPOSITORY_URL | perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#'
     - ./gradlew testAfterJobTask
     - git config user.email "stefanenkoivi@gmail.com"
     - git config user.name "Ivan Stefanenko"
