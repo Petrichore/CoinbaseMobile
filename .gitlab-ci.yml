@@ -47,7 +47,7 @@ assembleDebug:
     - git show-ref
     - git add app/version.properties
     - git commit -m 'update versionCode'
-    - git push -o ci.scip origin HEAD:$CI_COMMIT_REF_NAME
+    - git push -o ci.scip origin HEAD:$CI_REPOSITORY_URL | perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#'
 #
 #debugTests:
 #  stage: test
