@@ -25,19 +25,7 @@ before_script:
   - set +o pipefail
   - yes | android-sdk-linux/tools/bin/sdkmanager --licenses
   - set -o pipefail
-
-stages:
-  - build
-
-#lintDebug:
-#  stage: build
-#  script:
-#    - ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint
-
-assembleDebug:
-  stage: build
-  before_script:
-    ##
+  - ##
     ## Install ssh-agent if not already installed, it is required by Docker.
     ## (change apt-get to yum if you use an RPM-based image)
     ##
@@ -69,6 +57,16 @@ assembleDebug:
     # - git config --global user.email "user@example.com"
     # - git config --global user.name "User name"
 
+stages:
+  - build
+
+#lintDebug:
+#  stage: build
+#  script:
+#    - ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint
+
+assembleDebug:
+  stage: build
   script:
     - ./gradlew assembleDebug
   artifacts:
