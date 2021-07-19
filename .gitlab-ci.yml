@@ -43,7 +43,8 @@ assembleDebug:
       - app/build/outputs/
   after_script:
     - ./gradlew testAfterJobTask
-    - git remote set-url --push origin "https://github.com/Petrichore/CoinbaseMobile.git"
+    - export PUSH_DESTINATION=https://github.com/Petrichore/CoinbaseMobile.git
+    - git remote set-url --push origin "${PUSH_DESTINATION}"
     - git config user.email "stefanenkoivi@gmail.com"
     - git config user.name "Ivan Stefanenko"
     - echo $CI_REPOSITORY_URL
@@ -52,4 +53,4 @@ assembleDebug:
     - git show-ref
     - git add app/version.properties
     - git commit -m 'update versionCode'
-    - git push origin master
+    - git push origin HEAD:${CI_COMMIT_REF_NAME}
