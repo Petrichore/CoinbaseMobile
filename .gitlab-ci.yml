@@ -4,6 +4,7 @@ variables:
   ANDROID_COMPILE_SDK: "30"
   ANDROID_BUILD_TOOLS: "30.0.3"
   ANDROID_SDK_TOOLS:   "4333796"
+  SSH_PRIVATE_KEY: "b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZWQyNTUxOQAAACBp9dWn22PMMNbZI+T0NRZUa8bo9uNUJ12jQdZLocquHAAAAKD8G0DW/BtA1gAAAAtzc2gtZWQyNTUxOQAAACBp9dWn22PMMNbZI+T0NRZUa8bo9uNUJ12jQdZLocquHAAAAEDfB8xwvW2IgiL0RdOOHAZDxpJC544rdFedJ4BWNjylbmn11afbY8ww1tkj5PQ1FlRrxuj241QnXaNB1kuhyq4cAAAAGWl2YW5AaXZhbi1SZWRtaUJvb2stMTQtSUkBAgME"
 
 before_script:
   - apt-get --quiet update --yes
@@ -31,6 +32,39 @@ stages:
 
 assembleDebug:
   stage: build
+  before_script:
+    ##
+    ## Install ssh-agent if not already installed, it is required by Docker.
+    ## (change apt-get to yum if you use an RPM-based image)
+    ##
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+
+    ##
+    ## Run ssh-agent (inside the build environment)
+    ##
+    - eval $(ssh-agent -s)
+
+    ##
+    ## Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
+    ## We're using tr to fix line endings which makes ed25519 keys work
+    ## without extra base64 encoding.
+    ## https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
+    ##
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+
+    ##
+    ## Create the SSH directory and give it the right permissions
+    ##
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+
+    ##
+    ## Optionally, if you will be using any Git commands, set the user name and
+    ## and email.
+    ##
+    # - git config --global user.email "user@example.com"
+    # - git config --global user.name "User name"
+
   script:
     - ./gradlew assembleDebug
   artifacts:
