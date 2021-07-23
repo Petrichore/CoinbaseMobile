@@ -4,7 +4,6 @@ variables:
   ANDROID_COMPILE_SDK: "30"
   ANDROID_BUILD_TOOLS: "30.0.3"
   ANDROID_SDK_TOOLS:   "4333796"
-  SSH_PRIVATE_KEY: "-----BEGIN OPENSSH PRIVATE KEY-----b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZWQyNTUxOQAAACCMCrBGk2KpYaeYS6gyMxpTv0ZGI+4oSXRuQWvxzksKlgAAAKAMGi5PDBouTwAAAAtzc2gtZWQyNTUxOQAAACCMCrBGk2KpYaeYS6gyMxpTv0ZGI+4oSXRuQWvxzksKlgAAAEDB7v8Su6l9hwPuojvP2Q/3c0YQ3ItxZmVi903+gg8uu4wKsEaTYqlhp5hLqDIzGlO/RkYj7ihJdG5Ba/HOSwqWAAAAGWl2YW5AaXZhbi1SZWRtaUJvb2stMTQtSUkBAgME-----END OPENSSH PRIVATE KEY-----"
 
 before_script:
   - apt-get --quiet update --yes
@@ -21,11 +20,19 @@ before_script:
   - set +o pipefail
   - yes | android-sdk-linux/tools/bin/sdkmanager --licenses
   - set -o pipefail
-  - command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )
+  # install ssh-agent
+  - which ssh-agent || (apk add --update --no-cache openssh-client)
+  # run ssh-agent
   - eval $(ssh-agent -s)
-  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  # add ssh key stored in SSH_PRIVATE_KEY variable to the agent store
+  - echo "$SSH_PRIVATE_KEY" > /tmp/gitlab_ci_ssh
+  - chmod 600 /tmp/gitlab_ci_ssh
+  - ssh-add /tmp/gitlab_ci_ssh
+  # disable host key checking (NOTE: makes you susceptible to man-in-the-middle attacks)
+  # WARNING: use only in docker container, if you use it with shell you will overwrite your user's ssh config
   - mkdir -p ~/.ssh
-  - chmod 700 ~/.ssh
+  - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+
 
 stages:
   - build
@@ -42,11 +49,11 @@ assembleDebug:
     paths:
       - app/build/outputs/
   after_script:
+    - echo $SSH_PRIVATE_KEY
     - ./gradlew testAfterJobTask
     - git config user.email "stefanenkoivi@gmail.com"
     - git config user.name "Ivan Stefanenko"
     - export PUSH_DESTINATION=git@gitlab.com:Ob1van/coinbasemobile.git
-    - git checkout -b ci_processing
     - git remote set-url --push origin "${PUSH_DESTINATION}"
     - echo $PUSH_DESTINATION
     - echo $CI_REPOSITORY_URL
@@ -55,4 +62,4 @@ assembleDebug:
     - git show-ref
     - git add app/version.properties
     - git commit -m 'update versionCode'
-    - git push origin ci_processing:${CI_COMMIT_REF_NAME}
+    - git push origin HEAD:${CI_COMMIT_REF_NAME}
