@@ -55,7 +55,7 @@ assembleDebug:
     - git config user.email "stefanenkoivi@gmail.com"
     - git config user.name "Ivan Stefanenko"
     - export PUSH_DESTINATION=git@gitlab.com:Ob1van/coinbasemobile.git
-    - git remote --add --push origin "${PUSH_DESTINATION}"
+    - git remote set-url --add --push origin "${PUSH_DESTINATION}"
     - git remote -v
     - echo $PUSH_DESTINATION
     - echo $CI_REPOSITORY_URL
