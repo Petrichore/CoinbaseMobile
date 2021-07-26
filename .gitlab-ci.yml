@@ -52,6 +52,7 @@ assembleDebug:
     paths:
       - app/build/outputs/
   after_script:
+    - ssh-add -l
     - echo $SSH_PRIVATE_KEY
     - git remote -v
     - ./gradlew testAfterJobTask
