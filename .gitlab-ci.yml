@@ -55,8 +55,6 @@ assembleDebug:
     - echo $SSH_PRIVATE_KEY
     - git remote -v
     - ./gradlew testAfterJobTask
-    - git config user.name
-    - git config user.email
     - git config user.email "stefanenkoivi@gmail.com"
     - git config user.name "Ivan Stefanenko"
     - git config user.name
