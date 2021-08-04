@@ -68,4 +68,4 @@ assembleDebug:
     - git show-ref
     - git add app/version.properties
     - git commit -m 'update versionCode'
-    - git push origin HEAD:${PUSH_DESTINATION} --verbose
+    - git push origin master --verbose
