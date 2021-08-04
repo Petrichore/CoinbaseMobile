@@ -39,13 +39,13 @@ assembleDebug:
     - eval $(ssh-agent -s)
     # add ssh key stored in SSH_PRIVATE_KEY variable to the agent store
     - echo "$SSH_PRIVATE_KEY" > /tmp/gitlab_ci_ssh
-    - cd /builds/Ob1van/coinbasemobile.tmp
     - ls
     - chmod 600 /tmp/gitlab_ci_ssh
     - ssh-add /tmp/gitlab_ci_ssh
     # disable host key checking (NOTE: makes you susceptible to man-in-the-middle attacks)
     # WARNING: use only in docker container, if you use it with shell you will overwrite your user's ssh config
     - mkdir -p ~/.ssh
+    - ls
     - echo -e "Host *\n  StrictHostKeyChecking no\n" > ~/.ssh/config
     - ssh-add -l
     - ssh -T git@gitlab.com
@@ -66,7 +66,9 @@ assembleDebug:
     - echo $PUSH_DESTINATION
     - echo $CI_REPOSITORY_URL
     - echo $CI_COMMIT_REF_NAME
-    - git clone git@gitlab.com:Ob1van/coinbasemobile.git /tmp
+    - mkdir -p project
+    - ls
+    - git clone git@gitlab.com:Ob1van/coinbasemobile.git /builds/Ob1van/coinbasemobile/project
     - ./gradlew testAfterJobTask
     - git status
     - git show-ref
