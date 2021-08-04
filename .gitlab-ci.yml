@@ -39,9 +39,7 @@ assembleDebug:
     - eval $(ssh-agent -s)
     # add ssh key stored in SSH_PRIVATE_KEY variable to the agent store
     - echo "$SSH_PRIVATE_KEY" > /tmp/gitlab_ci_ssh
-    - cd
-    - ls
-    - cd /builds/Ob1van
+    - cd /builds/Ob1van/coinbasemobile.tmp
     - ls
     - chmod 600 /tmp/gitlab_ci_ssh
     - ssh-add /tmp/gitlab_ci_ssh
