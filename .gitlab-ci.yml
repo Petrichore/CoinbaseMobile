@@ -1,8 +1,5 @@
 image: openjdk:8-jdk
 
-
-
-
 variables:
   ANDROID_COMPILE_SDK: "30"
   ANDROID_BUILD_TOOLS: "30.0.3"
@@ -45,19 +42,17 @@ assembleDebug:
     - which ssh-agent || (apk add --update --no-cache openssh-client)
     # run ssh-agent
     - eval $(ssh-agent -s)
-    - cd tmp
-    - ls
     # add ssh key stored in SSH_PRIVATE_KEY variable to the agent store
-    - mkdir -p tmp
-    - echo "$SSH_PRIVATE_KEY" > /tmp/gitlab_ci_ssh
-    - ls
-    - chmod 600 /tmp/gitlab_ci_ssh
-    - ssh-add /tmp/gitlab_ci_ssh
+    - mkdir -p ci_ssh
+    - echo "$SSH_PRIVATE_KEY" > /ci_ssh/gitlab_ci_ssh
+    - cat /ci_ssh/gitlab_ci_ssh.txt
+    - chmod 600 /ci_ssh/gitlab_ci_ssh
+    - ssh-add /ci_ssh/gitlab_ci_ssh
     # disable host key checking (NOTE: makes you susceptible to man-in-the-middle attacks)
     # WARNING: use only in docker container, if you use it with shell you will overwrite your user's ssh config
-    - mkdir -p ~/.ssh
+    #- mkdir -p ~/.ssh
     - ls
-    - echo -e "Host *\n  StrictHostKeyChecking no\n" > ~/.ssh/config
+    #- echo -e "Host *\n  StrictHostKeyChecking no\n" > ~/.ssh/config
     - ssh-add -l
     - ssh -T git@gitlab.com
     # main part
