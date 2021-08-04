@@ -1,5 +1,8 @@
 image: openjdk:8-jdk
 
+stages:
+  - build
+
 variables:
   ANDROID_COMPILE_SDK: "30"
   ANDROID_BUILD_TOOLS: "30.0.3"
@@ -69,37 +72,11 @@ before_script:
   - git config --global user.name "CI_MASTER"
   - ssh -T git@gitlab.com
 
-stages:
-  - build
-
-#lintDebug:
-#  stage: build
-#  script:
-#    - ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint
-
 assembleDebug:
   stage: build
   script:
     - ./gradlew assembleDebug
+    - ssh -T git@gitlab.com
   artifacts:
     paths:
       - app/build/outputs/
-  after_script:
-    - ssh -T git@gitlab.com
-    #- echo $SSH_PRIVATE_KEY
-    #- git remote -v
-    #- export PUSH_DESTINATION=git@gitlab.com:Ob1van/coinbasemobile.git
-    #- git remote add local_master "${PUSH_DESTINATION}"
-    #- git remote -v
-    #- echo $PUSH_DESTINATION
-    #- echo $CI_REPOSITORY_URL
-    #- echo $CI_COMMIT_REF_NAME
-    #- mkdir -p project
-    #- ssh-add -l
-    #- git clone git@gitlab.com:Ob1van/coinbasemobile.git /builds/Ob1van/coinbasemobile/project
-    #- ./gradlew testAfterJobTask
-    #- git status
-    #- git show-ref
-    #- git add app/version.properties
-    #- git commit -m 'update versionCode'
-    #- git push local_master master --verbose
