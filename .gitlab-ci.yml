@@ -40,7 +40,10 @@ assembleDebug:
     - which ssh-agent || (apk add --update --no-cache openssh-client)
     # run ssh-agent
     - eval $(ssh-agent -s)
+    - cd tmp
+    - ls
     # add ssh key stored in SSH_PRIVATE_KEY variable to the agent store
+    - mkdir -p tmp
     - echo "$SSH_PRIVATE_KEY" > /tmp/gitlab_ci_ssh
     - ls
     - chmod 600 /tmp/gitlab_ci_ssh
