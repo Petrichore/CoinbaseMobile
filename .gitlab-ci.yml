@@ -20,15 +20,63 @@ before_script:
   - set +o pipefail
   - yes | android-sdk-linux/tools/bin/sdkmanager --licenses
   - set -o pipefail
+    ##
+    ## Install ssh-agent if not already installed, it is required by Docker.
+    ## (change apt-get to yum if you use an RPM-based image)
+    ##
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
 
+    ##
+    ## Run ssh-agent (inside the build environment)
+    ##
+    - eval $(ssh-agent -s)
+
+    ##
+    ## Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
+    ## We're using tr to fix line endings which makes ed25519 keys work
+    ## without extra base64 encoding.
+    ## https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
+    ##
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+
+    ##
+    ## Create the SSH directory and give it the right permissions
+    ##
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+
+    ##
+    ## Use ssh-keyscan to scan the keys of your private server. Replace gitlab.com
+    ## with your own domain name. You can copy and repeat that command if you have
+    ## more than one server to connect to.
+    ##
+    - ssh-keyscan gitlab.com >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+
+    ##
+    ## Alternatively, assuming you created the SSH_SERVER_HOSTKEYS variable
+    ## previously, uncomment the following two lines instead.
+    ##
+    #- echo "$SSH_SERVER_HOSTKEYS" > ~/.ssh/known_hosts'
+    #- chmod 644 ~/.ssh/known_hosts
+
+    ##
+    ## You can optionally disable host key checking. Be aware that by adding that
+    ## you are suspectible to man-in-the-middle attacks.
+    ## WARNING: Use this only with the Docker executor, if you use it with shell
+    ## you will overwrite your user's SSH config.
+    ##
+    #- '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+
+    ##
+    ## Optionally, if you will be using any Git commands, set the user name and
+    ## email.
+    ##
+    - git config --global user.email "ci_user@gmail.com"
+    - git config --global user.name "CI_MASTER"
 
 stages:
   - build
-
-#lintDebug:
-#  stage: build
-#  script:
-#    - ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint
 
 assembleDebug:
   stage: build
@@ -38,44 +86,21 @@ assembleDebug:
     paths:
       - app/build/outputs/
   after_script:
-    # install ssh-agent
-    - which ssh-agent || (apk add --update --no-cache openssh-client)
-    # run ssh-agent
-    - eval $(ssh-agent -s)
-    # add ssh key stored in SSH_PRIVATE_KEY variable to the agent store
-    - mkdir -p ci_ssh
-    - touch gitlab_ci_ssh
-    - ls
-    - cd ci_ssh
-    - ls
-    - echo "$SSH_PRIVATE_KEY" > /ci_ssh/gitlab_ci_ssh.txt
-    - cat /ci_ssh/gitlab_ci_ssh.txt
-    - chmod 600 /ci_ssh/gitlab_ci_ssh
-    - ssh-add /ci_ssh/gitlab_ci_ssh
-    # disable host key checking (NOTE: makes you susceptible to man-in-the-middle attacks)
-    # WARNING: use only in docker container, if you use it with shell you will overwrite your user's ssh config
-    #- mkdir -p ~/.ssh
-    - ls
-    #- echo -e "Host *\n  StrictHostKeyChecking no\n" > ~/.ssh/config
-    - ssh-add -l
-    - ssh -T git@gitlab.com
-    # main part
-    - echo $SSH_PRIVATE_KEY
-    - git remote -v
-    - git config --global user.email "stefanenkoivi@gmail.com"
-    - git config --global user.name "CI_USER"
-    - export PUSH_DESTINATION=git@gitlab.com:Ob1van/coinbasemobile.git
-    - git remote add local_master "${PUSH_DESTINATION}"
-    - git remote -v
-    - echo $PUSH_DESTINATION
-    - echo $CI_REPOSITORY_URL
-    - echo $CI_COMMIT_REF_NAME
-    - mkdir -p project
-    - ssh-add -l
-    - git clone git@gitlab.com:Ob1van/coinbasemobile.git /builds/Ob1van/coinbasemobile/project
-    - ./gradlew testAfterJobTask
-    - git status
-    - git show-ref
-    - git add app/version.properties
-    - git commit -m 'update versionCode'
-    - git push local_master master --verbose
+    - ssh git@gitlab.com
+    #- echo $SSH_PRIVATE_KEY
+    #- git remote -v
+    #- export PUSH_DESTINATION=git@gitlab.com:Ob1van/coinbasemobile.git
+    #- git remote add local_master "${PUSH_DESTINATION}"
+    #- git remote -v
+    #- echo $PUSH_DESTINATION
+    #- echo $CI_REPOSITORY_URL
+    #- echo $CI_COMMIT_REF_NAME
+    #- mkdir -p project
+    #- ssh-add -l
+    #- git clone git@gitlab.com:Ob1van/coinbasemobile.git /builds/Ob1van/coinbasemobile/project
+    #- ./gradlew testAfterJobTask
+    #- git status
+    #- git show-ref
+    #- git add app/version.properties
+    #- git commit -m 'update versionCode'
+    #- git push local_master master --verbose
