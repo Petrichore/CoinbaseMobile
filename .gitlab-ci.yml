@@ -84,7 +84,7 @@ assembleDebug:
     paths:
       - app/build/outputs/
   after_script:
-    - ssh git@gitlab.com
+    - ssh -T git@gitlab.com
     #- echo $SSH_PRIVATE_KEY
     #- git remote -v
     #- export PUSH_DESTINATION=git@gitlab.com:Ob1van/coinbasemobile.git
