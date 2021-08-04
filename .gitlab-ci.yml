@@ -70,7 +70,7 @@ assembleDebug:
     - echo $CI_REPOSITORY_URL
     - echo $CI_COMMIT_REF_NAME
     - mkdir -p project
-    - ls
+    - ssh-add -l
     - git clone git@gitlab.com:Ob1van/coinbasemobile.git /builds/Ob1van/coinbasemobile/project
     - ./gradlew testAfterJobTask
     - git status
