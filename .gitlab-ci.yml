@@ -58,6 +58,7 @@ assembleDebug:
     paths:
       - app/build/outputs/
   after_script:
+    - eval $(ssh-agent -s)
     - ls
     - echo $SSH_PRIVATE_KEY
     - git remote -v
