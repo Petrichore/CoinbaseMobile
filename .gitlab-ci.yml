@@ -78,7 +78,7 @@ assembleDebug:
     - ./gradlew assembleDebug
     - ssh -T git@gitlab.com
     - export PUSH_DESTINATION=git@gitlab.com:Ob1van/coinbasemobile.git
-    - git remote add local_master "${PUSH_DESTINATION}"
+    - git remote set-url --push origin "${PUSH_DESTINATION}""
     - git remote -v
     - echo $PUSH_DESTINATION
     - echo $CI_REPOSITORY_URL
@@ -91,7 +91,7 @@ assembleDebug:
     - git show-ref
     - git add app/version.properties
     - git commit -m 'update versionCode'
-    - git push local_master master --verbose
+    - git push origin HEAD:${CI_COMMIT_REF_NAME}
   artifacts:
     paths:
       - app/build/outputs/
