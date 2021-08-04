@@ -39,6 +39,7 @@ assembleDebug:
     - eval $(ssh-agent -s)
     # add ssh key stored in SSH_PRIVATE_KEY variable to the agent store
     - echo "$SSH_PRIVATE_KEY" > /tmp/gitlab_ci_ssh
+    - ls
     - chmod 600 /tmp/gitlab_ci_ssh
     - ssh-add /tmp/gitlab_ci_ssh
     # disable host key checking (NOTE: makes you susceptible to man-in-the-middle attacks)
@@ -47,24 +48,24 @@ assembleDebug:
     - echo -e "Host *\n  StrictHostKeyChecking no\n" > ~/.ssh/config
     - ssh-add -l
     - ssh -T git@gitlab.com
+    - echo $SSH_PRIVATE_KEY
+    - git remote -v
+    - git config --global user.email "stefanenkoivi@gmail.com"
+    - git config --global user.name "CI_USER"
+    - export PUSH_DESTINATION=git@gitlab.com:Ob1van/coinbasemobile.git
+    - git remote set-url origin "${PUSH_DESTINATION}"
+    - git remote -v
+    - echo $PUSH_DESTINATION
+    - echo $CI_REPOSITORY_URL
+    - echo $CI_COMMIT_REF_NAME
   script:
     - ./gradlew assembleDebug
   artifacts:
     paths:
       - app/build/outputs/
   after_script:
-    - echo $SSH_PRIVATE_KEY
-    - git remote -v
+    - git clone $PUSH_DESTINATION /tmp
     - ./gradlew testAfterJobTask
-    - git config --global user.email "stefanenkoivi@gmail.com"
-    - git config --global user.name "CI_USER"
-    - export PUSH_DESTINATION=git@gitlab.com:Ob1van/coinbasemobile.git
-    - git remote set-url --add --pull origin "${PUSH_DESTINATION}"
-    - git remote set-url --add --push origin "${PUSH_DESTINATION}"
-    - git remote -v
-    - echo $PUSH_DESTINATION
-    - echo $CI_REPOSITORY_URL
-    - echo $CI_COMMIT_REF_NAME
     - git status
     - git show-ref
     - git add app/version.properties
