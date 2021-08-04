@@ -64,7 +64,7 @@ assembleDebug:
     - git config --global user.email "stefanenkoivi@gmail.com"
     - git config --global user.name "CI_USER"
     - export PUSH_DESTINATION=git@gitlab.com:Ob1van/coinbasemobile.git
-    - git remote set-url origin "${PUSH_DESTINATION}"
+    - git remote add local_master "${PUSH_DESTINATION}"
     - git remote -v
     - echo $PUSH_DESTINATION
     - echo $CI_REPOSITORY_URL
@@ -77,4 +77,4 @@ assembleDebug:
     - git show-ref
     - git add app/version.properties
     - git commit -m 'update versionCode'
-    - git push origin master --verbose
+    - git push local_master master --verbose
