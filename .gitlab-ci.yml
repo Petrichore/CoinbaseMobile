@@ -70,9 +70,6 @@ before_script:
   ##
   - git config --global user.email "ci_user@gmail.com"
   - git config --global user.name "CI_MASTER"
-  - ssh -T git@github.com
-
-
 
 # test comment
 
@@ -80,9 +77,9 @@ assembleDebug:
   stage: build
   script:
     - ./gradlew assembleDebug
-    - ssh -T git@github.com
     - export PUSH_DESTINATION=git@github.com:Petrichore/CoinbaseMobile.git
     - git remote set-url --push origin "${PUSH_DESTINATION}"
+    - ssh -T git@github.com
     - git remote -v
     - echo $PUSH_DESTINATION
     - echo $CI_REPOSITORY_URL
