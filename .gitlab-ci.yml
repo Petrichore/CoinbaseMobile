@@ -71,10 +71,6 @@ before_script:
   - git config --global user.email "ci_user@gmail.com"
   - git config --global user.name "CI_MASTER"
 
-# test comment
-
-
-
 assembleDebug:
   stage: build
   script:
