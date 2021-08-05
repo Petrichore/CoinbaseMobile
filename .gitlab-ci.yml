@@ -73,6 +73,9 @@ before_script:
   - ssh -T git@gitlab.com
 
 
+
+# test comment
+
 assembleDebug:
   stage: build
   script:
