@@ -49,7 +49,7 @@ before_script:
   ## with your own domain name. You can copy and repeat that command if you have
   ## more than one server to connect to.
   ##
-  - ssh-keyscan github.com >> ~/.ssh/known_hosts
+  - ssh-keyscan gitlab.com >> ~/.ssh/known_hosts
   - chmod 644 ~/.ssh/known_hosts
   ##
   ## Alternatively, assuming you created the SSH_SERVER_HOSTKEYS variable
@@ -77,9 +77,9 @@ assembleDebug:
   stage: build
   script:
     - ./gradlew assembleDebug
-    - export PUSH_DESTINATION=git@github.com:Petrichore/CoinbaseMobile.git
+    - export PUSH_DESTINATION=git@gitlab.com:Ob1van/coinbasemobile.git
     - git remote set-url --push origin "${PUSH_DESTINATION}"
-    - ssh -T git@github.com
+    - ssh -T git@gitlab.com
     - git remote -v
     - echo $PUSH_DESTINATION
     - echo $CI_REPOSITORY_URL
