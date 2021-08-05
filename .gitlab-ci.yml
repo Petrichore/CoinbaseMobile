@@ -81,15 +81,13 @@ assembleDebug:
   script:
     - ./gradlew assembleDebug
     - ssh -T git@gitlab.com
-    - export PUSH_DESTINATION=git@gitlab.com:Ob1van/coinbasemobile.git
+    - export PUSH_DESTINATION=git@github.com:Petrichore/CoinbaseMobile.git
     - git remote set-url --push origin "${PUSH_DESTINATION}"
     - git remote -v
     - echo $PUSH_DESTINATION
     - echo $CI_REPOSITORY_URL
     - echo $CI_COMMIT_REF_NAME
-    #- mkdir -p project
     - ssh-add -l
-    #- git clone git@gitlab.com:Ob1van/coinbasemobile.git /builds/Ob1van/coinbasemobile/project
     - ./gradlew testAfterJobTask
     - git status
     - git show-ref
