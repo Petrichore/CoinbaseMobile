@@ -286,7 +286,6 @@ class DataRepositoryTest: BaseDomainModuleTest() {
 
         coEvery { databaseService.getExchangeRateList() } returns exchangeRateEntityList
         every { mapper.map(exchangeRateEntity) } returns exchangerRate
-
         val dataRepository = DataRepository(remoteDataService, databaseService, mapper)
 
         coroutinesTestRule.testDispatcher.runBlockingTest {

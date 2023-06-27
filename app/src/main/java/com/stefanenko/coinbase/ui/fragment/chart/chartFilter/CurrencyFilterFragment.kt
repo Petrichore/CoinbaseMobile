@@ -50,7 +50,7 @@ class CurrencyFilterFragment : BaseObserveFragment() {
     }
 
     override fun initObservers() {
-        viewModelCurrency.state.observe(viewLifecycleOwner, {
+        viewModelCurrency.state.observe(viewLifecycleOwner) {
             when (it) {
                 is StateCurrencyFilter.ShowCurrencyRecycler -> initRecycler(it.itemList)
                 is StateCurrencyFilter.ShowErrorMessage -> showInfoDialog(
@@ -59,8 +59,9 @@ class CurrencyFilterFragment : BaseObserveFragment() {
                 )
                 StateCurrencyFilter.StartLoading -> binding.progressBar.visibility = View.VISIBLE
                 StateCurrencyFilter.StopLoading -> binding.progressBar.visibility = View.GONE
+                else -> Unit
             }
-        })
+        }
     }
 
     private fun initRecycler(itemList: List<ActiveCurrency>) {

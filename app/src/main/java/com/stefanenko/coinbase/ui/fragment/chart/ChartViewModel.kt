@@ -53,6 +53,7 @@ class ChartViewModel @Inject constructor(
                         state.value = StateChart.StopLoading
                         EspressoIdlingResource.decrement()
                     }
+                    else -> Unit
                 }
             }
         } else {

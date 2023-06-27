@@ -2,6 +2,7 @@ package com.stefanenko.coinbase.ui.fragment.exchangeRate
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,11 +36,17 @@ class ExchangeRatesFragment : BaseObserveFragment() {
 
     private lateinit var snackbar: Snackbar
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d("FragmentState:::", "ExchangeRatesFragment::OnCreate")
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.d("FragmentState:::", "ExchangeRatesFragment::OnCreateView::$viewModel")
         _binding = FragmentExchangeRateBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -103,7 +110,7 @@ class ExchangeRatesFragment : BaseObserveFragment() {
     }
 
     override fun initObservers() {
-        viewModel.state.observe(viewLifecycleOwner, {
+        viewModel.state.observe(viewLifecycleOwner) {
             showDebugLog(it.toString())
             when (it) {
                 is StateExchangeRates.ShowExchangeRateRecycler -> {
@@ -169,12 +176,18 @@ class ExchangeRatesFragment : BaseObserveFragment() {
                 }
 
             }
-        })
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.d("FragmentState:::", "ExchangeRatesFragment::OnDestroyView")
         _binding = null
         viewModel.setBlankState()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("FragmentState:::", "ExchangeRatesFragment::onDestroy")
     }
 }

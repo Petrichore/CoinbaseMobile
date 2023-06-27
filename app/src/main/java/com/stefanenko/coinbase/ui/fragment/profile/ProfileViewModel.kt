@@ -39,6 +39,7 @@ class ProfileViewModel @Inject constructor(
                         is ResponseState.Error -> {
                             handleResponseError(responseState)
                         }
+                        else -> Unit
                     }
 
                     state.value = StateProfile.StopLoading

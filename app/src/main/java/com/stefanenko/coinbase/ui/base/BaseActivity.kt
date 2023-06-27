@@ -16,7 +16,7 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setBarStyle()
-        overridePendingTransition(R.anim.fragment_fade_enter, R.anim.fragment_fade_exit)
+        overridePendingTransition(R.anim.nav_default_enter_anim, R.anim.nav_default_exit_anim)
         Log.e("onCreate", this.javaClass.name)
     }
 

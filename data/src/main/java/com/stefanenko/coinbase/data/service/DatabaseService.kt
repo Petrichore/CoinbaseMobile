@@ -15,7 +15,9 @@ class DatabaseService @Inject constructor(
     private val dispatcher: BaseCoroutineDispatcher
 ) {
 
-    suspend fun addExchangeRateToFavorite(favoriteExchangeRatesEntity: FavoriteExchangeRatesEntity): Boolean {
+    suspend fun addExchangeRateToFavorite(
+        favoriteExchangeRatesEntity: FavoriteExchangeRatesEntity
+    ): Boolean {
         return withContext(dispatcher.io()) {
             val id = currencyDao.addCurrencyExchangeRateToFavorite(favoriteExchangeRatesEntity)
             id > 0
@@ -28,7 +30,9 @@ class DatabaseService @Inject constructor(
         }
     }
 
-    suspend fun deleteExchangeRateFromFavorite(favoriteExchangeRatesEntity: FavoriteExchangeRatesEntity): Boolean {
+    suspend fun deleteExchangeRateFromFavorite(
+        favoriteExchangeRatesEntity: FavoriteExchangeRatesEntity
+    ): Boolean {
         return withContext(dispatcher.io()) {
             val amount = currencyDao.deleteExchangeRateFromFavorite(favoriteExchangeRatesEntity)
             amount > 0

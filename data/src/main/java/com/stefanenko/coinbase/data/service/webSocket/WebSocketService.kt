@@ -20,7 +20,6 @@ class WebSocketService @Inject constructor(
         onNewEvent: (RxWebSocketManager.WebSocketEvent) -> Unit
     ): Disposable {
         val disposable = rxWebSocketManager.start(url)
-            .subscribeOn(schedulersProvider.io())
             .observeOn(schedulersProvider.androidMainThread())
             .subscribe({ socketEvent ->
                 onNewEvent.invoke(socketEvent)

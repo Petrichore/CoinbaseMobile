@@ -11,6 +11,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.stefanenko.coinbase.R
 import com.stefanenko.coinbase.databinding.ActivityMainBinding
 import com.stefanenko.coinbase.ui.base.BaseActivity
+import com.stefanenko.coinbase.util.dateFormatter
 import dagger.android.AndroidInjection
 
 class MainActivity : BaseActivity() {
@@ -24,6 +25,8 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+
+        //dateFormatter()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

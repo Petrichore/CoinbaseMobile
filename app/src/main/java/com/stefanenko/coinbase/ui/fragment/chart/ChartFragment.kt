@@ -88,7 +88,7 @@ class ChartFragment : BaseObserveFragment() {
     }
 
     override fun initObservers() {
-        viewModel.state.observe(viewLifecycleOwner, { state ->
+        viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is StateChart.OnNewMessage -> {
                     updateChart(state.currencyEntryList)
@@ -118,8 +118,9 @@ class ChartFragment : BaseObserveFragment() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+                else -> Unit
             }
-        })
+        }
     }
 
     private fun updateChart(itemList: List<Entry>) {

@@ -46,7 +46,7 @@ class ProfileFragment : BaseObserveFragment() {
     }
 
     override fun initObservers() {
-        viewModel.state.observe(viewLifecycleOwner, {
+        viewModel.state.observe(viewLifecycleOwner) {
             when (it) {
                 is StateProfile.ShowProfileData -> {
                     setProfileData(it.profile)
@@ -74,8 +74,9 @@ class ProfileFragment : BaseObserveFragment() {
                 StateProfile.ReAuthPerformed -> {
                     viewModel.getProfile()
                 }
+                else -> Unit
             }
-        })
+        }
     }
 
     private fun setListeners() {

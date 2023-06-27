@@ -12,7 +12,7 @@ import com.stefanenko.coinbase.ui.base.ViewModelFactory
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 
-class SplashActivity : BaseActivity() {
+class LaunchActivity : BaseActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -36,7 +36,7 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun setObservers() {
-        viewModel.state.observe(this, {
+        viewModel.state.observe(this) {
             when (it) {
                 is SplashActivityState.ShowErrorMessage -> {
                     showInfoDialog(resources.getString(R.string.alert_dialog_title_error), it.error)
@@ -49,7 +49,7 @@ class SplashActivity : BaseActivity() {
                     startActivity(LoginActivity::class.java, true)
                 }
             }
-        })
+        }
     }
 
     override fun onResume() {

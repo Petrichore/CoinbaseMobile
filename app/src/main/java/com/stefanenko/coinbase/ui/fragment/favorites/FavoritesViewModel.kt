@@ -38,6 +38,7 @@ class FavoritesViewModel @Inject constructor(
                         state.value =
                             StateFavorites.ShowErrorMessage(response.error)
                     }
+                    else -> Unit
                 }
                 state.value = StateFavorites.StopLoading
                 EspressoIdlingResource.decrement()
@@ -76,6 +77,7 @@ class FavoritesViewModel @Inject constructor(
                 is ResponseState.Data -> state.value = StateFavorites.DeleteCompleted
                 is ResponseState.Error -> state.value =
                     StateFavorites.ShowErrorMessage(response.error)
+                else -> Unit
             }
             clearDeleteItemData()
             EspressoIdlingResource.decrement()

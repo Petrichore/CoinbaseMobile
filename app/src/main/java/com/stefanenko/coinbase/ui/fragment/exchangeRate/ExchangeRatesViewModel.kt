@@ -63,6 +63,7 @@ class ExchangeRatesViewModel @Inject constructor(
                 is ResponseState.Error -> {
                     state.value = StateExchangeRates.ShowErrorMessage(responseState.error)
                 }
+                else -> Unit
             }
             state.value = StateExchangeRates.StopLoading
             EspressoIdlingResource.decrement()
@@ -83,6 +84,7 @@ class ExchangeRatesViewModel @Inject constructor(
                     state.value =
                         StateExchangeRates.ShowErrorMessage(responseState.error)
                 }
+                else -> Unit
             }
             state.value = StateExchangeRates.StopLoading
             EspressoIdlingResource.decrement()
@@ -105,6 +107,7 @@ class ExchangeRatesViewModel @Inject constructor(
                         state.value =
                             StateExchangeRates.ShowErrorMessage(responseState.error)
                     }
+                    else -> Unit
                 }
                 state.value = StateExchangeRates.StopLoading
                 EspressoIdlingResource.decrement()
@@ -127,6 +130,7 @@ class ExchangeRatesViewModel @Inject constructor(
                     state.value =
                         StateExchangeRates.ShowErrorMessage(response.error)
                 }
+                else -> Unit
             }
             EspressoIdlingResource.decrement()
         }

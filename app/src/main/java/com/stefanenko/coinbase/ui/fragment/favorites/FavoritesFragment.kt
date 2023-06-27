@@ -58,7 +58,7 @@ class FavoritesFragment : BaseObserveFragment() {
     }
 
     override fun initObservers() {
-        viewModel.state.observe(viewLifecycleOwner, { state ->
+        viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is StateFavorites.ShowFavoritesRecycler -> {
                     initFavoritesRecycler(state.itemList)
@@ -87,8 +87,9 @@ class FavoritesFragment : BaseObserveFragment() {
                 StateFavorites.ShowRetrieveItemSnackBar -> {
                     snackbar.show()
                 }
+                else -> Unit
             }
-        })
+        }
     }
 
     private fun configSnackBar() {

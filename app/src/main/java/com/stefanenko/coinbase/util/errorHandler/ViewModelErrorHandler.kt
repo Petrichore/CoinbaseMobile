@@ -26,6 +26,7 @@ class ViewModelErrorHandler @Inject constructor(
             is ResponseState.Error -> {
                 onTokenError.invoke(responseState.error)
             }
+            else -> Unit
         }
     }
 }

@@ -5,7 +5,6 @@
         android:id="@+id/exchangeRates"
         android:icon="@drawable/ic_bitcoin_menu"
         android:title="@string/title_exchange_rates" />
-
     <item
         android:id="@+id/chart"
         android:icon="@drawable/ic_chart_menu"

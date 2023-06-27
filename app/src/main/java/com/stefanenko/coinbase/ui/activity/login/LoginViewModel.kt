@@ -50,6 +50,7 @@ class LoginViewModel @Inject constructor(
                 is ResponseState.Error -> {
                     state.value = StateLogin.ShowErrorMessage(responseState.error)
                 }
+                else -> Unit
             }
             state.value = StateLogin.StopLoading
         }

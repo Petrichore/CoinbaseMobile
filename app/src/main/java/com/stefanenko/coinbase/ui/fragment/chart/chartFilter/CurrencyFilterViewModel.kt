@@ -29,6 +29,7 @@ class CurrencyFilterViewModel @Inject constructor(
 
                     is ResponseState.Error -> state.value =
                         StateCurrencyFilter.ShowErrorMessage(response.error)
+                    else -> Unit
                 }
 
                 state.value = StateCurrencyFilter.StopLoading
